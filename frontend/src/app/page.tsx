@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import Header from "@/components/header";
 import styles from "./page.module.css";
 
-import Frame3 from "../assets/images/main/frame3.png";
+import Frame3 from "../assets/images/main/laptop.png";
 import RightArrow from "@/components/icons/RightArrow";
-import DownloadIcon from "@/components/icons/DownloadIcon";
 import Square from "@/components/main/square";
 
 export default function Home() {
@@ -46,9 +45,11 @@ export default function Home() {
                         <div className={styles.textContent}>
                             <div>
                                 <p className={styles.textContentDescription}>
-                                    Uma <span className={styles.gradient}>descricao</span>
+                                    Uma coisa de comunicação
                                     <br />
-                                    muito boa para isto
+                                    feita em <span className={styles.gradient}>Javascript</span>
+                                    <br />
+                                    para projeto escolar.
                                 </p>
                             </div>
 
@@ -76,17 +77,12 @@ export default function Home() {
                                         </Link>
                                     </div>
                                 )}
-
-                                <a href="https://google.pt">
-                                    <DownloadIcon />
-                                    Transferir umnome
-                                </a>
                             </div>
                         </div>
                     </div>
 
                     <div className={styles.sideItem}>
-                        <img src={Frame3.src} alt="Uma imagem a relatar sobre o produto" />
+                        <img width="100%" src={Frame3.src} alt="Uma imagem a relatar sobre o produto" />
                     </div>
                 </section>
 
@@ -109,19 +105,23 @@ export default function Home() {
 
                 <section className={styles.squareSection}>
                     <Square
-                        title="Livrarias usadas no projeto"
-                        content="<a href='//github.com/atjoao/umnome-backend'>Backend</a>: ExpressJS, MongoDB, FFMpeg*q*<a href='//github.com/atjoao/umnome-server'>Server</a>: Socket-IO*q*<a href='//github.com/atjoao/umnome-frontend'>Frontend</a>: NextJS (React), date-fns"
+                        title="Tecnologias usadas no projeto"
+                        content="<a href='https://github.com/atjoao/concordo/tree/main/backend'>Backend</a>: ExpressJS, FFMpeg*q*<a href='https://github.com/atjoao/concordo/tree/main/server'>Server</a>: Socket-IO*q*<a href='https://github.com/atjoao/concordo/tree/main/frontend'>Frontend</a>: NextJS (React), date-fns*q*<a href='#'>Database</a>: MongoDB*q*Ferramenta de design: Figma"
                     />
-                    <Square title="Eu nao sei o que meter aqui depois vejo" content="um dia descubro" />
                     <Square
-                        content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices nulla. Integer quis suscipit mi, id feugiat nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus rhoncus magna et diam ultricies, vitae dictum quam fringilla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec ultrices nulla. Integer quis suscipit mi, id feugiat nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus rhoncus magna et diam ultricies, vitae dictum quam fringilla."
-                        title="Sinceramente um texto longo"
+                        title="Icons"
+                        content="Os icones foram todos retirados do site:*q*<a href='https://www.svgrepo.com/'>SVGRepo</a>"
+                    />
+                    <Square
+                        title="Aprendido com o projeto"
+                        content="Manuseamento de dados, databases, autenticação e comunicação em tempo real entre um cliente e um servidor, fazer layouts/design para um site com figma, e aprender a programar com React(NextJS)."
                     />
                 </section>
 
                 <footer className={styles.footer}>
                     <p>
-                        Criado por <a href="https://github.com/atjoao">João</a> em 2023 !1!!!1! acabado em 2024
+                        Criado por <a href="https://github.com/atjoao">João</a> em 2023 !1!!!1! acabado em 2024 !1!1!1
+                        (Feito em ambito escolar)
                     </p>
                 </footer>
             </div>

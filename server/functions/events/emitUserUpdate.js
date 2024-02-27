@@ -7,18 +7,21 @@ export default async function (io, data) {
 
     if (!Array.isArray(userOnlineFriends)) return;
 
+    const selfUserSockets = await cache.getSocketsByUserId(data.userId);
+
     userOnlineFriends.forEach(async (element) => {
         const userSockets = await cache.getSocketsByUserId(element._id.toString());
-        const selfUserSockets = await cache.getSocketsByUserId(data.userId);
-
-        for (let users in userSockets) {
-            if (selfUserSockets.length === 1) {
-                userSockets.forEach(async (sid) => {
-                    io.to(sid).emit("userUpdated", data);
-                });
-            }
-        }
+        if (!userSockets) return;
+        userSockets.forEach(async (sid) => {
+            io.to(sid).emit("userUpdated", data);
+        });
     });
+
+    if (selfUserSockets && Array.isArray(selfUserSockets)) {
+        selfUserSockets.forEach(async (sid) => {
+            io.to(sid).emit("selfUpdate", data);
+        });
+    }
 
     // TODO transmitir para self estas alterações oof lembrar
 }

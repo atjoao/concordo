@@ -52,7 +52,7 @@ async function removeFriend(data: any) {
 }
 
 const eventSetup = () => {
-    const { setUserChats, set_sent_requests, set_f_requests, set_blocked, serverIp, setChatInfos }: any =
+    const { setUserChats, set_sent_requests, set_f_requests, set_blocked, serverIp, setChatInfos, setProfile }: any =
         useContext(LayoutCached);
 
     useEffect(() => {
@@ -69,10 +69,12 @@ const eventSetup = () => {
         socket?.on("userUpdated", handleUserUpdated);
         socket?.on("openGroupChat", handleOpenGroupChat);
         socket?.on("logout", handleLogout);
-        //socket?.on("removeChat", handleRemoveChat);
+        //socket?.on("removeChat", handleRemoveChat); // movied to sidebar
         socket?.on("userLeft", handleUserLeft);
         socket?.on("newUserJoined", handleUserJoined);
         socket?.on("ping", handlePing);
+
+        socket?.on("selfUpdate", handleSelfUpdate);
 
         socket?.on("groupChange", handleGroupChange);
 
@@ -92,6 +94,7 @@ const eventSetup = () => {
             socket?.off("userUpdated", handleUserUpdated);
             socket?.off("openGroupChat", handleOpenGroupChat);
             //socket?.off("removeChat", handleRemoveChat);
+            socket?.off("selfUpdate", handleSelfUpdate);
 
             socket?.off("logout", handleLogout);
             socket?.off("userLeft", handleUserLeft);
@@ -266,6 +269,12 @@ const eventSetup = () => {
             });
 
             return chatInfos;
+        });
+    };
+
+    const handleSelfUpdate = (data: any) => {
+        setProfile((profile: any) => {
+            return { info: { ...profile.info, ...data } };
         });
     };
 

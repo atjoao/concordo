@@ -26,6 +26,7 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                         src={serverIp + "/getGroupProfile/" + headerInfo.chatAvatar}
                         alt={"Avatar de grupo"}
                         onClick={() => {
+                            if (headerInfo.chatOwnerId !== profile.info.id) return;
                             let input: HTMLInputElement = document.createElement("input");
                             input.type = "file";
                             input.multiple = false;
@@ -103,122 +104,131 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                         <p>Membros: {headerInfo.members_id.length}</p>
                     </div>
                 </div>
-                <div className={styles.addMember}>
-                    <span onClick={() => setOpenMenu(!openMenu)}>
-                        <AddFriendIcon height="24px" />
-                    </span>
-                    {openMenu &&
-                        createPortal(
-                            <DialogBase
-                                title={"Adicionar amigos ao grupo"}
-                                cancelAction={() => {
-                                    setOpenMenu(!openMenu);
-                                    setSelectedUsers([]);
-                                }}
-                                submitActionName={"Adicionar ao grupo"}
-                                color={String(true)}
-                                submitAction={async () => {
-                                    // fazer isto
-                                    if (selectedUsers.length == 0) {
-                                        return;
-                                    }
+                {headerInfo.chatOwnerId === profile.info.id && (
+                    <div className={styles.addMember}>
+                        <span
+                            onClick={() => {
+                                if (headerInfo.chatOwnerId !== profile.info.id) return;
+                                setOpenMenu(!openMenu);
+                            }}
+                        >
+                            <AddFriendIcon height="24px" />
+                        </span>
+                        {openMenu &&
+                            createPortal(
+                                <DialogBase
+                                    title={"Adicionar amigos ao grupo"}
+                                    cancelAction={() => {
+                                        setOpenMenu(!openMenu);
+                                        setSelectedUsers([]);
+                                    }}
+                                    submitActionName={"Adicionar ao grupo"}
+                                    color={String(true)}
+                                    submitAction={async () => {
+                                        // fazer isto
+                                        if (selectedUsers.length == 0) {
+                                            return;
+                                        }
 
-                                    setOpenMenu(!openMenu);
-                                    setSelectedUsers([]);
+                                        setOpenMenu(!openMenu);
+                                        setSelectedUsers([]);
 
-                                    const data = {
-                                        memberIds: selectedUsers.map((user) => user.id),
-                                    };
-                                    await fetch(serverIp + "/chat/grupo/" + chatId + "/addMember", {
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                        },
-                                        body: JSON.stringify(data),
-                                        method: "POST",
-                                        redirect: "manual",
-                                    });
-                                }}
-                            >
-                                {selectedUsers.length > 0 && (
-                                    <div style={{ paddingBottom: "5px" }} className={formbtn.selectedUsers}>
-                                        <p>Pessoas selecionadas:</p>
+                                        const data = {
+                                            memberIds: selectedUsers.map((user) => user.id),
+                                        };
+                                        await fetch(serverIp + "/chat/grupo/" + chatId + "/addMember", {
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                            },
+                                            body: JSON.stringify(data),
+                                            method: "POST",
+                                            redirect: "manual",
+                                        });
+                                    }}
+                                >
+                                    {selectedUsers.length > 0 && (
+                                        <div style={{ paddingBottom: "5px" }} className={formbtn.selectedUsers}>
+                                            <p>Pessoas selecionadas:</p>
 
-                                        <div>
-                                            {selectedUsers.map((user) => (
-                                                <button
-                                                    key={user.id}
-                                                    onClick={() => {
-                                                        setSelectedUsers((users) => {
-                                                            return users.filter(
-                                                                (userfilter) => userfilter.id !== user.id
-                                                            );
-                                                        });
+                                            <div>
+                                                {selectedUsers.map((user) => (
+                                                    <button
+                                                        key={user.id}
+                                                        onClick={() => {
+                                                            setSelectedUsers((users) => {
+                                                                return users.filter(
+                                                                    (userfilter) => userfilter.id !== user.id
+                                                                );
+                                                            });
+                                                        }}
+                                                    >
+                                                        {user.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className={formbtn.friendsList}>
+                                        {friends &&
+                                            friends?.length > 0 &&
+                                            friends?.map((friend: User) => (
+                                                <label
+                                                    className={formbtn.friendsListLabel}
+                                                    key={friend.id}
+                                                    style={{
+                                                        opacity: headerInfo.members_id.some(
+                                                            (user: string) => user === friend.id
+                                                        )
+                                                            ? 0.5
+                                                            : "",
                                                     }}
                                                 >
-                                                    {user.name}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                <div className={formbtn.friendsList}>
-                                    {friends &&
-                                        friends?.length > 0 &&
-                                        friends?.map((friend: User) => (
-                                            <label
-                                                className={formbtn.friendsListLabel}
-                                                key={friend.id}
-                                                style={{
-                                                    opacity: headerInfo.members_id.some(
-                                                        (user: string) => user === friend.id
-                                                    )
-                                                        ? 0.5
-                                                        : "",
-                                                }}
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    readOnly={true}
-                                                    disabled={headerInfo.members_id.some(
-                                                        (user: string) => user === friend.id
-                                                    )}
-                                                    checked={selectedUsers.some((user) => user.id === friend.id)}
-                                                    onClick={() => {
-                                                        if (headerInfo.members_id.includes(friend.id)) return;
+                                                    <input
+                                                        type="checkbox"
+                                                        readOnly={true}
+                                                        disabled={headerInfo.members_id.some(
+                                                            (user: string) => user === friend.id
+                                                        )}
+                                                        checked={selectedUsers.some((user) => user.id === friend.id)}
+                                                        onClick={() => {
+                                                            if (headerInfo.members_id.includes(friend.id)) return;
 
-                                                        setSelectedUsers((users) => {
-                                                            if (users.some((user) => user.id === friend.id)) {
-                                                                return users.filter((user) => user.id !== friend.id);
-                                                            } else {
-                                                                return [
-                                                                    ...users,
-                                                                    {
-                                                                        id: friend.id,
-                                                                        name: `${friend.username}#${friend.descrim}`,
-                                                                    },
-                                                                ];
-                                                            }
-                                                        });
-                                                    }}
-                                                />
-                                                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                                    <img
-                                                        src={serverIp + "/avatar/" + friend.avatar}
-                                                        alt={"Avatar de " + friend.username}
+                                                            setSelectedUsers((users) => {
+                                                                if (users.some((user) => user.id === friend.id)) {
+                                                                    return users.filter(
+                                                                        (user) => user.id !== friend.id
+                                                                    );
+                                                                } else {
+                                                                    return [
+                                                                        ...users,
+                                                                        {
+                                                                            id: friend.id,
+                                                                            name: `${friend.username}#${friend.descrim}`,
+                                                                        },
+                                                                    ];
+                                                                }
+                                                            });
+                                                        }}
                                                     />
-                                                    <p>
-                                                        {friend.username}#{friend.descrim}
-                                                    </p>
-                                                </div>
-                                            </label>
-                                        ))}
-                                </div>
-                            </DialogBase>,
-                            //@ts-ignore
-                            document.getElementById("appMount")
-                        )}
-                </div>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                                        <img
+                                                            src={serverIp + "/avatar/" + friend.avatar}
+                                                            alt={"Avatar de " + friend.username}
+                                                        />
+                                                        <p>
+                                                            {friend.username}#{friend.descrim}
+                                                        </p>
+                                                    </div>
+                                                </label>
+                                            ))}
+                                    </div>
+                                </DialogBase>,
+                                //@ts-ignore
+                                document.getElementById("appMount")
+                            )}
+                    </div>
+                )}
             </div>
         </>
     );

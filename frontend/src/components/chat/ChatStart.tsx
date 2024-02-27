@@ -9,10 +9,9 @@ export default function ChatStart({ serverIp }: any) {
             {headerInfo.chatType === "GP" ? (
                 <>
                     <img
-                        src={`${serverIp}/getGroupProfile/${headerInfo.avatar}`}
+                        src={`${serverIp}/getGroupProfile/${headerInfo.chatAvatar}`}
                         alt={"Avatar de " + headerInfo.username}
                     />
-
                     <p>{headerInfo.chatName}</p>
                     <p>
                         Inicio de conversas em <strong>{headerInfo.chatName}</strong>

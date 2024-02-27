@@ -12,9 +12,9 @@ export default function ChatHeader({ headerInfo }: any) {
         <>
             <div className={styles.chatHeader}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <img src={serverIp + "/avatar/" + headerInfo.avatar} alt={"Avatar de " + headerInfo.username} />
+                    <img src={serverIp + "/avatar/" + friend?.avatar} alt={"Avatar de " + friend?.username} />
                     <div className={styles.userInfo}>
-                        <p>{headerInfo.username}</p>
+                        <p>{friend?.username}</p>
                         <p>{friend?.online ? "🟢 Online" : "⚫ Offline"}</p>
                     </div>
                 </div>

@@ -48,7 +48,7 @@ export default async function (req, res, next) {
 
             token = decryptedToken.toString();
 
-            let decoded = jwt.verify(token, process.env.SECRET_KEY);
+            const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
             if (!decoded.id || !decoded.password) {
                 return res.status(400).json({
