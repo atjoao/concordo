@@ -1,0 +1,48 @@
+.dialogInputs {
+    display: grid;
+    gap: 5px;
+}
+
+.dialogInputs input {
+    position: relative;
+    width: 100%;
+    border-radius: 5px;
+    background: #b6b6b6;
+    border: none;
+    padding: 10px;
+    color: black;
+    outline: 1px solid #d9d9d9;
+}
+
+.dialogError {
+    display: inline-flex;
+    background-color: #c12929;
+    color: white;
+    padding: 5px;
+    gap: 10px;
+    border-radius: 5px;
+
+    align-items: center;
+}
+
+.dialogSucesso {
+    display: inline-flex;
+    background-color: #435b48;
+    color: white;
+    padding: 5px;
+    gap: 10px;
+    border-radius: 5px;
+
+    align-items: center;
+}
+
+.dialogInfo {
+    display: inline-flex;
+    background-color: #2d6097;
+    color: white;
+    padding: 5px;
+    gap: 10px;
+    border-radius: 5px;
+
+    align-items: center;
+}

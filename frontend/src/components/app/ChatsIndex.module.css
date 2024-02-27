@@ -1,0 +1,273 @@
+/**
+25px 20px
+*/
+
+.chatContainer {
+    overflow: auto;
+    padding: 25px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    flex-grow: 1;
+}
+
+@media only screen and (max-width: 1400px) {
+    .chatContainer {
+        padding: 25px 20px;
+    }
+}
+
+.chatContainer .chat {
+    /*
+    display: flex;
+    gap: 10px;
+    */
+    display: grid;
+    border-radius: 10px;
+    padding: 5px;
+    cursor: pointer;
+    align-items: center;
+    grid-template-areas: "a b c";
+    gap: 10px;
+    grid-template-columns: 50px 165px 50px;
+}
+
+.chatContainer .chat:hover {
+    background-color: var(--bgActive);
+}
+
+.chatContainer .chat div {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.chatContainer .closeButton {
+    height: 30px;
+    object-fit: contain;
+    display: inherit;
+    flex-grow: 1;
+    visibility: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+    width: 50px;
+}
+
+.chatContainer .chat p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.chatContainer .chat:hover .closeButton {
+    visibility: visible;
+}
+
+.chatContainer .chat .closeButton svg:hover g path {
+    fill: var(--redDark);
+}
+
+.chatContainer .chat img {
+    width: 50px;
+    border-radius: 10px;
+    height: 50px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+.chatContainer .messageCreate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatContainer .messageCreate > p {
+    cursor: default;
+    color: var(--textColor);
+    transition: all 0.5s ease-in-out;
+}
+
+.chatContainer .messageCreate > p:nth-child(2) {
+    color: var(--textColor);
+    opacity: 0.6;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.chatContainer .messageCreate > p:hover {
+    color: var(--textColor);
+    opacity: 1;
+}
+
+.chatContainer .active {
+    outline: 1px solid var(--bgActive);
+}
+
+.chatContainer .homeButton {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+    color: var(--textColor);
+}
+
+.chatContainer .homeButton:hover {
+    background-color: var(--bgActive);
+}
+
+.chatContainer .homeActive {
+    background-color: var(--bgActive);
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.square {
+    background-color: rgba(218, 218, 218, 0.199);
+
+    width: 50px;
+    border-radius: 10px;
+    height: 50px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+.btn {
+    width: 50px;
+    height: 30px;
+}
+.items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    margin: 0px 10px;
+}
+.line {
+    content: "";
+    padding: 10px;
+    height: 10px;
+    border-radius: 5px;
+    min-width: max-content;
+    background-color: rgba(218, 218, 218, 0.199);
+}
+
+.line:nth-child(2) {
+    width: 60% !important;
+}
+
+.friendsList {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 200px;
+    width: 100%;
+    padding: 0px 10px;
+}
+
+.friendsListLabel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 0px;
+    gap: 10px;
+}
+
+.friendsListLabel {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.friendsListLabel input[type="checkbox"] {
+    display: flex;
+    accent-color: var(--selectBoxColor);
+}
+
+.friendsListLabel input[type="checkbox"] {
+    appearance: none;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+    font-size: 2rem;
+    border: 2px solid var(--selectBoxColor);
+    border-radius: 5px;
+}
+
+.friendsListLabel input[type="checkbox"]::before {
+    justify-content: center;
+    content: "";
+    width: 28px;
+    height: 28px;
+    transform: scale(0);
+    background-color: white;
+    border-radius: 2px;
+    clip-path: polygon(17% 54%, 28% 43%, 38% 54%, 70% 22%, 81% 33%, 38% 75%, 17% 54%);
+}
+/*background-color: rgb(0, 77, 128);*/
+
+.friendsListLabel input[type="checkbox"]:checked {
+    background-color: var(--selectBoxColor);
+}
+
+.friendsListLabel input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+.friendsListLabel input[type="checkbox"]:hover {
+    color: var(--textColor);
+}
+
+.friendsListLabel img {
+    width: 48px;
+    height: 48px;
+    border-radius: 5px;
+}
+
+.selectedUsers button {
+    cursor: pointer;
+    padding: 10px;
+    color: var(--textColor);
+
+    border: 1px solid var(--bg2);
+    background-color: var(--bg1);
+    border-radius: 5px;
+}
+.selectedUsers button:hover {
+    background-color: var(--bg2);
+}
+
+.selectedUsers button:active {
+    background-color: var(--bg3);
+}
+
+.selectedUsers div {
+    display: flex;
+    gap: 10px;
+}

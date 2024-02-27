@@ -1,0 +1,9 @@
+.uploads/
+.thumbnails/
+.converted/
+.avatars/*
+.groupimages/
+
+node_modules/
+.env
+*.txt

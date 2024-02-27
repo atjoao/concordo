@@ -1,0 +1,52 @@
+.overlay {
+    position: absolute;
+    display: flex;
+
+    background-color: rgba(0, 0, 0, 0.425);
+    width: 100%;
+    height: 100%;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1;
+}
+
+.modal {
+    position: relative;
+    background-color: var(--bg1);
+    color: var(--textColor);
+
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.modal .text {
+    padding: 10px;
+}
+
+.modal .buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal .buttons p {
+    cursor: pointer;
+    padding: 10px;
+}
+.modal .buttons p:not(:nth-child(2)):hover {
+    text-decoration: underline;
+}
+
+.modal .buttons p:nth-child(2):hover {
+    background: var(--redDark);
+}
+
+.modal .buttons p:nth-child(2) {
+    background: var(--red2);
+
+    color: white;
+    border-radius: 5px;
+}

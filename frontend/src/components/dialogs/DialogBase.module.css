@@ -1,0 +1,105 @@
+.overlay {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.425);
+
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialogBox {
+    display: grid;
+
+    grid-auto-columns: 1fr;
+
+    grid-template-areas:
+        "titulo titulo titulo"
+        "desc desc desc"
+        "conteudo conteudo conteudo"
+        ". btn btn";
+
+    gap: 10px;
+
+    position: relative;
+    background-color: var(--bg1);
+    max-width: 720px;
+
+    border-radius: 10px;
+    padding: 20px;
+
+    color: black;
+}
+
+.dialogBox .dialogTitle {
+    grid-area: titulo;
+}
+
+.dialogBox .dialogDesc {
+    display: flex;
+    grid-area: desc;
+}
+
+.dialogBox .dialogDesc::before {
+    content: "";
+    padding-left: 10px;
+}
+
+.dialogBox .dialogDesc p {
+    display: flex;
+    gap: 5px;
+}
+
+.dialogBox .dialogDesc p::before {
+    content: "";
+    background: var(--bg2);
+    padding-left: 5px;
+}
+
+.dialogBox .dialogConteudo {
+    grid-area: conteudo;
+    padding: 5px 0px;
+}
+
+.dialogBox .buttons {
+    grid-area: btn;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: right;
+}
+
+.dialogBox .buttons > p,
+.dialogBox .buttons > button {
+    cursor: pointer;
+}
+
+.dialogBox .buttons p:hover {
+    text-decoration: underline;
+}
+
+.dialogBox .buttons button {
+    padding: 10px;
+    background-color: var(--red2);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.dialogBox .buttons button:hover {
+    background-color: var(--redHover);
+}
+
+.dialogBox .buttons .customColor {
+    background-color: var(--green);
+    font-size: 14px;
+}
+
+.dialogBox .buttons .customColor:hover {
+    background-color: var(--greenDark);
+}

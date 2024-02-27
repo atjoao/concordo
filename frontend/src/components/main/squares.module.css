@@ -1,0 +1,34 @@
+.squareBody {
+	background-color: #d9d9d9;
+	border-radius: 10px;
+
+	width: 100%;
+
+	flex: 1;
+	min-height: 100%;
+	padding: 15px;
+}
+
+.squareBody p {
+	color: #000;
+}
+
+.squareBody a {
+	text-decoration: unset;
+}
+
+.squareBody p:first-child {
+	font-size: 25px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.squareBody p:not(:first-child) {
+	display: flex;
+}
+
+.squareBody p:not(:first-child) a {
+	margin-bottom: 5px;
+
+	border-bottom: 1px solid;
+}

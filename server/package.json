@@ -1,0 +1,19 @@
+{
+	"name": "server",
+	"type": "module",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"preinstall": "npx only-allow pnpm",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon -r dotenv/config index.js",
+		"start": "node -r dotenv/config index.js"
+	},
+	"dependencies": {
+		"bcrypt": "^5.1.0",
+		"dotenv": "^16.1.4",
+		"jsonwebtoken": "^9.0.0",
+		"mongoose": "^7.2.2",
+		"socket.io": "^4.6.2"
+	}
+}

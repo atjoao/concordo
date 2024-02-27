@@ -1,0 +1,171 @@
+.ChatInputContainer {
+    position: relative;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    background-color: var(--bg2);
+
+    border-radius: 10px;
+    overflow-x: hidden;
+    padding: 10px;
+    max-height: 500px;
+
+    transform: translate(0px, 1.2px);
+
+    color: var(--textColor);
+}
+
+.ChatInputContainer .iconsContainer {
+    transform: translate(0px, 1.5px);
+}
+
+.ChatInputContainer .ChatInput {
+    width: 100%;
+    min-height: 1.4em;
+    max-height: 10em;
+    text-align: left;
+    overflow-x: hidden;
+
+    word-break: break-word;
+
+    outline: 1px solid var(--bg2);
+}
+
+.filesContainer {
+    display: flex;
+    background-color: var(--bg2);
+    padding: 20px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    width: 100%;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.filesContainer .fileItem {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+
+    justify-content: space-between;
+    background-color: var(--bg3);
+    border-radius: 10px;
+
+    padding: 20px;
+    height: 190px;
+}
+
+.filesContainer .fileItem hr {
+    color: var(--textColor);
+    width: 100%;
+}
+
+.filesContainer .fileItem p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 150px;
+    font-size: 13px;
+}
+
+.filesContainer .fileItem:hover .removeIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filesContainer .fileItem .removeIcon {
+    position: absolute;
+    display: none;
+    top: 10px;
+    right: 10px;
+
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 5px;
+}
+
+.filesContainer .fileItem .removeIcon svg {
+    width: 2em;
+    height: 2em;
+    transition: all 0.2s ease-in-out;
+}
+
+.filesContainer .fileItem .removeIcon:not(:hover) {
+    transition: all 0.2s ease-in-out;
+}
+
+.filesContainer .fileItem .removeIcon:hover {
+    background-color: var(--bgHover);
+    transition: all 0.2s ease-in-out;
+}
+
+.filesContainer .fileItem .removeIcon:active {
+    transition: all 0.2s ease-in-out;
+    background-color: var(--bgHover2);
+}
+
+.filesContainer .fileItem .removeIcon:active svg {
+    width: 1.8em;
+    height: 1.8em;
+    transition: all 0.2s ease-in-out;
+}
+
+/* @media (prefers-color-scheme: light) {
+    .ChatInputContainer {
+        background-color: #eee;
+    }
+
+    .ChatInputContainer .ChatInput {
+        outline: 1px solid #eee;
+    }
+
+    .filesContainer {
+        background-color: #eee;
+    }
+
+    .filesContainer .fileItem {
+        background-color: #ccc;
+    }
+
+    .filesContainer .fileItem .removeIcon:hover {
+        background-color: #bebcbc;
+    }
+
+    .filesContainer .fileItem .removeIcon:active {
+        background-color: #eee;
+    }
+
+    .filesContainer .fileItem .removeIcon svg path {
+        fill: rgb(202, 5, 5);
+    }
+} */
+
+/* .ChatInputContainer .ChatInput {
+	display: block;
+	overflow-wrap: break-word;
+	min-width: initial;
+	width: 100%;
+	object-fit: contain;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	outline: 1px solid #4d4d4d;
+} */
+
+/* .ChatInputContainer .ChatInput {
+	background-color: #4d4d4d;
+	width: 100%;
+	font-size: 15px;
+	font-family: inherit;
+	align-content: center;
+
+	display: table-cell;
+	align-items: center;
+	justify-content: center;
+	vertical-align: middle;
+}
+ */

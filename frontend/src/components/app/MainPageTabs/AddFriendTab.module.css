@@ -1,0 +1,100 @@
+.gap {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.addFriendPart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.addFriendPart h1 {
+    display: flex;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.sentRequestsPart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sentRequestsPart h1 {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    font-weight: normal;
+    font-size: 19px;
+}
+
+.sentRequestsPart h1::after {
+    content: "";
+    flex: 1;
+    margin-left: 1rem;
+    height: 1px;
+    /*lembrar de acabar isto...*/
+    background-color: var(--textColor);
+}
+
+.inputClass {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid grey;
+    padding: 1px;
+    border-radius: 10px;
+
+    position: relative;
+    color: var(--textColor);
+}
+
+.inputClass input {
+    padding: 15px;
+    border-radius: 10px;
+
+    background-color: var(--bg3);
+    color: var(--textColor);
+
+    /* border: 1px solid #807979; */
+    font-size: 19px;
+
+    flex-grow: 1;
+    border: none;
+}
+.inputClass input::placeholder {
+    color: var(--textColor);
+    opacity: 0.6;
+}
+
+.inputClass input:focus {
+    outline: 0px;
+    background-color: var(--bg2);
+    content: "#";
+}
+
+.inputClass button {
+    position: absolute;
+    right: 10px;
+    padding: 10px;
+    align-self: center;
+
+    border: none;
+    border-radius: 5px;
+
+    background-color: var(--bg4);
+    cursor: pointer;
+    color: var(--textColor);
+}
+
+.inputClass button:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.inputClass button:active {
+    background-color: var(--bgHover2);
+}

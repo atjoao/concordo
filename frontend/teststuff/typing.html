@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>type anywere</title>
+	</head>
+	<body>
+		<div id="editable-div" contenteditable></div>
+
+		<script>
+			document.addEventListener("keydown", function (e) {
+
+				const divElement = document.querySelector("#editable-div")
+				const focusedElement = document.activeElement
+
+				if (focusedElement != divElement) {
+					divElement.focus()
+				}			
+})
+		</script>
+	</body>
+</html>

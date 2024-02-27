@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pulse animation</title>
+    </head>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: #616161;
+
+            font-family: "Inter";
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-areas: "a b c";
+            gap: 10px;
+            grid-template-columns: 50px 165px 50px;
+        }
+
+        .square {
+            background-color: rgba(218, 218, 218, 0.199);
+
+            width: 50px;
+            border-radius: 10px;
+            height: 50px;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
+
+        .btn {
+            width: 50px;
+            height: 30px;
+        }
+        .items {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            margin: 0px 10px;
+        }
+        .line {
+            content: "";
+            padding: 10px;
+            height: 10px;
+            border-radius: 5px;
+            min-width: max-content;
+            background-color: rgba(218, 218, 218, 0.199);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+    <body>
+        <div class="grid loading">
+            <div class="square"></div>
+            <div class="items">
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <div class="btn"></div>
+        </div>
+    </body>
+</html>

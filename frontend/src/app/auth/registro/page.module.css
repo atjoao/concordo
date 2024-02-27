@@ -1,0 +1,84 @@
+.main {
+    max-width: 1170px;
+    margin: 0 auto;
+
+    height: 100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dialog {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    backdrop-filter: blur(5px);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog .dialogTitle h1 {
+    margin-bottom: 10px;
+}
+
+.dialog .dialogInside {
+    position: relative;
+    background-color: #d9d9d9;
+    width: 30%;
+
+    border-radius: 10px;
+    padding: 20px;
+
+    color: black;
+}
+
+.dialog .dialogContent {
+    width: 100%;
+    height: 65%;
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
+.dialog .dialogContent input {
+    background-color: #b1acac;
+    border: none;
+    color: black;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.dialog .dialogContent input:active {
+    outline: #b1acac;
+}
+
+.dialog .dialogInside .left {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 20px;
+}
+
+.dialog .dialogInside button {
+    background: #c12929;
+    border-radius: 10px;
+    padding: 10px;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+}
+
+.dialog .dialogInside p {
+    cursor: pointer;
+}
