@@ -2,7 +2,7 @@ version: "3"
 services:
   backend:
     build:
-      context: ./source/backend
+      context: ./backend
       dockerfile: Dockerfile
     networks:
       - nginx_default
@@ -35,7 +35,7 @@ services:
 
   frontend:
     build:
-      context: ./source/frontend
+      context: ./frontend
       dockerfile: Dockerfile
     networks:
       - nginx_default
@@ -48,7 +48,7 @@ services:
 
   server:
     build:
-      context: ./source/server
+      context: ./server
       dockerfile: Dockerfile
     networks:
       - nginx_default
