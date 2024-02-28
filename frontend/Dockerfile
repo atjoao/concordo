@@ -9,6 +9,8 @@ RUN npm install -g pnpm \
 
 COPY . .
 
+ENV SERVER_IP=${SERVER_IP}
+
 RUN pnpm build
 
 CMD ["pnpm", "start"]
