@@ -7,7 +7,6 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { Resend } from "resend";
 import client from "../util/socketClient.js";
 
 const IV = Buffer.from(process.env.IV_KEY, "hex");
@@ -17,22 +16,18 @@ const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
 
 let MAILCLIENT;
 
-if (process.env.EMAIL_PROVIDER == "smtp") {
-    if (process.env.VERIFICATION == "true") {
-        MAILCLIENT = nodemailer.createTransport({
-            host: process.env.EMAIL_SMTP_SERVER,
-            port: process.env.EMAIL_SMTP_PORT,
-            secure: false,
-            requireTLS: true,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-            connectionTimeout: 512,
-        });
-    }
-} else if (process.env.EMAIL_PROVIDER == "resend" && process.env.RESEND_KEY) {
-    MAILCLIENT = new Resend(process.env.RESEND_KEY);
+if (process.env.VERIFICATION == "true") {
+    MAILCLIENT = nodemailer.createTransport({
+        host: process.env.EMAIL_SMTP_SERVER,
+        port: process.env.EMAIL_SMTP_PORT,
+        secure: false,
+        requireTLS: true,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+        },
+        connectionTimeout: 512,
+    });
 }
 
 /**
@@ -101,7 +96,7 @@ export const registro = async (req, res) => {
                     b64str;
 
                 const message = {
-                    from: `Omnitrix Carteiro <${process.env.EMAIL_USER}>`,
+                    from: `${process.env.EMAIL_NAME}`,
                     to: email,
                     subject: `[${process.env.APP_NAME}] Verifique a sua conta`,
                     text: `Para ativar a sua conta clique no link seguinte\nLink: ${link}`,
@@ -112,12 +107,7 @@ export const registro = async (req, res) => {
                 };
 
                 try {
-                    switch (process.env.EMAIL_PROVIDER) {
-                        case "smtp":
-                            await MAILCLIENT.sendMail(message);
-                        case "resend":
-                            MAILCLIENT.emails.send(message);
-                    }
+                    await MAILCLIENT.sendMail(message);
                 } catch (err) {
                     return res.status(500).json({
                         message:
@@ -280,7 +270,7 @@ export const novoPedidoVerificar = async (req, res) => {
             b64str;
 
         const message = {
-            from: `Omnitrix Carteiro <${process.env.EMAIL_USER}>`,
+            from: `${process.env.EMAIL_NAME}`,
             to: email,
             subject: `[${process.env.APP_NAME}] Verifique a sua conta`,
             text: `Para ativar a sua conta clique no link seguinte\nLink: ${link}`,
@@ -290,26 +280,21 @@ export const novoPedidoVerificar = async (req, res) => {
             `,
         };
 
-        try {
-            switch (process.env.EMAIL_PROVIDER) {
-                case "smtp":
-                    MAILCLIENT.sendMail(message);
-                case "resend":
-                    MAILCLIENT.emails.send(message);
+        MAILCLIENT.sendMail(message, async function (error, info) {
+            if (error) {
+                return res.status(500).json({
+                    message:
+                        "Existiu alugum erro a processar isto. Tente novamente.",
+                    status: "SERVER_ERROR",
+                });
+            } else {
+                await Verification.create({ email: email, key: b64str });
+                return res.status(200).json({
+                    message: "Pedido de verificação enviado",
+                    status: "SENT",
+                });
             }
-
-            await Verification.create({ email: email, key: b64str });
-            return res.status(200).json({
-                message: "Pedido de verificação enviado",
-                status: "SENT",
-            });
-        } catch (error) {
-            return res.status(500).json({
-                message:
-                    "Existiu alugum erro a processar isto. Tente novamente.",
-                status: "SERVER_ERROR",
-            });
-        }
+        });
     } else {
         return res.status(302).json({
             message:
@@ -372,7 +357,7 @@ export const pedirReposicao = async (req, res) => {
         b64str;
 
     const message = {
-        from: `Omnitrix Carteiro <${process.env.EMAIL_USER}>`,
+        from: `${process.env.EMAIL_NAME}`,
         to: email,
         subject: `[${process.env.APP_NAME}] Reposição de conta pedida`,
         text: `Foi pedido uma reposição de senha para esta conta\nLink para continuar o processo: ${link}\nCaso não tenha feito este pedido ignore\n------------------\nEste processo tem limite de uma hora.`,
@@ -385,24 +370,21 @@ export const pedirReposicao = async (req, res) => {
         `,
     };
 
-    try {
-        switch (process.env.EMAIL_PROVIDER) {
-            case "smtp":
-                MAILCLIENT.sendMail(message);
-            case "resend":
-                MAILCLIENT.emails.send(message);
+    MAILCLIENT.sendMail(message, async function (error, info) {
+        if (error) {
+            return res.status(500).json({
+                message:
+                    "Existiu alugum erro a processar isto. Tente novamente.",
+                status: "SERVER_ERROR",
+            });
+        } else {
+            await Passwordreset.create({ email: email, key: b64str });
+            return res.status(200).json({
+                message: `Reposição enviada para o email ${email} por favor verifique a sua caixa de entrada / spam.`,
+                status: "PASSWORD_RESET_SENT",
+            });
         }
-        await Passwordreset.create({ email: email, key: b64str });
-        return res.status(200).json({
-            message: `Reposição enviada para o email ${email} por favor verifique a sua caixa de entrada / spam.`,
-            status: "PASSWORD_RESET_SENT",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Existiu alugum erro a processar isto. Tente novamente.",
-            status: "SERVER_ERROR",
-        });
-    }
+    });
 };
 
 /**
@@ -460,7 +442,7 @@ export const fazerReposicao = async (req, res) => {
 
     const link = process.env.APP_DOMAIN + "/auth/reporSenha?email=" + email;
     const message = {
-        from: `Omnitrix Carteiro <${process.env.EMAIL_USER}>`,
+        from: `${process.env.EMAIL_NAME}`,
         to: email,
         subject: `[${process.env.APP_NAME}] Reposição de conta feita!`,
         text: `A sua password foi trocada com sucesso! Caso não tenha feito isto por favor peça uma reposição de senha aqui ${link}`,
@@ -471,37 +453,34 @@ export const fazerReposicao = async (req, res) => {
         `,
     };
 
-    try {
-        switch (process.env.EMAIL_PROVIDER) {
-            case "smtp":
-                MAILCLIENT.sendMail(message);
-            case "resend":
-                MAILCLIENT.emails.send(message);
+    MAILCLIENT.sendMail(message, async function (error, info) {
+        if (error) {
+            return res.status(500).json({
+                message:
+                    "Existiu alugum erro a processar isto. Tente novamente.",
+                status: "SERVER_ERROR",
+            });
+        } else {
+            await Passwordreset.deleteOne({ _id: checkForReset._id });
+
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(newPassword, salt);
+            await User.updateOne(
+                { _id: user._id },
+                { $set: { password: hashedPassword } }
+            );
+
+            let data = {
+                userid: user._id,
+            };
+            client.emit("userChangedDetails", data);
+
+            return res.status(200).json({
+                message: `A senha da conta ${user.username} foi trocada com sucesso!`,
+                status: "CHANGED_PASSWORD",
+            });
         }
-        await Passwordreset.deleteOne({ _id: checkForReset._id });
-
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync(newPassword, salt);
-        await User.updateOne(
-            { _id: user._id },
-            { $set: { password: hashedPassword } }
-        );
-
-        let data = {
-            userid: user._id,
-        };
-        client.emit("userChangedDetails", data);
-
-        return res.status(200).json({
-            message: `A senha da conta ${user.username} foi trocada com sucesso!`,
-            status: "CHANGED_PASSWORD",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Existiu alugum erro a processar isto. Tente novamente.",
-            status: "SERVER_ERROR",
-        });
-    }
+    });
 };
 
 /**
@@ -641,7 +620,7 @@ export const trocarEmail = async (req, res) => {
         user.username;
 
     const message = {
-        from: `Omnitrix Carteiro <${process.env.EMAIL_USER}>`,
+        from: `${process.env.EMAIL_NAME}`,
         to: newEmail,
         subject: `[${process.env.APP_NAME}] Troca de email pedida!`,
         text: `Foi pedido uma reposição de email para esta conta\nLink para continuar o processo: ${link}\nCASO NAO TENHA PEDIDO IGNORE!!!\n------------------\nEste processo tem limite de uma hora.`,
@@ -654,29 +633,25 @@ export const trocarEmail = async (req, res) => {
         `,
     };
 
-    try {
-        switch (process.env.EMAIL_PROVIDER) {
-            case "smtp":
-                MAILCLIENT.sendMail(message);
-            case "resend":
-                MAILCLIENT.emails.send(message);
-        }
-        await Emailchange.create({
-            email: user.email,
-            key: b64str,
-            email_change_to: newEmail,
-        });
+    MAILCLIENT.sendMail(message, async function (error, info) {
+        if (error) {
+            return res.status(500).json({
+                message: "Existiu alugum erro a processar. Tente novamente.",
+                status: "SERVER_ERROR",
+            });
+        } else {
+            await Emailchange.create({
+                email: user.email,
+                key: b64str,
+                email_change_to: newEmail,
+            });
 
-        return res.status(200).json({
-            message: `Foi enviado um e-mail para ${newEmail} siga as instruções para verificar a troca`,
-            status: "SENT_CHANGE_REQUEST",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Existiu alugum erro a processar. Tente novamente.",
-            status: "SERVER_ERROR",
-        });
-    }
+            return res.status(200).json({
+                message: `Foi enviado um e-mail para ${newEmail} siga as instruções para verificar a troca`,
+                status: "SENT_CHANGE_REQUEST",
+            });
+        }
+    });
 };
 
 /**
