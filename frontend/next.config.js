@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        serverIp: process.env.serverIp,
+        serverIp: "http://localhost:3000",
     },
 
     eslint: {

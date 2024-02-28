@@ -7,6 +7,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import client from "../util/socketClient.js";
 
 const IV = Buffer.from(process.env.IV_KEY, "hex");
@@ -16,18 +17,22 @@ const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
 
 let MAILCLIENT;
 
-if (process.env.VERIFICATION == "true") {
-    MAILCLIENT = nodemailer.createTransport({
-        host: process.env.EMAIL_SMTP_SERVER,
-        port: process.env.EMAIL_SMTP_PORT,
-        secure: false,
-        requireTLS: true,
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
-        },
-        connectionTimeout: 512,
-    });
+if (process.env.EMAIL_PROVIDER == "smtp") {
+    if (process.env.VERIFICATION == "true") {
+        MAILCLIENT = nodemailer.createTransport({
+            host: process.env.EMAIL_SMTP_SERVER,
+            port: process.env.EMAIL_SMTP_PORT,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+            connectionTimeout: 512,
+        });
+    }
+} else if (process.env.EMAIL_PROVIDER == "resend" && process.env.RESEND_KEY) {
+    MAILCLIENT = new Resend(process.env.RESEND_KEY);
 }
 
 /**
@@ -107,7 +112,12 @@ export const registro = async (req, res) => {
                 };
 
                 try {
-                    await MAILCLIENT.sendMail(message);
+                    switch (process.env.EMAIL_PROVIDER) {
+                        case "smtp":
+                            await MAILCLIENT.sendMail(message);
+                        case "resend":
+                            MAILCLIENT.emails.send(message);
+                    }
                 } catch (err) {
                     return res.status(500).json({
                         message:
@@ -280,21 +290,26 @@ export const novoPedidoVerificar = async (req, res) => {
             `,
         };
 
-        MAILCLIENT.sendMail(message, async function (error, info) {
-            if (error) {
-                return res.status(500).json({
-                    message:
-                        "Existiu alugum erro a processar isto. Tente novamente.",
-                    status: "SERVER_ERROR",
-                });
-            } else {
-                await Verification.create({ email: email, key: b64str });
-                return res.status(200).json({
-                    message: "Pedido de verificação enviado",
-                    status: "SENT",
-                });
+        try {
+            switch (process.env.EMAIL_PROVIDER) {
+                case "smtp":
+                    MAILCLIENT.sendMail(message);
+                case "resend":
+                    MAILCLIENT.emails.send(message);
             }
-        });
+
+            await Verification.create({ email: email, key: b64str });
+            return res.status(200).json({
+                message: "Pedido de verificação enviado",
+                status: "SENT",
+            });
+        } catch (error) {
+            return res.status(500).json({
+                message:
+                    "Existiu alugum erro a processar isto. Tente novamente.",
+                status: "SERVER_ERROR",
+            });
+        }
     } else {
         return res.status(302).json({
             message:
@@ -370,21 +385,24 @@ export const pedirReposicao = async (req, res) => {
         `,
     };
 
-    MAILCLIENT.sendMail(message, async function (error, info) {
-        if (error) {
-            return res.status(500).json({
-                message:
-                    "Existiu alugum erro a processar isto. Tente novamente.",
-                status: "SERVER_ERROR",
-            });
-        } else {
-            await Passwordreset.create({ email: email, key: b64str });
-            return res.status(200).json({
-                message: `Reposição enviada para o email ${email} por favor verifique a sua caixa de entrada / spam.`,
-                status: "PASSWORD_RESET_SENT",
-            });
+    try {
+        switch (process.env.EMAIL_PROVIDER) {
+            case "smtp":
+                MAILCLIENT.sendMail(message);
+            case "resend":
+                MAILCLIENT.emails.send(message);
         }
-    });
+        await Passwordreset.create({ email: email, key: b64str });
+        return res.status(200).json({
+            message: `Reposição enviada para o email ${email} por favor verifique a sua caixa de entrada / spam.`,
+            status: "PASSWORD_RESET_SENT",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Existiu alugum erro a processar isto. Tente novamente.",
+            status: "SERVER_ERROR",
+        });
+    }
 };
 
 /**
@@ -453,34 +471,37 @@ export const fazerReposicao = async (req, res) => {
         `,
     };
 
-    MAILCLIENT.sendMail(message, async function (error, info) {
-        if (error) {
-            return res.status(500).json({
-                message:
-                    "Existiu alugum erro a processar isto. Tente novamente.",
-                status: "SERVER_ERROR",
-            });
-        } else {
-            await Passwordreset.deleteOne({ _id: checkForReset._id });
-
-            const salt = bcrypt.genSaltSync(10);
-            const hashedPassword = bcrypt.hashSync(newPassword, salt);
-            await User.updateOne(
-                { _id: user._id },
-                { $set: { password: hashedPassword } }
-            );
-
-            let data = {
-                userid: user._id,
-            };
-            client.emit("userChangedDetails", data);
-
-            return res.status(200).json({
-                message: `A senha da conta ${user.username} foi trocada com sucesso!`,
-                status: "CHANGED_PASSWORD",
-            });
+    try {
+        switch (process.env.EMAIL_PROVIDER) {
+            case "smtp":
+                MAILCLIENT.sendMail(message);
+            case "resend":
+                MAILCLIENT.emails.send(message);
         }
-    });
+        await Passwordreset.deleteOne({ _id: checkForReset._id });
+
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(newPassword, salt);
+        await User.updateOne(
+            { _id: user._id },
+            { $set: { password: hashedPassword } }
+        );
+
+        let data = {
+            userid: user._id,
+        };
+        client.emit("userChangedDetails", data);
+
+        return res.status(200).json({
+            message: `A senha da conta ${user.username} foi trocada com sucesso!`,
+            status: "CHANGED_PASSWORD",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Existiu alugum erro a processar isto. Tente novamente.",
+            status: "SERVER_ERROR",
+        });
+    }
 };
 
 /**
@@ -633,25 +654,29 @@ export const trocarEmail = async (req, res) => {
         `,
     };
 
-    MAILCLIENT.sendMail(message, async function (error, info) {
-        if (error) {
-            return res.status(500).json({
-                message: "Existiu alugum erro a processar. Tente novamente.",
-                status: "SERVER_ERROR",
-            });
-        } else {
-            await Emailchange.create({
-                email: user.email,
-                key: b64str,
-                email_change_to: newEmail,
-            });
-
-            return res.status(200).json({
-                message: `Foi enviado um e-mail para ${newEmail} siga as instruções para verificar a troca`,
-                status: "SENT_CHANGE_REQUEST",
-            });
+    try {
+        switch (process.env.EMAIL_PROVIDER) {
+            case "smtp":
+                MAILCLIENT.sendMail(message);
+            case "resend":
+                MAILCLIENT.emails.send(message);
         }
-    });
+        await Emailchange.create({
+            email: user.email,
+            key: b64str,
+            email_change_to: newEmail,
+        });
+
+        return res.status(200).json({
+            message: `Foi enviado um e-mail para ${newEmail} siga as instruções para verificar a troca`,
+            status: "SENT_CHANGE_REQUEST",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Existiu alugum erro a processar. Tente novamente.",
+            status: "SERVER_ERROR",
+        });
+    }
 };
 
 /**
