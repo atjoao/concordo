@@ -94,7 +94,7 @@ mongoose
             console.log("\x1b[42m[INFO]\x1b[0m Apagado pasta .converted");
         });
 
-        if (process.env.FFPROBE_PATH && process.env.FFPROBE_PATH) {
+        if (process.env.FFPROBE_PATH && process.env.FFMPEG_PATH) {
             ffmpegDetect = true;
             console.log("\x1b[42m[INFO]\x1b[0m FFMPEG detetado");
         } else {
