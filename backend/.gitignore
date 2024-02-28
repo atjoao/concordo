@@ -2,7 +2,10 @@
 .thumbnails/
 .converted/
 .avatars/*
-.groupimages/
+!.avatars/default
+.groupimages/*
+!.groupimages/default
+
 
 node_modules/
 .env

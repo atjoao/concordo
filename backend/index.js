@@ -77,11 +77,11 @@ app.get("/info", async (req, res) => {
     res.setHeader("Cache-Control", "public, max-age=1800");
     return res.status(200).json({
         connected: client.connected,
+        users: countUsers.getRegistredUsers(),
         address:
             process.env.npm_lifecycle_event === "dev"
                 ? "127.0.0.1:3001"
-                : process.env.SOCKET_DOMAIN,
-        users: countUsers.getRegistredUsers(),
+                : process.env.SOCKET_URL,
         account_verification: process.env.VERIFICATION,
     });
 });
@@ -111,20 +111,13 @@ mongoose
 
         client.connect();
         countUsers.start();
-        app.listen(
-            process.env.npm_lifecycle_event === "dev"
-                ? process.env.PORT
-                    ? process.env.PORT
-                    : 3000
-                : 7001,
-            function () {
-                console.log(
-                    `\x1b[42m[INFO]\x1b[0m Server inciado na porta ${
-                        this.address().port
-                    }`
-                );
-            }
-        );
+        app.listen(process.env.PORT ? process.env.PORT : 3000, function () {
+            console.log(
+                `\x1b[42m[INFO]\x1b[0m Server inciado na porta ${
+                    this.address().port
+                }`
+            );
+        });
     })
     .catch((err) => {
         console.log("\x1b[41m[ERRO]\x1b[0m Erro na ligação\x1b[0m");

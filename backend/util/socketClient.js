@@ -4,7 +4,7 @@ let tryingReconnection = false;
 
 const client = io(
     `ws://127.0.0.1:${
-        process.env.npm_lifecycle_event === "dev" ? 3001 : 7002
+        process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 3001
     }/admin`,
     {
         auth: {

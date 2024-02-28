@@ -1,12 +1,5 @@
-if (
-    !process.env.MONGO_URI ||
-    !process.env.SECRET_KEY ||
-    !process.env.IV_KEY ||
-    !process.env.SOCKET_TOKEN
-) {
-    console.log(
-        "\x1b[41m[ERRO (.env)]\x1b[0m \x1b[37m Defina variaveis \x1b[0m"
-    );
+if (!process.env.MONGO_URI || !process.env.SECRET_KEY || !process.env.IV_KEY || !process.env.SOCKET_TOKEN) {
+    console.log("\x1b[41m[ERRO (.env)]\x1b[0m \x1b[37m Defina variaveis \x1b[0m");
     process.exit(0);
 }
 
@@ -34,22 +27,8 @@ mongoose
     .then(() => {
         console.log(`\x1b[42m[INFO]\x1b[0m Ligado a database`);
         functions.setUsersOffline().then(() => {
-            io.listen(
-                process.env.npm_lifecycle_event === "dev"
-                    ? process.env.PORT
-                        ? process.env.PORT
-                        : 3001
-                    : 7002
-            );
-            console.log(
-                `\x1b[42m[INFO]\x1b[0m Server inciado na porta ${
-                    process.env.npm_lifecycle_event === "dev"
-                        ? process.env.PORT
-                            ? process.env.PORT
-                            : 3001
-                        : 7002
-                }`
-            );
+            io.listen(process.env.PORT ? process.env.PORT : 3001);
+            console.log(`\x1b[42m[INFO]\x1b[0m Server inciado na porta ${process.env.PORT ? process.env.PORT : 3001}`);
         });
     })
     .catch((err) => {
