@@ -3,8 +3,8 @@ FROM node:20-alpine
 RUN apk update && \
     apk add --no-cache ffmpeg
 
-ENV FFPROBE_PATH=/usr/bin/ffprobe
 ENV FFMPEG_PATH=/usr/bin/ffmpeg
+ENV FFPROBE_PATH=/usr/bin/ffprobe
 
 WORKDIR /backend
 
