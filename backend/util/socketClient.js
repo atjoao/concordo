@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 let tryingReconnection = false;
 
 const client = io(
-    `ws://127.0.0.1:${
+    `ws://${process.env.SOCKET_LOCAL}:${
         process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 3001
     }/admin`,
     {
