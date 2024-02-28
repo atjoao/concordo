@@ -23,11 +23,10 @@ services:
       - IV_KEY=<random value>
       - MONGO_URI=mongodb://mongodb:27017/concordo?retryWrites=true&w=majority
       - VERIFICATION=<bool>
-      - EMAIL_PROVIDER=smtp|resend
-      - RESEND_KEY=
       - EMAIL_SMTP_SERVER=
       - EMAIL_SMTP_PORT=
-      - EMAIL_USER-
+      - EMAIL_NAME=
+      - EMAIL_USER=
       - EMAIL_PASSWORD=
       - SOCKET_URL=ws.domain.tld
       - SOCKET_TOKEN=<random value>
