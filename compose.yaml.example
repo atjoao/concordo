@@ -11,9 +11,15 @@ services:
       - internal
     volumes:
       - ./data/avatars:/backend/.avatars/
-      - ./data/avatars/default:/backend/.avatars/default
+      - type: bind
+        target: ./data/avatars/default.img
+        source: /backend/.avatars/default.img
+        read_only: true
       - ./data/groupimages:/backend/.groupimages/
-      - ./data/groupimages/default:/backend/.groupimages/default
+      - type: bind
+        target: ./data/groupimages/default.img
+        source: /backend/.groupimages/default.img
+        read_only: true
       - ./data/thumbnails:/backend/.thumbnails/
       - ./data/uploads:/backend/.uploads/
       - ./data/converted:/backend/.converted/

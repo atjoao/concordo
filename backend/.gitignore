@@ -2,9 +2,9 @@
 .thumbnails/
 .converted/
 .avatars/*
-!.avatars/default
+!.avatars/default.img
 .groupimages/*
-!.groupimages/default
+!.groupimages/default.img
 
 
 node_modules/

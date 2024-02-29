@@ -28,7 +28,7 @@ export const getGroupProfile = async (req, res) => {
             encoding: "utf-8",
         });
     } catch (error) {
-        data = readFileSync(".groupimages/default", {
+        data = readFileSync(".groupimages/default.img", {
             encoding: "utf-8",
         });
     }
@@ -61,7 +61,7 @@ export const getAvatar = async (req, res) => {
             encoding: "utf-8",
         });
     } catch (error) {
-        data = readFileSync(".avatars/default", {
+        data = readFileSync(".avatars/default.img", {
             encoding: "utf-8",
         });
     }
