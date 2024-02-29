@@ -29,9 +29,6 @@ dependencies:
   dexie-react-hooks:
     specifier: ^1.1.6
     version: 1.1.6(@types/react@18.2.12)(dexie@3.2.4)(react@18.2.0)
-  dompurify:
-    specifier: ^3.0.4
-    version: 3.0.4
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -751,10 +748,6 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
-    dev: false
-
-  /dompurify@3.0.4:
-    resolution: {integrity: sha512-ae0mA+Qiqp6C29pqZX3fQgK+F91+F7wobM/v8DRzDqJdZJELXiFUx4PP4pK/mzUS0xkiSEx3Ncd9gr69jg3YsQ==}
     dev: false
 
   /dotenv@16.3.1:

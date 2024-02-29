@@ -1,6 +1,5 @@
 import RemoveIcon from "@/components/icons/RemoveIcon";
 import styles from "./ItemComponent.module.css";
-import DOMPurify from "dompurify";
 import ChatIcon from "@/components/icons/ChatIcon";
 import CrossmarkIcon from "@/components/icons/CrossmarkIcon";
 import CheckmarkIcon from "@/components/icons/CheckmarkIcon";
@@ -45,7 +44,7 @@ export default function ItemComponent({
             <img src={serverIp + "/avatar/" + avatar} alt={"Avatar de " + nome} />
             <div>
                 <p>
-                    {DOMPurify.sanitize(String(nome))}#{descrim}
+                    {String(nome)}#{descrim}
                 </p>
 
                 <>

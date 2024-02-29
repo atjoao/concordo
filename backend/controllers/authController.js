@@ -64,7 +64,7 @@ export const registro = async (req, res) => {
 
     if (username.trim().length < 4 || username.trim().length > 20) {
         return res.status(400).json({
-            info: "Username requer no minimo 4 e no maximo 20",
+            message: "Username requer no minimo 4 e no maximo 20",
             status: "USERNAME_LENGTH",
         });
     }

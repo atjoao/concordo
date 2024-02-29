@@ -90,8 +90,8 @@ const Form = ({ dialogSetState, dialogSetError, serverIp, status }: formProps) =
                     serverIp +
                         "/auth/reposicaoSenha?" +
                         new URLSearchParams({
-                            key: chave,
-                            email: email,
+                            key: String(chave),
+                            email: String(email),
                         }),
                     {
                         headers: {

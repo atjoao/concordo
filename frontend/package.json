@@ -17,7 +17,6 @@
         "date-fns-tz": "^2.0.0",
         "dexie": "^3.2.4",
         "dexie-react-hooks": "^1.1.6",
-        "dompurify": "^3.0.4",
         "dotenv": "^16.3.1",
         "eslint": "8.42.0",
         "eslint-config-next": "14.1.0",

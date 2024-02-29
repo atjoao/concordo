@@ -36,7 +36,14 @@ export default function InitialMessage({
             .replace(italicRegex, (match, content) => `<i>${content}</i>`)
             .replace(boldRegex, (match, content) => `<b>${content}</b>`);
 
-        return <div dangerouslySetInnerHTML={{ __html: formattedMessage }} />;
+        return (
+            <div
+                style={{
+                    display: "block",
+                }}
+                dangerouslySetInnerHTML={{ __html: formattedMessage }}
+            />
+        );
     };
 
     const handleToggleToolbox = () => {
