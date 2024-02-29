@@ -10,10 +10,13 @@ services:
       - nginx_default
       - internal
     volumes:
-      - ./data/avatars:.avatars/
-      - ./data/groupimages:.groupimages/
-      - ./data/thumbnails:.thumbnails/
-      - ./data/uploads:.uploads/
+      - ./data/avatars:/backend/.avatars/
+      - ./data/avatars/default:/backend/.avatars/default
+      - ./data/groupimages:/backend/.groupimages/
+      - ./data/groupimages/default:/backend/.groupimages/default
+      - ./data/thumbnails:/backend/.thumbnails/
+      - ./data/uploads:/backend/.uploads/
+      - ./data/converted:/backend/.converted/
     environment:
       - PORT=3000
       - APP_DOMAIN=
