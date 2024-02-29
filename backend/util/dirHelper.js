@@ -3,13 +3,9 @@ import { existsSync } from "node:fs";
 
 export const checkDir = async (path) => {
     if (existsSync(path)) {
-        console.log("no need for dir making..");
-
         return true;
     } else {
         try {
-            console.log("creating dirs..");
-
             const createDir = await mkdir(path, { recursive: true });
             return true;
         } catch (error) {
