@@ -183,7 +183,9 @@ export default function Page({ params }: { params: { chatId: string } }) {
                             setLinkClicked({ href: "" });
                         }}
                     >
-                        <p>Link: {linkClicked.href}</p>
+                        <p style={{
+                            overflowWrap: "break-word"
+                        }}>Link: {linkClicked.href}</p>
                     </DialogBase>,
                     // @ts-expect-error null is not assignable to type Element
                     document.getElementById("appMount")
