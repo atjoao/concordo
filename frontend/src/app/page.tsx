@@ -50,7 +50,7 @@ export default function Home() {
                         <div className={styles.textContent}>
                             <div>
                                 <p className={styles.textContentDescription}>
-                                    Uma coisa de comunicação
+                                    Uma ferramenta de comunicação
                                     <br />
                                     feita em <span className={styles.gradient}>Javascript</span>
                                     <br />
@@ -111,11 +111,11 @@ export default function Home() {
                 <section className={styles.squareSection}>
                     <Square
                         title="Tecnologias usadas no projeto"
-                        content="<a href='https://github.com/atjoao/concordo/tree/main/backend'>Backend</a>: ExpressJS, FFMpeg*q*<a href='https://github.com/atjoao/concordo/tree/main/server'>Server</a>: Socket-IO*q*<a href='https://github.com/atjoao/concordo/tree/main/frontend'>Frontend</a>: NextJS (React), date-fns*q*<a href='#'>Database</a>: MongoDB*q*Ferramenta de design: Figma"
+                        content="<a href='https://github.com/atjoao/concordo/tree/main/backend'>Backend</a>: ExpressJS, FFMpeg*q*<a href='https://github.com/atjoao/concordo/tree/main/server'>Server</a>: Socket-IO*q*<a href='https://github.com/atjoao/concordo/tree/main/frontend'>Frontend</a>: NextJS (React), date-fns*q*<a href='#'>Database</a>: MongoDB*q*<a href='#'>Ferramenta de design</a>: Figma"
                     />
                     <Square
-                        title="Icons"
-                        content="Os icones foram todos retirados do site:*q*<a href='https://www.svgrepo.com/'>SVGRepo</a>"
+                        title="Ícons"
+                        content="Os ícones foram todos retirados do site:*q*<a href='https://www.svgrepo.com/'>SVGRepo</a>"
                     />
                     <Square
                         title="Aprendido com o projeto"
