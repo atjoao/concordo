@@ -30,6 +30,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
         lastMessage,
         setLastMessage,
         editMessage,
+        linkClicked
     }: any = useContext(ChatMessagesContext);
 
     const pathname = usePathname();
@@ -208,7 +209,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
                 e.key == "End" ||
                 editMessage != null ||
                 showSettings ||
-                editingInput
+                editingInput || linkClicked != ""
             )
                 return 0;
 
@@ -234,7 +235,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
         return () => {
             document.removeEventListener("keydown", targetInput);
         };
-    }, [editMessage, showSettings, editingInput]);
+    }, [editMessage, showSettings, editingInput, linkClicked]);
 
     return (
         <>

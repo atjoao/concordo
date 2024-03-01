@@ -17,7 +17,7 @@
     gap: 5px;
     /* align-items: center; */
     grid-template-areas: "hora message";
-    grid-template-columns: 40px auto;
+    grid-template-columns: 40px 99.1%;
 }
 
 .message span {

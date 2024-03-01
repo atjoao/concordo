@@ -114,9 +114,12 @@ export default function Page({ params }: { params: { chatId: string } }) {
     useEffect(() => {
         function handleClick(e: Event) {
             if (e.target instanceof HTMLAnchorElement) {
-                e.preventDefault();
-                e.stopPropagation();
-                setLinkClicked({ href: decodeURI(e.target.href) });
+                const ur = new URL(e.target.href)
+                if (ur.hostname !== serverIp){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setLinkClicked({ href: decodeURI(e.target.href) });    
+                }
             }
         }
         document.addEventListener("click", handleClick);
@@ -143,6 +146,7 @@ export default function Page({ params }: { params: { chatId: string } }) {
                         setHeaderInfo,
                         editingInput,
                         setEditingInput,
+                        linkClicked
                     }}
                 >
                     <NewMessageEvent chatId={params.chatId} />

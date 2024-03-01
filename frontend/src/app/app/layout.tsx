@@ -179,7 +179,7 @@ const Layout = ({ children }: layout) => {
                     set_f_requests(fRequests);
                     set_sent_requests(fsentRequests);
                     set_blocked(blockList);
-                    setUserChats(responseData.info.chats);
+                    setUserChats(Array.from(new Set(responseData.info.chats)));
 
                     console.log("A carregar chats");
                     //writeChatsToDb(responseData.info.chats);
