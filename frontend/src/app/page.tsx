@@ -8,6 +8,7 @@ import styles from "./page.module.css";
 import Frame3 from "../assets/images/main/laptop.png";
 import RightArrow from "@/components/icons/RightArrow";
 import Square from "@/components/main/square";
+import { destroyEverything, socket } from "@/lib/socket/client";
 
 export default function Home() {
     const [token, setToken] = useState<String | null>(null);
@@ -22,6 +23,10 @@ export default function Home() {
             if (userToken) setToken(userToken);
         }
     }, [token]);
+
+    useEffect(() => {
+        if (socket?.connected) destroyEverything();
+    }, []);
 
     useEffect(() => {
         fetch(serverIp + "/info", {

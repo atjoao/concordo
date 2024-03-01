@@ -2,8 +2,9 @@
 
 import Form from "@/components/registro/Form";
 import styles from "./page.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { destroyEverything, socket } from "@/lib/socket/client";
 
 export default function Page() {
     const [showDialog, setShowDiaglog] = useState<boolean>(false);
@@ -13,6 +14,10 @@ export default function Page() {
 
     const router = useRouter();
     const serverIp = process.env.serverIp;
+
+    useEffect(() => {
+        if (socket?.connected) destroyEverything();
+    }, []);
 
     function handleReload() {
         if (typeof window !== "undefined" && window.localStorage) {

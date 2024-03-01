@@ -2,7 +2,8 @@
 
 import Form from "@/components/reporSenha/Form";
 import styles from "@/app/auth/registro/page.module.css";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { destroyEverything, socket } from "@/lib/socket/client";
 
 export default function Page() {
     const [showDialog, setShowDiaglog] = useState<boolean>(false);
@@ -16,6 +17,10 @@ export default function Page() {
             window.location.reload();
         }
     }
+
+    useEffect(() => {
+        if (socket?.connected) destroyEverything();
+    }, []);
 
     /* function closeDialog() {
         setDialogError(null);

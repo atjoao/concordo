@@ -7,6 +7,7 @@ import formStyle from "@/components/login/form.module.css";
 import { useEffect, useState } from "react";
 import LoadingIcon from "@/components/icons/loading/LoadingIcon";
 import { useRouter } from "next/navigation";
+import { destroyEverything, socket } from "@/lib/socket/client";
 
 export default function Login() {
     const router = useRouter();
@@ -16,6 +17,10 @@ export default function Login() {
     const [redirectingState, setRedirectingState] = useState<boolean>(false);
 
     const serverIp = process.env.serverIp;
+
+    useEffect(() => {
+        if (socket?.connected) destroyEverything();
+    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined" && window.localStorage) {

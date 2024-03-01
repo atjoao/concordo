@@ -8,7 +8,7 @@ import { layout, IChat } from "@/lib/interfaces";
 
 import Loading from "../../assets/images/loading/loading.gif";
 import styles from "./layout.module.css";
-import client, { socket } from "@/lib/socket/client";
+import { client, socket, destroyEverything } from "@/lib/socket/client";
 
 import _userInfoDb from "@/lib/database/dbuserInfo";
 import { openDatabases, deleteAllData } from "@/lib/database/dbManaging";
@@ -115,47 +115,13 @@ const Layout = ({ children }: layout) => {
 
     let _run = false;
 
-    async function writeChatsToDb(data: any) {
-        if (Array.isArray(data)) {
-            const fetchPromises = data.map(async (chatInfo) => {
-                const response = await fetch(serverIp + "/chat/getChatInfo/" + chatInfo, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-
-                const chRes = await response.json();
-                // best fix ever
-                const dataObj: IChat = {
-                    id: chatInfo,
-                    members_id: chRes.chatInfo.members_id,
-                    chatType: chRes.chatInfo.chatType,
-                    chatName: chRes.chatInfo.chatName,
-                    chatAvatar: chRes.chatInfo.chatAvatar,
-                    chatOwnerId: chRes.chatInfo.chatOwnerId,
-                };
-
-                //cacheChatInfo.push(dataObj);
-
-                /* setChatInfos((chatinfo: any[]) => {
-                    if (!chatinfo.includes(dataObj)) {
-                        return [...chatinfo, dataObj];
-                    }
-                    return chatinfo;
-                }); */
-            });
-
-            await Promise.all(fetchPromises);
-        }
-    }
-
     useEffect(() => {
         if (_run) return;
 
-        if (!socket) {
+        if (!socket?.connected) {
             console.log("nao tenho socket");
         } else {
-            socket.close();
+            destroyEverything();
             router.push("/auth/login");
             return;
         }

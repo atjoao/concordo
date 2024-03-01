@@ -2,7 +2,12 @@ import { Socket, io } from "socket.io-client";
 
 export let socket: Socket | null = null;
 
-async function client(token: String = "", serverIp: String = ""): Promise<Socket> {
+export function destroyEverything() {
+    socket?.disconnect();
+    socket = null;
+}
+
+export function client(token: String = "", serverIp: String = ""): Promise<Socket> {
     return new Promise<Socket>((resolve, reject) => {
         if (!socket) {
             socket = io(`//${serverIp}`, {
@@ -24,5 +29,3 @@ async function client(token: String = "", serverIp: String = ""): Promise<Socket
         resolve(socket);
     });
 }
-
-export default client;
