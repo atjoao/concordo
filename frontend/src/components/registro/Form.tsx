@@ -27,18 +27,14 @@ const Form = ({ dialogSetState, dialogSetError, serverIp, router }: formProps) =
     const [contaCriada, setContaCriada] = useState<any>({});
 
     useEffect(() => {
-        const verificarOnline = async () => {
-            fetch(serverIp + "/info")
-                .then((r) => r.json())
-                .then((response) => {
-                    setStatus(response);
-                })
-                .catch(() => {
-                    setStatus(false);
-                });
-        };
-
-        verificarOnline();
+        fetch(serverIp + "/info")
+            .then((r) => r.json())
+            .then((response) => {
+                setStatus(response);
+            })
+            .catch(() => {
+                setStatus(false);
+            });
     }, []);
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
