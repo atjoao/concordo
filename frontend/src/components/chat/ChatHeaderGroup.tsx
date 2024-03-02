@@ -54,6 +54,7 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                     <div className={styles.userInfo}>
                         <div
                             contentEditable={headerInfo.chatOwnerId === profile.info.id}
+                            suppressContentEditableWarning={true}
                             onFocus={() => setEditingInput(true)}
                             onBlur={(e) => {
                                 setEditingInput(false);

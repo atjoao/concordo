@@ -167,7 +167,6 @@ export const downloadFile = async (req, res) => {
 
                 if (optimize) {
                     const optimizedFilePath = `.thumbnails/${checkForFile.path}${checkForFile.fileName}-optimized.png`;
-                    console.log(checkForFile);
                     if (!existsSync(optimizedFilePath)) {
                         data = await sharp(data)
                             .png({ quality: 50 })
@@ -182,7 +181,7 @@ export const downloadFile = async (req, res) => {
                             await sharp(data).toFile(optimizedFilePath);
                         }
                     } else {
-                        data = readFileSync(optimizedFilePath, "utf8");
+                        data = readFileSync(optimizedFilePath);
                     }
                     res.setHeader("Content-Type", "image/png");
                 }
@@ -216,7 +215,6 @@ export const downloadFile = async (req, res) => {
 
             return res.send(data);
         } catch (error) {
-            console.log(error);
             return res.status(200).download(fileLocation);
         }
     } else if (contentType) {

@@ -114,11 +114,18 @@ export default function Page({ params }: { params: { chatId: string } }) {
     useEffect(() => {
         function handleClick(e: Event) {
             if (e.target instanceof HTMLAnchorElement) {
-                const ur = new URL(e.target.href);
-                if (ur.hostname !== new URL(serverIp).hostname) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setLinkClicked({ href: decodeURI(e.target.href) });
+                try {
+                    const ur = new URL(e.target.href);
+                    if (ur.hostname !== new URL(serverIp).hostname) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setLinkClicked({ href: decodeURI(e.target.href) });
+                    }
+                } catch (error) {
+                    if (error instanceof TypeError && error.message.includes("URL constructor")) {
+                        console.log(error);
+                    }
+                    console.error(error);
                 }
             }
         }
