@@ -182,7 +182,7 @@ export const downloadFile = async (req, res) => {
                             await sharp(data).toFile(optimizedFilePath);
                         }
                     } else {
-                        data = readFileSync(optimizedFilePath, "utf8").buffer;
+                        data = readFileSync(optimizedFilePath, "utf8");
                     }
                     res.setHeader("Content-Type", "image/png");
                 }
