@@ -199,7 +199,7 @@ export const downloadFile = async (req, res) => {
                             ".thumbnails/" + checkForFile.path
                         );
                         if (dir) {
-                            await sharp(data).toFile(optimizedFilePath);
+                            await sharp(data).toFile(blurredFilePath);
                         }
                     } else {
                         data = readFileSync(blurredFilePath);
