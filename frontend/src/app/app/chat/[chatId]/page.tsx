@@ -114,11 +114,11 @@ export default function Page({ params }: { params: { chatId: string } }) {
     useEffect(() => {
         function handleClick(e: Event) {
             if (e.target instanceof HTMLAnchorElement) {
-                const ur = new URL(e.target.href)
-                if (ur.hostname !== serverIp){
+                const ur = new URL(e.target.href);
+                if (ur.hostname !== new URL(serverIp).hostname) {
                     e.preventDefault();
                     e.stopPropagation();
-                    setLinkClicked({ href: decodeURI(e.target.href) });    
+                    setLinkClicked({ href: decodeURI(e.target.href) });
                 }
             }
         }
@@ -146,7 +146,7 @@ export default function Page({ params }: { params: { chatId: string } }) {
                         setHeaderInfo,
                         editingInput,
                         setEditingInput,
-                        linkClicked
+                        linkClicked,
                     }}
                 >
                     <NewMessageEvent chatId={params.chatId} />
@@ -187,9 +187,13 @@ export default function Page({ params }: { params: { chatId: string } }) {
                             setLinkClicked({ href: "" });
                         }}
                     >
-                        <p style={{
-                            overflowWrap: "break-word"
-                        }}>Link: {linkClicked.href}</p>
+                        <p
+                            style={{
+                                overflowWrap: "break-word",
+                            }}
+                        >
+                            Link: {linkClicked.href}
+                        </p>
                     </DialogBase>,
                     // @ts-expect-error null is not assignable to type Element
                     document.getElementById("appMount")

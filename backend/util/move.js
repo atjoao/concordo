@@ -59,6 +59,7 @@ export const move = async (user, file, chat_id, verificarChat) => {
 
         return await Promise.all(files_ID);
     } catch (error) {
+        console.log(error);
         throw new Error(error.message);
     }
 };

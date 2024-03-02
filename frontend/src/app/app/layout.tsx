@@ -20,6 +20,8 @@ import EventSetup from "./eventSetup";
 import Settings from "./settings/Settings";
 import { useTheme } from "./ThemeProvider";
 import { themes } from "./Themes.styles";
+import Preload from "@/components/preloader/preload";
+import ChatsIndex from "@/components/app/ChatsIndex";
 
 export type serverInfo = {
     connected: boolean;
@@ -234,53 +236,54 @@ const Layout = ({ children }: layout) => {
     }, []);
 
     return (
-        <>
+        <LayoutCached.Provider
+            value={{
+                profile,
+                setProfile,
+                f_requests,
+                set_f_requests,
+                sent_requests,
+                set_sent_requests,
+                blocked,
+                set_blocked,
+                serverIp,
+                userChats,
+                setUserChats,
+                chatInfos,
+                setChatInfos,
+                //cacheChatInfo,
+                showSettings,
+                photo,
+                setPhoto,
+                serverInfo,
+            }}
+        >
             {loading ? (
                 <main className={styles.loadingScreen}>
                     <img src={Loading.src} alt="Carregar" />
                     <p className={"loading"}>{loadingMsg}</p>
+                    <Preload>
+                        <ChatsIndex profile={profile} preload={true} />
+                    </Preload>
                 </main>
             ) : (
-                <LayoutCached.Provider
-                    value={{
-                        profile,
-                        setProfile,
-                        f_requests,
-                        set_f_requests,
-                        sent_requests,
-                        set_sent_requests,
-                        blocked,
-                        set_blocked,
-                        serverIp,
-                        userChats,
-                        setUserChats,
-                        chatInfos,
-                        setChatInfos,
-                        //cacheChatInfo,
-                        showSettings,
-                        photo,
-                        setPhoto,
-                        serverInfo,
-                    }}
-                >
-                    <div id="appMount" style={customTheme}>
-                        <EventSetup />
-                        {showSettings &&
-                            createPortal(
-                                <Settings toggleSettings={toggleSettings} />,
-                                // @ts-ignore
-                                document.getElementById("appMount")
-                            )}
-                        <main className={styles.layout}>
-                            <div className={styles.appSidebar}>
-                                <Sidebar router={router} toggleSettings={toggleSettings} />
-                            </div>
-                            <div className={styles.appContainer}>{children}</div>
-                        </main>
-                    </div>
-                </LayoutCached.Provider>
+                <div id="appMount" style={customTheme}>
+                    <EventSetup />
+                    {showSettings &&
+                        createPortal(
+                            <Settings toggleSettings={toggleSettings} />,
+                            // @ts-ignore
+                            document.getElementById("appMount")
+                        )}
+                    <main className={styles.layout}>
+                        <div className={styles.appSidebar}>
+                            <Sidebar router={router} toggleSettings={toggleSettings} />
+                        </div>
+                        <div className={styles.appContainer}>{children}</div>
+                    </main>
+                </div>
             )}
-        </>
+        </LayoutCached.Provider>
     );
 };
 

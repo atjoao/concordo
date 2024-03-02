@@ -166,19 +166,44 @@ export const downloadFile = async (req, res) => {
                     });
 
                 if (optimize) {
-                    data = await sharp(data)
-                        .png({ quality: 50 })
-                        .resize(imageWidth, imageHeight)
-                        .toBuffer();
+                    const optimizedFilePath = `.thumbnails/${checkForFile.path}${checkForFile.fileName}-optimized.png`;
+                    console.log(checkForFile);
+                    if (!existsSync(optimizedFilePath)) {
+                        data = await sharp(data)
+                            .png({ quality: 50 })
+                            .resize(imageWidth, imageHeight)
+                            .toBuffer();
+
+                        //http://localhost:3000/download/gxspgf5zhutxc3z8saog5/65e36c4bd5ab3d394e5a70f4?optimize=true
+                        const dir = await checkDir(
+                            ".thumbnails/" + checkForFile.path
+                        );
+                        if (dir) {
+                            await sharp(data).toFile(optimizedFilePath);
+                        }
+                    } else {
+                        data = readFileSync(optimizedFilePath, "utf8").buffer;
+                    }
                     res.setHeader("Content-Type", "image/png");
                 }
 
                 if (blur && !optimize) {
-                    data = await sharp(data)
-                        .webp({ quality: 10 })
-                        .blur(10)
-                        .resize(imageWidth, imageHeight)
-                        .toBuffer();
+                    const blurredFilePath = `.thumbnails/${checkForFile.path}${checkForFile.fileName}-blur.webp`;
+                    if (!existsSync(blurredFilePath)) {
+                        data = await sharp(data)
+                            .webp({ quality: 10 })
+                            .blur(10)
+                            .resize(imageWidth, imageHeight)
+                            .toBuffer();
+                        const dir = await checkDir(
+                            ".thumbnails/" + checkForFile.path
+                        );
+                        if (dir) {
+                            await sharp(data).toFile(optimizedFilePath);
+                        }
+                    } else {
+                        data = readFileSync(blurredFilePath);
+                    }
                     res.setHeader("Content-Type", "image/webp");
                 }
             }
@@ -191,6 +216,7 @@ export const downloadFile = async (req, res) => {
 
             return res.send(data);
         } catch (error) {
+            console.log(error);
             return res.status(200).download(fileLocation);
         }
     } else if (contentType) {

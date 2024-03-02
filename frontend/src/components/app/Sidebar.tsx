@@ -36,7 +36,7 @@ export default function Sidebar({ router, toggleSettings }: any) {
     return (
         <>
             <div className={styles.sidebar}>
-                <ChatsIndex profile={profile} />
+                <ChatsIndex profile={profile} preload={false} />
                 <BottomBar photo={photo} serverIp={serverIp} profile={profile} toggleSettings={toggleSettings} />
             </div>
         </>

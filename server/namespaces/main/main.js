@@ -9,6 +9,7 @@ const mainSocketHandler = (io) => {
         });
     });
 
+    // bd.cd:warn
     io.on("connection", async (socket) => {
         socket.emit("hello", "tas ligado!");
         const userId = socket.data.userId;
@@ -50,12 +51,20 @@ const mainSocketHandler = (io) => {
 
         socket.on("disconnect", async () => {
             clearTimeout(pingInterval);
-            await cache.removeSocket(userId, socket.id).then(async () => {
-                const setUserStatus = await functions.setUser(userId, false);
-                if (setUserStatus === false) {
-                    await functions.emitFriendOffline(io, userOnlineFriends, userId);
-                }
-            });
+            await cache
+                .removeSocket(userId, socket.id)
+                .then(async () => {
+                    const setUserStatus = await functions.setUser(userId, false);
+                    if (setUserStatus === false) {
+                        await functions.emitFriendOffline(io, userOnlineFriends, userId);
+                    }
+                })
+                .catch(() => {
+                    const setUserStatus = functions.setUser(userId, false);
+                    if (setUserStatus === false) {
+                        functions.emitFriendOffline(io, userOnlineFriends, userId);
+                    }
+                });
         });
     });
 };

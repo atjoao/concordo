@@ -4,7 +4,7 @@ import getChatName from "@/lib/fetching/getChatName";
 import _userInfoDb, { User } from "@/lib/database/dbuserInfo";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { useContext, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 
 import styles from "./ChatsIndex.module.css";
 import { useRouter, usePathname } from "next/navigation";
@@ -47,7 +47,7 @@ function closeChat(serverIp: string, chatId: string) {
     });
 }
 
-function ChatsIndex({ profile }: any) {
+function ChatsIndex({ profile, preload }: any) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -101,6 +101,7 @@ function ChatsIndex({ profile }: any) {
     }
 
     useEffect(() => {
+        if (preload) return;
         socket?.on("removeChat", (data) => {
             setUserChats((userChats: any[]) => {
                 if (userChats.includes(data.chat_id)) {

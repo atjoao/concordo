@@ -59,7 +59,7 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                                 setEditingInput(false);
                                 const target: HTMLInputElement = e.target as HTMLInputElement;
 
-                                if (target.value == headerInfo.chatName) return;
+                                if (target.innerText == headerInfo.chatName) return;
 
                                 const form = new FormData();
 
@@ -72,7 +72,7 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                                     body: form,
                                 }).then((r) => {
                                     if (r.status == 400 || r.status == 404 || r.status == 500) {
-                                        target.value = headerInfo.chatName;
+                                        target.innerText = headerInfo.chatName;
                                         return;
                                     }
                                 });
