@@ -59,6 +59,9 @@ export default function Message({
             className={styles.message}
             data-messageid={message._id}
             key={message._id}
+            style={{
+                opacity: message._id.startsWith("temp_") ? 0.5 : 1,
+            }}
             onMouseLeave={() => setCurrentToolbox(null)}
         >
             {(message.content || user.id === profile.info.id) && (
@@ -184,6 +187,7 @@ export default function Message({
                     return (
                         <div className={styles.files} key={index} id="files">
                             <FileRender
+                                file_blob={file}
                                 file_url={serverIp + "/download/" + chatId + "/" + file.file_id}
                                 file_name={file.file_name}
                             />

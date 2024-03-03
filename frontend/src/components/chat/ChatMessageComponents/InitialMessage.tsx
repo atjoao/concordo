@@ -94,6 +94,9 @@ export default function InitialMessage({
             data-messageid={message._id}
             key={message._id}
             onMouseLeave={() => setCurrentToolbox(null)}
+            style={{
+                opacity: message._id.startsWith("temp_") ? 0.5 : 1,
+            }}
         >
             <div className={styles.messageUserinfo}>
                 <img
@@ -236,6 +239,7 @@ export default function InitialMessage({
                         return (
                             <div className={styles.files} key={index}>
                                 <FileRender
+                                    file_blob={file}
                                     file_url={serverIp + "/download/" + chatId + "/" + file.file_id}
                                     file_name={file.file_name}
                                 />

@@ -79,6 +79,11 @@ export default function GroupMemberList({ headerInfo, chatId }: { headerInfo: IC
                             setMenu(true);
                             setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
                         }}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setMenu(true);
+                            setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
+                        }}
                     >
                         <div style={{ position: "relative" }}>
                             {coroa == true && <CrownIcon />}

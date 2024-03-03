@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 import { socket } from "@/lib/socket/client";
 
 export default function ChatInput({ chatId, headerInfo }: any) {
-    const { serverIp, showSettings }: any = useContext(LayoutCached);
+    const { profile, serverIp, showSettings }: any = useContext(LayoutCached);
     let friends = useLiveQuery(() => _userInfoDb.user.toArray());
     if (headerInfo.chatType == "GP") friends = undefined;
 
@@ -30,7 +30,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
         lastMessage,
         setLastMessage,
         editMessage,
-        linkClicked
+        linkClicked,
     }: any = useContext(ChatMessagesContext);
 
     const pathname = usePathname();
@@ -59,68 +59,120 @@ export default function ChatInput({ chatId, headerInfo }: any) {
             });
     }, [friends]);
 
-    async function sendMessage() {
+    async function message(
+        socketId: string,
+        setMessages: React.Dispatch<React.SetStateAction<any[]>>,
+        setMessageCount: React.Dispatch<React.SetStateAction<number>>,
+        setLastMessage: React.Dispatch<React.SetStateAction<any>>,
+        messages: any[],
+        serverIp: string,
+        chat_id: string,
+        user_id: string,
+        content: string,
+        filesAnexed: File[],
+        type: string
+    ) {
+        const date = new Date();
+
+        const message = {
+            socketId,
+            chat_id,
+            user_id,
+            content,
+            filesAnexed,
+            type,
+            _id: "temp_" + date.valueOf(),
+            createdAt: date.toISOString(),
+            updatedAt: date.toISOString(),
+        };
+
+        // hold fake message until server returns the real one
+        const messageId = message._id;
+
+        setMessages((prevMessages: any[]) => {
+            if (!prevMessages.includes(message)) {
+                const newMessages = [...prevMessages, message];
+                setMessages(newMessages);
+                setMessageCount((prevCount: number) => prevCount + 1);
+                setLastMessage(null);
+                return newMessages;
+            }
+            return prevMessages;
+        });
+
         const formData = new FormData();
 
-        formData.append("socketId", String(socket?.id));
+        formData.append("socketId", socketId);
 
-        if (input.length > 0) {
-            formData.append("content", input);
+        if (content.length > 0) {
+            formData.append("content", content);
         }
 
-        if (files.length > 0) {
-            files.forEach((file) => {
+        if (filesAnexed.length > 0) {
+            filesAnexed.forEach((file) => {
                 formData.append("files", file, file.name);
             });
         }
 
-        if (files || input) {
-            await fetch(serverIp + "/chat/sendMessage/" + chatId, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: formData,
-            })
-                .then(async (resp) => {
-                    if (!resp.ok) {
-                        const r = await resp.json();
-                        const content =
-                            r?.status === "BIG_FILE"
-                                ? "Esta messagem possui ficheiros demasiado grandes"
-                                : r?.message + " Erro: " + r?.status;
-                        const data = {
-                            _id: "error_" + date.valueOf(),
-                            content: content,
-                            createdAt: date.toISOString(),
-                            updatedAt: date.toISOString(),
-                            type: "Message",
-                            user_id: "erro_sistema",
-                        };
+        const resp = await fetch(serverIp + "/chat/sendMessage/" + chat_id, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: formData,
+            method: "POST",
+        });
 
-                        setMessages([...messages, data]);
-                        setMessageCount(messageCount + 1);
-                        setLastMessage(null);
-                        throw new Error(r?.message);
-                    }
-                    return resp.json();
-                })
-                .then((response) => {
-                    setMessages((prevMessages: any) => {
-                        if (!prevMessages.includes(response)) {
-                            const newMessages = [...prevMessages, response];
-                            setMessages(newMessages);
-                            setMessageCount((prevCount: number) => prevCount + 1);
-                            setLastMessage(null);
-                            return newMessages;
-                        }
-                        return prevMessages;
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+        if (!resp.ok) {
+            const r = await resp.json();
+            const content =
+                r?.status === "BIG_FILE"
+                    ? "Esta messagem possui ficheiros demasiado grandes"
+                    : r?.message + " Erro: " + r?.status;
+            const data = {
+                _id: "error_" + date.valueOf(),
+                content: content,
+                createdAt: date.toISOString(),
+                updatedAt: date.toISOString(),
+                type: "Message",
+                user_id: "erro_sistema",
+            };
+
+            setMessages([...messages, data]);
+            setMessageCount((prevCount: number) => prevCount + 1);
+            setLastMessage(null);
+            throw new Error(r?.message);
         }
+
+        const response = await resp.json();
+
+        if (chat_id != chatId) return;
+
+        setMessages((prevMessages: any[]) => {
+            return prevMessages.map((msg) => {
+                if (msg._id === messageId) {
+                    return response;
+                }
+                return msg;
+            });
+        });
+
+        return message;
+    }
+
+    async function sendMessage() {
+        message(
+            String(socket?.id),
+            setMessages,
+            setMessageCount,
+            setLastMessage,
+            messages,
+            serverIp,
+            chatId,
+            profile.info.id,
+            input,
+            files,
+            "Message"
+        );
     }
 
     function addFileClick(e: any) {
@@ -209,7 +261,8 @@ export default function ChatInput({ chatId, headerInfo }: any) {
                 e.key == "End" ||
                 editMessage != null ||
                 showSettings ||
-                editingInput || linkClicked != ""
+                editingInput ||
+                linkClicked.href != ""
             )
                 return 0;
 

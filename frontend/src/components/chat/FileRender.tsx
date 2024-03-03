@@ -19,12 +19,12 @@ function calculateSize(size: number | undefined) {
     }
 }
 
-export default function FileRender({ file_url, file_name, bottomRef }: any) {
+export default function FileRender({ file_blob, file_url, file_name, bottomRef }: any) {
     const [contentType, setContentType] = useState<"video" | "image" | null>(null);
     const [ImgError, setImgError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const [file, setFile] = useState<Blob | any | undefined>(undefined);
+    const [file, setFile] = useState<Blob | any>(undefined);
     const [fileError, setFileError] = useState<boolean>(false);
 
     const [overlayVisible, setOverlayVisible] = useState(false);
@@ -39,6 +39,22 @@ export default function FileRender({ file_url, file_name, bottomRef }: any) {
     };
 
     useEffect(() => {
+        console.log(typeof file_blob);
+
+        if (file_blob && !file_name) {
+            setFile(file_blob);
+            if (file_blob.type.startsWith("image/")) {
+                setContentType("image");
+                setLoading(false);
+            } else if (file_blob.type.startsWith("video/")) {
+                setContentType("video");
+                setLoading(false);
+            } else {
+                setImgError(true);
+                setLoading(false);
+            }
+            return;
+        }
         fetch(file_url + "?optimize=true")
             .then(async (resp: any) => {
                 if (!resp.ok) {

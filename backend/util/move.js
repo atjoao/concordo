@@ -5,6 +5,7 @@ import { customAlphabet } from "nanoid/async";
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz");
 
+// todo if an image file or video upload, create optmized/blurred/thumbnail version
 export const move = async (user, file, chat_id, verificarChat) => {
     try {
         const userId = user._id;
