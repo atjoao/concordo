@@ -70,11 +70,11 @@ export const move = async (user, file, chat_id, verificarChat) => {
                         })
                         .screenshots({
                             count: 1,
+                            size: "10%",
+                            aspect: "16:9",
                             folder: thumbDir,
                             filename: `${fileName}.png`,
-                        })
-                        .size("?x360")
-                        .aspect("16:9");
+                        });
                 }
             }
 
