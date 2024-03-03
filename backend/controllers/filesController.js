@@ -239,36 +239,36 @@ export const downloadFile = async (req, res) => {
                 }
 
                 if (ffmpegDetect) {
-                    try {
-                        ffmpeg(fileLocation)
-                            .screenshots({
-                                count: 1,
-                                folder: thumbDir,
-                                filename: `${checkForFile.fileName}.png`,
-                                size: "320x240",
-                            })
-                            .on("end", () => {
-                                try {
-                                    data = readFileSync(thumbFullPath);
-                                    res.setHeader(
-                                        "Content-Length",
-                                        data.length
-                                    );
-                                    res.setHeader(
-                                        "Content-Disposition",
-                                        `filename="${checkForFile.fileName}.png"`
-                                    );
+                    ffmpeg(fileLocation)
+                        .screenshots({
+                            count: 1,
+                            folder: thumbDir,
+                            filename: `${checkForFile.fileName}.png`,
+                            size: "320x240",
+                        })
+                        .on("end", () => {
+                            try {
+                                data = readFileSync(thumbFullPath);
+                                res.setHeader("Content-Length", data.length);
+                                res.setHeader(
+                                    "Content-Disposition",
+                                    `filename="${checkForFile.fileName}.png"`
+                                );
 
-                                    return res.send(data);
-                                } catch (error) {
-                                    return res.status(200);
-                                }
-                            });
-                    } catch (error) {
-                        console.log(
-                            "FFMPEG happened to crash while trying to take a screenshot"
-                        );
-                    }
+                                return res.send(data);
+                            } catch (error) {
+                                return res.status(200);
+                            }
+                        })
+                        .on("error", (error) => {
+                            data = readFileSync(".thumbnails/default.png");
+                            res.setHeader("Content-Length", data.length);
+                            res.setHeader(
+                                "Content-Disposition",
+                                `filename="default.png"`
+                            );
+                            return res.send(data);
+                        });
                 }
             }
         } else {
@@ -316,37 +316,31 @@ export const downloadFile = async (req, res) => {
                     );
 
                     if (!streaming) {
-                        try {
-                            ffmpeg(fileLocation)
-                                .toFormat("mp4")
-                                .videoCodec("copy")
-                                .audioCodec("aac")
-                                .save(convertedFilePath)
-                                .on("end", () => {
-                                    convertedFiles[fileLocation] =
-                                        convertedFilePath;
-                                    const fileStream = createReadStream(
-                                        convertedFilePath,
-                                        {
-                                            emitClose: true,
-                                        }
-                                    );
+                        ffmpeg(fileLocation)
+                            .toFormat("mp4")
+                            .videoCodec("copy")
+                            .audioCodec("aac")
+                            .save(convertedFilePath)
+                            .on("end", () => {
+                                convertedFiles[fileLocation] =
+                                    convertedFilePath;
+                                const fileStream = createReadStream(
+                                    convertedFilePath,
+                                    {
+                                        emitClose: true,
+                                    }
+                                );
 
-                                    fileStream.pipe(stream);
+                                fileStream.pipe(stream);
 
-                                    fileStream.on("close", function () {
-                                        if (!fileStream.destroyed)
-                                            fileStream.destroy();
-                                    });
-                                })
-                                .on("error", (error) => {
-                                    console.log(error);
+                                fileStream.on("close", function () {
+                                    if (!fileStream.destroyed)
+                                        fileStream.destroy();
                                 });
-                        } catch (error) {
-                            console.log(
-                                "FFMPEG happened to crash while trying to stream "
-                            );
-                        }
+                            })
+                            .on("error", (error) => {
+                                console.log(error);
+                            });
                     }
 
                     stream.pipe(res);
