@@ -1,4 +1,7 @@
+import { ffmpegDetect } from "../index.js";
 import File from "../schema/uploads/File.js";
+import path from "node:path";
+import ffmpeg from "fluent-ffmpeg";
 
 import { checkDir } from "./dirHelper.js";
 import { customAlphabet } from "nanoid/async";
@@ -35,6 +38,44 @@ export const move = async (user, file, chat_id, verificarChat) => {
             });
 
             ficheiro.mv(".uploads/" + filePath + "/" + fileName);
+
+            let endPath = path.extname(fileName).toLowerCase();
+            let contentType;
+            switch (endPath) {
+                case ".mp4":
+                    contentType = "video/mp4";
+                    break;
+                case ".webm":
+                    contentType = "video/webm";
+                    break;
+                case ".mkv":
+                    contentType = "video/x-matroska";
+                    break;
+            }
+
+            if (contentType && ffmpegDetect) {
+                const thumbDir = `.thumbnails/${filePath}`;
+                const dir = await checkDir(thumbDir).catch((err) => {
+                    if (err instanceof Error) {
+                        throw new Error("CREATE_DIR_ERROR");
+                    }
+                });
+                if (dir) {
+                    ffmpeg(".uploads/" + filePath + "/" + fileName)
+                        .on("end", () => {
+                            console.log(
+                                "Thumbnail created for video,",
+                                fileName
+                            );
+                        })
+                        .screenshots({
+                            count: 1,
+                            folder: thumbDir,
+                            filename: `${fileName}.png`,
+                            size: "320x240",
+                        });
+                }
+            }
 
             filesIndentifer.push({
                 fileName: fileName,

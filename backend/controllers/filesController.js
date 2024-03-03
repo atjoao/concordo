@@ -1,8 +1,7 @@
-import { existsSync, readFileSync, createReadStream, exists } from "node:fs";
+import { existsSync, readFileSync, createReadStream } from "node:fs";
 import { PassThrough } from "node:stream";
 import path from "node:path";
 
-import ffmpeg from "fluent-ffmpeg";
 import File from "../schema/uploads/File.js";
 import { isImage } from "../util/checkImage.js";
 import sharp from "sharp";
@@ -236,39 +235,14 @@ export const downloadFile = async (req, res) => {
                     );
 
                     return res.send(data);
-                }
-
-                if (ffmpegDetect) {
-                    ffmpeg(fileLocation)
-                        .screenshots({
-                            count: 1,
-                            folder: thumbDir,
-                            filename: `${checkForFile.fileName}.png`,
-                            size: "320x240",
-                        })
-                        .on("end", () => {
-                            try {
-                                data = readFileSync(thumbFullPath);
-                                res.setHeader("Content-Length", data.length);
-                                res.setHeader(
-                                    "Content-Disposition",
-                                    `filename="${checkForFile.fileName}.png"`
-                                );
-
-                                return res.send(data);
-                            } catch (error) {
-                                return res.status(200);
-                            }
-                        })
-                        .on("error", (error) => {
-                            data = readFileSync(".thumbnails/default.png");
-                            res.setHeader("Content-Length", data.length);
-                            res.setHeader(
-                                "Content-Disposition",
-                                `filename="default.png"`
-                            );
-                            return res.send(data);
-                        });
+                } else {
+                    data = readFileSync(".thumbnails/default.png");
+                    res.setHeader("Content-Length", data.length);
+                    res.setHeader(
+                        "Content-Disposition",
+                        `filename="default.png"`
+                    );
+                    return res.send(data);
                 }
             }
         } else {
