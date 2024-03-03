@@ -1,5 +1,5 @@
 .uploads/
-.thumbnails/
+.thumbnails/*
 !.thumbnails/default.png
 .converted/
 .avatars/*
