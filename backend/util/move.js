@@ -72,8 +72,9 @@ export const move = async (user, file, chat_id, verificarChat) => {
                             count: 1,
                             folder: thumbDir,
                             filename: `${fileName}.png`,
-                            size: "320x240",
-                        });
+                        })
+                        .size("?x360")
+                        .aspect("16:9");
                 }
             }
 
