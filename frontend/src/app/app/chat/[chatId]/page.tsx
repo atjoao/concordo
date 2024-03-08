@@ -123,9 +123,8 @@ export default function Page({ params }: { params: { chatId: string } }) {
                     }
                 } catch (error) {
                     if (error instanceof TypeError && error.message.includes("URL constructor")) {
-                        console.log(error);
+                        return;
                     }
-                    console.error(error);
                 }
             }
         }

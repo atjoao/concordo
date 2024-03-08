@@ -10,9 +10,19 @@ services:
       - nginx_default
       - internal
     volumes:
-      - ./backend/.avatars/default.img:/backend/.avatars/default.img:ro
+      - type: bind
+        source: ./source/backend/.avatars/default.img
+        target: /backend/.avatars/default.img
+        read_only: true
+      - type: bind
+        source: ./source/backend/.thumbnails/default.png
+        target: /backend/.thumbnails/default.png
+        read_only: true
       - ./data/avatars:/backend/.avatars/
-      - ./backend/.groupimages/default.img:/backend/.groupimages/default.img:ro
+      - type: bind
+        source: ./source/backend/.groupimages/default.img
+        target: /backend/.groupimages/default.img
+        read_only: true
       - ./data/groupimages:/backend/.groupimages/
       - ./data/thumbnails:/backend/.thumbnails/
       - ./data/uploads:/backend/.uploads/

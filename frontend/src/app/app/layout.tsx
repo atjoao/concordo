@@ -10,7 +10,7 @@ import Loading from "../../assets/images/loading/loading.gif";
 import styles from "./layout.module.css";
 import { client, socket, destroyEverything } from "@/lib/socket/client";
 
-import _userInfoDb from "@/lib/database/dbuserInfo";
+import _userInfoDb, { User } from "@/lib/database/dbuserInfo";
 import { openDatabases, deleteAllData } from "@/lib/database/dbManaging";
 import Sidebar from "@/components/app/Sidebar";
 import { checkDb_user } from "@/lib/fetching/getChatName";

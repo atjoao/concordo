@@ -22,7 +22,7 @@ export default function GroupMemberList({ headerInfo, chatId }: { headerInfo: IC
         user: null,
     });
 
-    const { serverIp, profile, set_sent_requests, set_f_requests }: any = useContext(LayoutCached);
+    const { serverIp, profile, set_sent_requests, set_f_requests, photo }: any = useContext(LayoutCached);
     const [userList, setUserList] = useState<User[]>([]);
     const friends = useLiveQuery(() => _userInfoDb.user.toArray());
 
