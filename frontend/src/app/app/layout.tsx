@@ -22,6 +22,7 @@ import { useTheme } from "./ThemeProvider";
 import { themes } from "./Themes.styles";
 import Preload from "@/components/preloader/preload";
 import ChatsIndex from "@/components/app/ChatsIndex";
+import ConcordoLoading from "@/components/icons/concordoLoading/concordoLoading";
 
 export type serverInfo = {
     connected: boolean;
@@ -194,19 +195,21 @@ const Layout = ({ children }: layout) => {
                         setLoadingMsg("A conectar ao servidor...");
 
                         client.once("onlineFriends", async (data: any) => {
-                            console.log("A ligação foi bem sucedida");
-                            setLoadingMsg("Ligou :>");
+                            setLoadingMsg("Conectado!");
 
-                            // se for arranjar isto lembrar de eu posso mandar isto pela websocket...
                             if (userFriends.length == 0) {
-                                setLoading(false);
+                                setTimeout(() => {
+                                    setLoading(false);
+                                }, 500);
                             }
 
                             if (Array.isArray(userFriends)) {
                                 for (const friend of userFriends) {
                                     checkDb_user(friend, String(serverIp), true);
                                 }
-                                setLoading(false);
+                                setTimeout(() => {
+                                    setLoading(false);
+                                }, 500);
                             }
                         });
 
@@ -260,7 +263,7 @@ const Layout = ({ children }: layout) => {
         >
             {loading ? (
                 <main className={styles.loadingScreen}>
-                    <img src={Loading.src} alt="Carregar" />
+                    <ConcordoLoading />
                     <p className={"loading"}>{loadingMsg}</p>
                     <Preload>
                         <ChatsIndex profile={profile} preload={true} />
