@@ -87,7 +87,16 @@ export default function GroupMemberList({ headerInfo, chatId }: { headerInfo: IC
                     >
                         <div style={{ position: "relative" }}>
                             {coroa == true && <CrownIcon />}
-                            <img src={serverIp + "/avatar/" + userinfo.id} alt={"Avatar de" + userinfo.username} />
+                            <img
+                                src={
+                                    userinfo.id === profile.info.id
+                                        ? photo
+                                            ? URL.createObjectURL(photo)
+                                            : serverIp + "/avatar/" + profile.info.id
+                                        : serverIp + "/avatar/" + userinfo.avatar
+                                }
+                                alt={"Avatar de " + userinfo.username}
+                            />
                         </div>
 
                         <div>

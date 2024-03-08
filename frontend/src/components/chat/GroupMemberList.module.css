@@ -42,8 +42,3 @@
 .gpListItem div p:nth-child(2) {
     font-size: 14px;
 }
-
-.gpListItem div p:hover {
-    overflow: unset;
-    text-overflow: unset;
-}
