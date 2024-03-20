@@ -75,14 +75,14 @@ export default function GroupMemberList({ headerInfo, chatId }: { headerInfo: IC
                         className={styles.gpListItem}
                         style={{ opacity: isFriend(userinfo.id) ? 1 : 0.5 }}
                         onContextMenu={(e) => {
-                            if (profile.info.id == userinfo.id) return;
                             e.preventDefault();
+                            if (profile.info.id == userinfo.id) return;
                             setMenu(true);
                             setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
                         }}
                         onClick={(e) => {
-                            if (profile.info.id == userinfo.id) return;
                             e.preventDefault();
+                            if (profile.info.id == userinfo.id) return;
                             setMenu(true);
                             setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
                         }}
