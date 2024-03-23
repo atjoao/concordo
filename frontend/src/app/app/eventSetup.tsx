@@ -6,6 +6,7 @@ import { socket } from "@/lib/socket/client";
 import { useContext, useEffect, useState } from "react";
 import { LayoutCached } from "./layout";
 import { checkDb_user, removeFromCache } from "@/lib/fetching/getChatName";
+import { ChatInfo_cache } from "@/lib/fetching/cache";
 
 async function addFriend(data: any) {
     const dataObj: User = {
