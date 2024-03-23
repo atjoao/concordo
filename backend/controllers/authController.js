@@ -26,7 +26,7 @@ if (process.env.VERIFICATION == "true") {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD,
         },
-        connectionTimeout: 512,
+        connectionTimeout: 2000,
     });
 }
 
@@ -111,7 +111,7 @@ export const registro = async (req, res) => {
                 } catch (err) {
                     return res.status(500).json({
                         message:
-                            "Existiu alugum erro a processar o pedido. Tente novamente.",
+                            "Existiu um erro a processar o pedido. Tente novamente.",
                         status: "SERVER_ERROR",
                     });
                 }
@@ -283,8 +283,7 @@ export const novoPedidoVerificar = async (req, res) => {
         MAILCLIENT.sendMail(message, async function (error, info) {
             if (error) {
                 return res.status(500).json({
-                    message:
-                        "Existiu alugum erro a processar isto. Tente novamente.",
+                    message: "Existiu um erro a processar. Tente novamente.",
                     status: "SERVER_ERROR",
                 });
             } else {
@@ -373,8 +372,7 @@ export const pedirReposicao = async (req, res) => {
     MAILCLIENT.sendMail(message, async function (error, info) {
         if (error) {
             return res.status(500).json({
-                message:
-                    "Existiu alugum erro a processar isto. Tente novamente.",
+                message: "Existiu um erro a processar. Tente novamente.",
                 status: "SERVER_ERROR",
             });
         } else {
@@ -456,8 +454,7 @@ export const fazerReposicao = async (req, res) => {
     MAILCLIENT.sendMail(message, async function (error, info) {
         if (error) {
             return res.status(500).json({
-                message:
-                    "Existiu alugum erro a processar isto. Tente novamente.",
+                message: "Existiu um erro a processar. Tente novamente.",
                 status: "SERVER_ERROR",
             });
         } else {
@@ -636,7 +633,7 @@ export const trocarEmail = async (req, res) => {
     MAILCLIENT.sendMail(message, async function (error, info) {
         if (error) {
             return res.status(500).json({
-                message: "Existiu alugum erro a processar. Tente novamente.",
+                message: "Existiu um erro a processar. Tente novamente.",
                 status: "SERVER_ERROR",
             });
         } else {
