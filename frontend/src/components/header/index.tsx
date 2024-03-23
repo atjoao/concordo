@@ -24,7 +24,7 @@ const Header = ({ token }: headerData) => {
                         fontFamily: ComicNeue.style.fontFamily,
                     }}
                 >
-                    Concordo
+                    Concordo | Dev
                 </p>
             </div>
             {token ? <Link href="/auth/login">Abrir Concordo</Link> : <Link href="/auth/login">Entrar</Link>}
