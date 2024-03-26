@@ -65,8 +65,14 @@ export const getChatInfo = async (
     return ChatInfo_cache.get(chatId);
 };
 
-export const changeValue = (chatId: string, key: string, value: any) => {
+type valueKeys = "chatName" | "chatAvatar" | "chatOwnerId" | "chatType" | "members_id" | "id";
+export const changeValue = (chatId: string, key: valueKeys, value: any) => {
     const chatInfo = ChatInfo_cache.get(chatId);
     if (chatInfo) {
+        chatInfo[key] = value;
+
+        ChatInfo_cache.set(chatId, chatInfo);
+        return true;
     }
+    return false;
 };

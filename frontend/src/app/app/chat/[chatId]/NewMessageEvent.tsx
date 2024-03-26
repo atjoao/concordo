@@ -9,16 +9,12 @@ export default function NewMessageEvent({ chatId }: any) {
     const { setMessages, setMessageCount, setLastMessage, setHeaderInfo }: any = useContext(ChatMessagesContext);
 
     useEffect(() => {
-        const setupEvent = async () => {
-            socket?.on("newMessage", handleNewMessage);
-            socket?.on("messageDeleted", handleMessageDeleted);
-            socket?.on("messageEdited", handleMessageEdited);
-            socket?.on("userLeft", handleUserLeft);
-            socket?.on("newUserJoined", handleUserJoin);
-            socket?.on("groupChange", handleGroupChange_p);
-        };
-
-        setupEvent();
+        socket?.on("newMessage", handleNewMessage);
+        socket?.on("messageDeleted", handleMessageDeleted);
+        socket?.on("messageEdited", handleMessageEdited);
+        socket?.on("userLeft", handleUserLeft);
+        socket?.on("newUserJoined", handleUserJoin);
+        socket?.on("groupChange", handleGroupChange_p);
 
         return () => {
             socket?.off("newMessage", handleNewMessage);

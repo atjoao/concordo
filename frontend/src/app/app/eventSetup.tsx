@@ -6,7 +6,7 @@ import { socket } from "@/lib/socket/client";
 import { useContext, useEffect, useState } from "react";
 import { LayoutCached } from "./layout";
 import { checkDb_user, removeFromCache } from "@/lib/fetching/getChatName";
-import { ChatInfo_cache } from "@/lib/fetching/cache";
+import { ChatInfo_cache, changeValue } from "@/lib/fetching/cache";
 
 async function addFriend(data: any) {
     const dataObj: User = {
@@ -227,6 +227,7 @@ const eventSetup = () => {
             chatInfos.some((chat: { id: any; members_id: any[] }) => {
                 if (chat.id == data.chat_id && chat.members_id.includes(data.memberId)) {
                     chat.members_id = chat.members_id.filter((memberId: any) => memberId !== data.memberId);
+                    changeValue(data.chat_id, "members_id", chat.members_id);
                 }
                 const chatIndexEl = document.querySelector(`div[data-chatid="${data.chat_id}"]`);
                 if (chatIndexEl) chatIndexEl.children[1].children[1].textContent = "Membros: " + chat.members_id.length;
@@ -241,6 +242,7 @@ const eventSetup = () => {
             chatInfos.some((chat: { id: any; members_id: any[] }) => {
                 if (chat.id == data.chat_id && chat.members_id.includes(data.memberId)) {
                     chat.members_id = data.members_id;
+                    changeValue(data.chat_id, "members_id", data.members_id);
                 }
                 const chatIndexEl = document.querySelector(`div[data-chatid="${data.chat_id}"]`);
                 if (chatIndexEl) chatIndexEl.children[1].children[1].textContent = "Membros: " + data.members_id.length;
@@ -255,7 +257,10 @@ const eventSetup = () => {
             chatInfos.some((chat: { id: any; chatName: string; chatAvatar: string }) => {
                 if (chat.id == data.chat_id) {
                     if (data.chatName) chat.chatName = data.chatName;
+                    if (data.chatName) changeValue(data.chat_id, "chatName", data.chatName);
+
                     if (data.chatAvatar) chat.chatAvatar = data.chatAvatar;
+                    if (data.chatAvatar) changeValue(data.chat_id, "chatAvatar", data.chatAvatar);
 
                     const chatIndexEl = document.querySelector(`div[data-chatid="${data.chat_id}"]`);
                     if (chatIndexEl) {
