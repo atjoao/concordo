@@ -261,7 +261,6 @@ const Layout = ({ children }: layout) => {
                 serverInfo,
             }}
         >
-            <p style={{ position: "absolute" }}>Dev branch do concordo</p>
             {loading ? (
                 <main className={styles.loadingScreen}>
                     <ConcordoLoading />
