@@ -19,6 +19,7 @@ import ChatHeaderGroup from "@/components/chat/ChatHeaderGroup";
 import GroupMemberList from "@/components/chat/GroupMemberList";
 import { createPortal } from "react-dom";
 import DialogBase from "@/components/dialogs/DialogBase";
+import { getChatInfo } from "@/lib/fetching/cache";
 
 export const ChatMessagesContext = createContext<IchatMessages | undefined>(undefined);
 
@@ -42,73 +43,23 @@ export default function Page({ params }: { params: { chatId: string } }) {
     const [linkClicked, setLinkClicked] = useState<{ href: string }>({ href: "" });
 
     useEffect(() => {
-        const loadInfo = async () => {
-            fetch(serverIp + "/chat/getChatInfo/" + params.chatId, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    "Content-Type": "application/json",
-                },
+        getChatInfo(serverIp, params.chatId, profile, setChatInfo, setHeaderInfo)
+            .then(async (dados) => {
+                if (!headerInfo && dados) {
+                    const _chatInfo = await getChatName(
+                        dados?.members_id,
+                        dados.chatType,
+                        profile.info.id,
+                        serverIp,
+                        dados
+                    );
+                    setHeaderInfo(_chatInfo);
+                }
             })
-                .then((resp) => {
-                    if (resp.status == 404) {
-                        throw new Error("Não encontrado");
-                    } else {
-                        return resp.json();
-                    }
-                })
-                .then(async (dados) => {
-                    setChatInfo({
-                        chatAvatar: dados.chatInfo?.chatAvatar,
-                        chatName: dados.chatInfo?.chatName,
-                        chatOwnerId: dados.chatInfo?.chatOwnerId,
-                        chatType: dados.chatInfo?.chatType,
-                        id: dados.chatInfo?.id,
-                        members_id: dados.chatInfo?.members_id,
-                    });
-
-                    if (!headerInfo && dados.chatInfo) {
-                        const _chatInfo = await getChatName(
-                            dados.chatInfo?.members_id,
-                            dados.chatInfo?.chatType,
-                            profile.info.id,
-                            serverIp,
-                            dados.chatInfo
-                        );
-                        setHeaderInfo(_chatInfo);
-                    }
-
-                    return;
-                })
-                .catch((err) => {
-                    router.push("/app");
-                });
-            //}
-
-            /* setChatInfo({
-                chatAvatar: chatInfo?.chatAvatar,
-                chatName: chatInfo?.chatName,
-                chatOwnerId: chatInfo?.chatOwnerId,
-                chatType: chatInfo?.chatType,
-                id: chatInfo?.id,
-                members_id: chatInfo?.members_id,
+            .catch((e) => {
+                console.log(e);
+                router.push("/app");
             });
-
-            if (!headerInfo && chatInfo) {
-                const chatName = await getChatName(
-                    // @ts-ignore
-                    chatInfo?.members_id,
-                    chatInfo?.chatType,
-                    profile.info.id,
-                    serverIp,
-                    chatInfo
-                );
-                setHeaderInfo(chatName);
-            } */
-        };
-
-        setTimeout(() => {
-            loadInfo();
-        }, 250);
     }, [friends]);
 
     useEffect(() => {

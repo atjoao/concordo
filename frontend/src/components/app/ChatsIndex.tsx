@@ -15,8 +15,9 @@ import { createPortal } from "react-dom";
 import DialogBase from "../dialogs/DialogBase";
 import { createChat } from "@/lib/fetching/createChat";
 import { socket } from "@/lib/socket/client";
+import { getChatInfo } from "@/lib/fetching/cache";
 
-async function getChatInfo(serverIp: string, chatId: string) {
+/* async function getChatInfo(serverIp: string, chatId: string) {
     const response = await fetch(serverIp + "/chat/getChatInfo/" + chatId, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -34,7 +35,7 @@ async function getChatInfo(serverIp: string, chatId: string) {
     };
 
     return dataObj;
-}
+} */
 
 function closeChat(serverIp: string, chatId: string) {
     const response = fetch(serverIp + "/chat/closeChat/" + chatId, {
@@ -65,7 +66,8 @@ function ChatsIndex({ profile, preload }: any) {
         const fetchChatInfos = async () => {
             if (userChats) {
                 const chatPromises = userChats.map((id) => {
-                    return getChatInfo(serverIp, id, setChatInfos, chatInfos);
+                    return getChatInfo(serverIp, id, profile);
+                    //return getChatInfo(serverIp, id);
                 });
 
                 const chatInfosResult = await Promise.all(chatPromises);
