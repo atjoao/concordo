@@ -174,7 +174,7 @@ export default function AddFriendTab() {
                 </div>
             </section>
             <section className={styles.sentRequestsPart}>
-                <h1>Pedidos enviados</h1>
+                <h1>Pedidos pendentes</h1>
 
                 {loading ? (
                     <p>A carregar</p>

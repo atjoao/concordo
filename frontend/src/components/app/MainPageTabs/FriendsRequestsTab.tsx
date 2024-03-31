@@ -51,7 +51,7 @@ export default function FriendRequestsTab() {
                     />
                 ))
             ) : (
-                <p>Sem pedidos pendentes</p>
+                <p>Nenhum pedido recebido</p>
             )}
         </>
     );
