@@ -1,4 +1,5 @@
 .uploads/
+.uploadsTemp/
 .thumbnails/*
 !.thumbnails/default.png
 .converted/

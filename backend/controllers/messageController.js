@@ -265,16 +265,15 @@ export const enviarMessagem = async (req, res) => {
             });
         }
 
-        await move(user, file, chatId, { chat_id: chatId })
-            .catch((err) => {
-                return res.status(500).json({
-                    message: "Ocorreu um erro no upload de ficheiros",
-                    status: err.message,
-                });
-            })
-            .then((files) => {
-                files_ID = files;
+        try {
+            files_ID = await move(user, file, chatId, { chat_id: chatId });
+            console.log(files_ID);
+        } catch (error) {
+            return res.status(500).json({
+                message: "Ocorreu um erro no upload de ficheiros",
+                status: error.message,
             });
+        }
     }
 
     for (const id of checkInfo.members_id) {
@@ -409,6 +408,8 @@ export const apagarMessagem = async (req, res) => {
     const chatId = req.params.chatId;
     const messageId = req.params.messageId;
 
+    if (!mongoose.isValidObjectId(messageId)) return;
+
     if (!chatId || !messageId) {
         return res
             .status(400)
@@ -445,7 +446,6 @@ export const apagarMessagem = async (req, res) => {
             }
         }
     }
-
     const messagem = await Message(chatId).findOneAndDelete({
         _id: messageId,
         user_id: user._id,

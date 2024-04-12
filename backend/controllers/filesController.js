@@ -1,16 +1,10 @@
 import { existsSync, readFileSync, createReadStream } from "node:fs";
-import { PassThrough } from "node:stream";
 import path from "node:path";
 
 import File from "../schema/uploads/File.js";
-import { isImage } from "../util/checkImage.js";
-import sharp from "sharp";
-import { checkDir } from "../util/dirHelper.js";
-import { ffmpegDetect } from "../index.js";
+import mongoose from "mongoose";
 
 const onlyAllowed = /^[a-z0-9]+$/;
-
-const convertedFiles = {};
 
 export const getGroupProfile = async (req, res) => {
     let data;
@@ -82,51 +76,89 @@ export const getAvatar = async (req, res) => {
  * @returns me
  */
 export const downloadFile = async (req, res) => {
-    if (!chatId || !fileId) {
-        return res.status(400).json({ erro: "Algo em falta." });
-    }
-
-    if (!fileId.match(onlyAllowed) || !chatId.match(onlyAllowed)) {
-        return res.status(404).json({
-            erro: "not_found",
-            message: "Não encontrei este ficheiro",
-        });
-    }
-
     try {
+        let checkForFile;
+        const { optimize, blur } = req.query;
+        const { chatId, fileId } = req.params;
+
+        if (!mongoose.isValidObjectId(fileId))
+            return res.status(404).json({
+                erro: "not_found",
+                message: "Não encontrei este ficheiro",
+            });
+
+        if (!chatId || !fileId) {
+            return res.status(400).json({ erro: "Algo em falta." });
+        }
+
+        if (!fileId.match(onlyAllowed) || !chatId.match(onlyAllowed)) {
+            return res.status(404).json({
+                erro: "not_found",
+                message: "Não encontrei este ficheiro",
+            });
+        }
+
         checkForFile = await File.findOne({
             _id: fileId,
             chat_id: chatId,
         });
+
+        if (!checkForFile) {
+            return res.status(404).json({
+                erro: "not_found",
+                message: "Não encontrei este ficheiro",
+            });
+        }
+
+        let fileLocation = `.uploads/${checkForFile.path}${checkForFile.fileName}`;
+        fileLocation = path.resolve(fileLocation);
+
+        let endPath = path.extname(checkForFile.fileName).toLowerCase();
+        let contentType;
+        switch (endPath) {
+            case ".mp4":
+                contentType = "video/mp4";
+                break;
+            case ".webm":
+                contentType = "video/webm";
+                break;
+            case ".mkv":
+                contentType = "video/x-matroska";
+                break;
+        }
+
+        if (!existsSync(fileLocation)) {
+            return res.status(404).json({
+                erro: "not_found",
+                message: "Não encontrei este ficheiro",
+            });
+        }
+
+        if (!contentType) {
+            if (optimize) {
+                const optimizedFilePath = `.thumbnails/${checkForFile.path}${checkForFile.fileName}-optimized.png`;
+                if (existsSync(optimizedFilePath)) {
+                    fileLocation = path.resolve(optimizedFilePath);
+                }
+            }
+
+            if (blur && !optimize) {
+                const blurredFilePath = `.thumbnails/${checkForFile.path}${checkForFile.fileName}-blur.webp`;
+                if (existsSync(blurredFilePath)) {
+                    fileLocation = path.resolve(blurredFilePath);
+                }
+            }
+        } else {
+            if (optimize || blur) {
+                const thumb = `.thumbnails/${checkForFile.path}${checkForFile.fileName}.png`;
+                if (existsSync(thumb)) {
+                    fileLocation = path.resolve(thumb);
+                }
+            }
+        }
+
+        return res.status(200).sendFile(fileLocation);
     } catch (error) {
-        return res.status(404).json({
-            erro: "not_found",
-            message: "Não encontrei este ficheiro",
-        });
+        console.log(error);
     }
-
-    if (!checkForFile) {
-        return res.status(404).json({
-            erro: "not_found",
-            message: "Não encontrei este ficheiro",
-        });
-    }
-
-    const fileLocation = `.uploads/${checkForFile.path}${checkForFile.fileName}`;
-
-    if (!existsSync(fileLocation)) {
-        return res.status(404).json({
-            erro: "not_found",
-            message: "Não encontrei este ficheiro",
-        });
-    }
-
-    //check image
-    const check = isImage(fileLocation);
-
-    res.setHeader("Content-Type", "text/plain");
-
-    /// make stuff for thumbnail obtain etc..
-
-    return res.status(200).sendFile(fileLocation);
 };

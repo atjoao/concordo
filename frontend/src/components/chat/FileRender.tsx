@@ -20,6 +20,7 @@ function calculateSize(size: number | undefined) {
 }
 
 export default function FileRender({ file_blob, file_url, file_name, bottomRef }: any) {
+    let url: any = "";
     const [contentType, setContentType] = useState<"video" | "image" | null>(null);
     const [ImgError, setImgError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -55,7 +56,15 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
             }
             return;
         }
-        fetch(file_url + "?optimize=true")
+
+        const vidRegex = /\.(mp4|webm|mkv)$/;
+        if (vidRegex.test(file_name)) {
+            url = file_url;
+        } else {
+            url = file_url + "?optimize=true";
+        }
+
+        fetch(url)
             .then(async (resp: any) => {
                 if (!resp.ok) {
                     throw new Error("Este ficheiro nao foi encontrado.");
