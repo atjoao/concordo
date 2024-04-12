@@ -31,7 +31,7 @@ async function processVideo(filePath, fileName) {
             })
             .on("end", async function () {
                 console.log("[VIDEO] Processado %s - sucesso", fileName);
-                await fs.unlink(".uploadsTemp/" + filePath + "/" + fileName);
+                //await fs.unlink(".uploadsTemp/" + filePath + "/" + fileName);
                 resolve(true);
             })
             .save(".uploads/" + filePath + "/" + fileName);
@@ -152,7 +152,7 @@ export const move = async (user, file, chat_id, verificarChat) => {
                     await new Promise((resolve, reject) => {
                         ficheiro.mv(
                             ".uploads/" + filePath + "/" + fileName,
-                            (err) => {
+                            async (err) => {
                                 if (err) {
                                     reject(err);
                                 } else {
@@ -168,9 +168,7 @@ export const move = async (user, file, chat_id, verificarChat) => {
                         chat_id: chat_id,
                         userId: userId,
                     });
-                }
-
-                if (contentType && ffmpegDetect) {
+                } else if (contentType && ffmpegDetect) {
                     const thumbDir = `.thumbnails/${filePath}`;
                     const dir = await checkDir(thumbDir).catch((err) => {
                         if (err instanceof Error) {
@@ -215,7 +213,28 @@ export const move = async (user, file, chat_id, verificarChat) => {
                     } catch (error) {
                         throw new Error(error);
                     }
+                } else {
+                    await new Promise((resolve, reject) => {
+                        ficheiro.mv(
+                            ".uploads/" + filePath + "/" + fileName,
+                            (err) => {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    filesIndentifer.push({
+                                        fileName: fileName,
+                                        filePath: filePath,
+                                        chat_id: chat_id,
+                                        userId: userId,
+                                    });
+                                    resolve();
+                                }
+                            }
+                        );
+                    });
                 }
+
+                await fs.unlink(".uploadsTemp/" + filePath + "/" + fileName);
             }
 
             for (const file of filesIndentifer) {
@@ -234,7 +253,6 @@ export const move = async (user, file, chat_id, verificarChat) => {
 
             resolve(files_ID);
         } catch (error) {
-            console.log(error);
             reject(error.message);
         }
     });

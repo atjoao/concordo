@@ -267,7 +267,6 @@ export const enviarMessagem = async (req, res) => {
 
         try {
             files_ID = await move(user, file, chatId, { chat_id: chatId });
-            console.log(files_ID);
         } catch (error) {
             return res.status(500).json({
                 message: "Ocorreu um erro no upload de ficheiros",
