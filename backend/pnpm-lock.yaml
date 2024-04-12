@@ -26,9 +26,6 @@ dependencies:
   express-fileupload:
     specifier: ^1.4.0
     version: 1.4.0
-  express-slow-down:
-    specifier: ^1.6.0
-    version: 1.6.0
   fluent-ffmpeg:
     specifier: ^2.1.2
     version: 2.1.2
@@ -488,10 +485,6 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       busboy: 1.6.0
-    dev: false
-
-  /express-slow-down@1.6.0:
-    resolution: {integrity: sha512-M2+Gl6vtvHW5CiRwy82epoiMHWWDVsLws+YnhO2C0lY6eAbRSvRdCA1G1VxSY68y+Urfb74npTO0kdHgC6OPHg==}
     dev: false
 
   /express@4.18.2:
