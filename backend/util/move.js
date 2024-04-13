@@ -34,6 +34,7 @@ async function processVideo(filePath, fileName) {
                 //await fs.unlink(".uploadsTemp/" + filePath + "/" + fileName);
                 resolve(true);
             })
+            .outputFormat("mp4")
             .save(".uploads/" + filePath + "/" + fileName);
     });
 }
