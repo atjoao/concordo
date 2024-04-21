@@ -36,12 +36,13 @@ export default async function (socket, next) {
 
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-        if (!decoded.id || !decoded.password) {
+        if (!decoded.id || !decoded.password || !decoded.email) {
             throw new Error("INVALID_TOKEN");
         }
 
         const user = await User.findById(decoded.id);
         if (!user) throw new Error("INVALID_TOKEN");
+        if (user.email != decoded.email) throw new Error("INVALID_TOKEN");
 
         const compararPassword = bcrypt.compareSync(decoded.password, user.password);
 

@@ -50,7 +50,7 @@ export default async function (req, res, next) {
 
             const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-            if (!decoded.id || !decoded.password) {
+            if (!decoded.id || !decoded.password || !decoded.email) {
                 return res.status(400).json({
                     erro: "Token de autenticação inválida",
                     status: "INVALID_TOKEN",
@@ -63,6 +63,13 @@ export default async function (req, res, next) {
                     erro: "Token de autenticação inválida",
                     status: "INVALID_TOKEN",
                 });
+
+            if (user.email != decoded.email) {
+                return res.status(401).json({
+                    erro: "Token de autenticação inválida",
+                    status: "INVALID_TOKEN",
+                });
+            }
 
             const compararPassword = bcrypt.compareSync(
                 decoded.password,

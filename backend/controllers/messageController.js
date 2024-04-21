@@ -234,21 +234,20 @@ export const enviarMessagem = async (req, res) => {
             .json({ message: "Este chat não existe", status: "NOT_FOUND" });
     }
 
-    for (const member of checkInfo.members_id) {
-        if (
-            checkInfo.chatType === "PM" &&
-            member.toString() !== user._id.toString()
-        ) {
-            const memberCheck = await User.findById(member);
-            if (
-                !memberCheck ||
-                !memberCheck.friends.includes(user._id) ||
-                memberCheck.block_list.includes(user._id)
-            ) {
-                return res.status(400).json({
-                    status: "NOT_FRIENDS",
-                    message: "Não foi possivel enviar a sua mensagem",
-                });
+    if (checkInfo.chatType === "PM") {
+        for (const member of checkInfo.members_id) {
+            if (member.toString() !== user._id.toString()) {
+                const memberCheck = await User.findById(member);
+                if (
+                    !memberCheck ||
+                    !memberCheck.friends.includes(user._id) ||
+                    memberCheck.block_list.includes(user._id)
+                ) {
+                    return res.status(400).json({
+                        status: "NOT_FRIENDS",
+                        message: "Não foi possivel enviar a sua mensagem",
+                    });
+                }
             }
         }
     }

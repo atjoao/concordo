@@ -178,7 +178,7 @@ export const entrar = async (req, res) => {
         });
 
     let token = jwt.sign(
-        { id: user._id, password: password },
+        { id: user._id, password: password, email: user.email },
         process.env.SECRET_KEY,
         { expiresIn: "7d", algorithm: "HS256" }
     );
