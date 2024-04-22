@@ -299,10 +299,10 @@ export const enviarMessagem = async (req, res) => {
 export const obeterMessagens = async (req, res) => {
     const user = req.userdata;
     let prevLink = null;
-    let totalMessagesBeforeId = 0;
+    let totalMessagesBeforeLastMessage = 0;
     let { limite, beforeId } = req.query;
 
-    if (!mongoose.isValidObjectId(beforeId)) {
+    if (beforeId != undefined && !mongoose.isValidObjectId(beforeId)) {
         return res.status(400).json({
             message: "Id de menssagem invalido",
             status: "INVALID_MESSAGE_ID",
@@ -357,8 +357,10 @@ export const obeterMessagens = async (req, res) => {
             .limit(50)
             .sort({ createdAt: -1 });
 
-        if (beforeId) {
-            totalMessagesBeforeId = await Message(chatId).countDocuments(
+        if (MESSAGENS.length > 0) {
+            totalMessagesBeforeLastMessage = await Message(
+                chatId
+            ).countDocuments(
                 beforeId
                     ? {
                           _id: {
@@ -371,11 +373,12 @@ export const obeterMessagens = async (req, res) => {
             );
         }
 
-        if (totalMessagesBeforeId > 0) {
+        if (MESSAGENS.length > 0 && totalMessagesBeforeLastMessage > 0) {
             prevLink =
                 req.protocol +
                 "://" +
                 req.headers.host +
+                "/chat" +
                 req.path +
                 "?beforeId=" +
                 MESSAGENS[MESSAGENS.length - 1]._id;
