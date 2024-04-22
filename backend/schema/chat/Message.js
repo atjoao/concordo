@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+/**
+ *
+ * @param {String} chat_id
+ * @returns {mongoose.Model} Message
+ */
 const Message = (chat_id) => {
     const db = mongoose.connection.useDb(`chat-${chat_id}`);
 

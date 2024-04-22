@@ -298,8 +298,21 @@ export const enviarMessagem = async (req, res) => {
 
 export const obeterMessagens = async (req, res) => {
     const user = req.userdata;
+    let prevLink = null;
+    let totalMessagesBeforeId = 0;
     let { limite, beforeId } = req.query;
-    limite = parseInt(limite) > 50 ? 50 : parseInt(limite);
+
+    if (!mongoose.isValidObjectId(beforeId)) {
+        return res.status(400).json({
+            message: "Id de menssagem invalido",
+            status: "INVALID_MESSAGE_ID",
+        });
+    }
+
+    limite =
+        parseInt(limite) > parseInt(process.env.MESSAGENS_LIMITE)
+            ? 50
+            : parseInt(process.env.MESSAGENS_LIMITE);
 
     if (typeof limite != "number") {
         return res.status(400).json({
@@ -338,15 +351,43 @@ export const obeterMessagens = async (req, res) => {
         const BEFOREID = beforeId
             ? { _id: { $lt: new Types.ObjectId(beforeId) } }
             : {};
+
         const MESSAGENS = await Message(chatId)
             .find(BEFOREID)
             .limit(50)
             .sort({ createdAt: -1 });
+
+        if (beforeId) {
+            totalMessagesBeforeId = await Message(chatId).countDocuments(
+                beforeId
+                    ? {
+                          _id: {
+                              $lt: new Types.ObjectId(
+                                  MESSAGENS[MESSAGENS.length - 1]._id
+                              ),
+                          },
+                      }
+                    : {}
+            );
+        }
+
+        if (totalMessagesBeforeId > 0) {
+            prevLink =
+                req.protocol +
+                "://" +
+                req.headers.host +
+                req.path +
+                "?beforeId=" +
+                MESSAGENS[MESSAGENS.length - 1]._id;
+        }
+
         return res.status(200).json({
             count: MESSAGENS_TOTAIS,
             messagens: MESSAGENS,
+            prev: prevLink,
         });
-    } catch {
+    } catch (err) {
+        console.log(err);
         return res.status(404).json({
             message: "Esta messagem não existe",
             status: "NOT_FOUND",
@@ -406,7 +447,12 @@ export const apagarMessagem = async (req, res) => {
     const chatId = req.params.chatId;
     const messageId = req.params.messageId;
 
-    if (!mongoose.isValidObjectId(messageId)) return;
+    if (!mongoose.isValidObjectId(messageId)) {
+        return res.status(400).json({
+            message: "Id de menssagem invalido",
+            status: "INVALID_MESSAGE_ID",
+        });
+    }
 
     if (!chatId || !messageId) {
         return res
@@ -426,24 +472,25 @@ export const apagarMessagem = async (req, res) => {
             .status(404)
             .json({ message: "Este chat não existe", status: "NOT_FOUND" });
     }
-    for (const member of checkInfo.members_id) {
-        if (
-            checkInfo.chatType === "PM" &&
-            member.toString() !== user._id.toString()
-        ) {
-            const memberCheck = await User.findById(member);
-            if (
-                !memberCheck ||
-                !memberCheck.friends.includes(user._id) ||
-                memberCheck.block_list.includes(user._id)
-            ) {
-                return res.status(400).json({
-                    status: "NOT_FRIENDS",
-                    message: "Não foi possivel apagar a sua mensagem",
-                });
+
+    if (checkInfo.chatType && checkInfo.chatType == "PM") {
+        for (const member of checkInfo.members_id) {
+            if (member.toString() !== user._id.toString()) {
+                const memberCheck = await User.findById(member);
+                if (
+                    !memberCheck ||
+                    !memberCheck.friends.includes(user._id) ||
+                    memberCheck.block_list.includes(user._id)
+                ) {
+                    return res.status(400).json({
+                        status: "NOT_FRIENDS",
+                        message: "Não foi possivel apagar a sua mensagem",
+                    });
+                }
             }
         }
     }
+
     const messagem = await Message(chatId).findOneAndDelete({
         _id: messageId,
         user_id: user._id,
@@ -474,6 +521,13 @@ export const editarMessagem = async (req, res) => {
     const messageId = req.params.messageId;
     const { content } = req.body;
 
+    if (!mongoose.isValidObjectId(messageId)) {
+        return res.status(400).json({
+            message: "Id de menssagem invalido",
+            status: "INVALID_MESSAGE_ID",
+        });
+    }
+
     if (!chatId || !messageId) {
         return res
             .status(400)
@@ -492,21 +546,21 @@ export const editarMessagem = async (req, res) => {
             .status(404)
             .json({ message: "Este chat não existe", status: "NOT_FOUND" });
     }
-    for (const member of checkInfo.members_id) {
-        if (
-            checkInfo.chatType === "PM" &&
-            member.toString() !== user._id.toString()
-        ) {
-            const memberCheck = await User.findById(member);
-            if (
-                !memberCheck ||
-                !memberCheck.friends.includes(user._id) ||
-                memberCheck.block_list.includes(user._id)
-            ) {
-                return res.status(400).json({
-                    status: "NOT_FRIENDS",
-                    message: "Não foi possivel editar a sua mensagem",
-                });
+
+    if (checkInfo.chatType && checkInfo.chatType == "PM") {
+        for (const member of checkInfo.members_id) {
+            if (member.toString() !== user._id.toString()) {
+                const memberCheck = await User.findById(member);
+                if (
+                    !memberCheck ||
+                    !memberCheck.friends.includes(user._id) ||
+                    memberCheck.block_list.includes(user._id)
+                ) {
+                    return res.status(400).json({
+                        status: "NOT_FRIENDS",
+                        message: "Não foi possivel editar a sua mensagem",
+                    });
+                }
             }
         }
     }
