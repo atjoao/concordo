@@ -211,7 +211,7 @@ export const enviarMessagem = async (req, res) => {
         });
     }
 
-    if (content && content.trim().length > 1024) {
+    if (content && content.trim().length > 2000) {
         return res.status(400).json({
             message: "Passou do limite de caracteres",
             status: "LIMIT_REACHED",

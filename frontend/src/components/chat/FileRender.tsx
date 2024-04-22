@@ -44,6 +44,10 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
 
         if (file_blob && !file_name) {
             setFile(file_blob);
+            if (typeof file_blob.type === "undefined") {
+                setImgError(true);
+                setLoading(false);
+            }
             if (file_blob.type.startsWith("image/")) {
                 setContentType("image");
                 setLoading(false);

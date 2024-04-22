@@ -137,9 +137,24 @@ export default function ChatInput({ chatId, headerInfo }: any) {
                 user_id: "erro_sistema",
             };
 
-            setMessages([...messages, data]);
-            setMessageCount((prevCount: number) => prevCount + 1);
-            setLastMessage(null);
+            setMessages((prevMessages: any[]) => {
+                if (prevMessages.includes(message)) {
+                    prevMessages.splice(prevMessages.indexOf(message), 1);
+                    setMessageCount((prevCount: number) => prevCount - 1);
+                    setLastMessage(null);
+                }
+
+                if (!prevMessages.includes(data)) {
+                    const newMessages = [...prevMessages, data];
+                    setMessages(newMessages);
+                    setMessageCount((prevCount: number) => prevCount + 1);
+                    setLastMessage(null);
+                    return newMessages;
+                }
+
+                return prevMessages;
+            });
+
             throw new Error(r?.message);
         }
 
