@@ -41,7 +41,7 @@ export const enviarPedido = async (req, res) => {
             .status(404)
             .json({ status: "error", message: "Utilizador não existe." });
 
-    if (!user_to.verified)
+    if (!user_to.verified && process.env.VERIFICATION === "true")
         return res.status(401).json({
             status: "error",
             message: "Este usuario não tem a conta verificada",
