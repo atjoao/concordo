@@ -26,7 +26,7 @@ export const enviarPedido = async (req, res) => {
             message: "Não tenho informações suficientes",
         });
 
-    if (!user.verified)
+    if (!user.verified && process.env.VERIFICATION === "true")
         return res
             .status(401)
             .json({ status: "not_verified", message: "Verfique o seu email" });
