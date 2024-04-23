@@ -523,6 +523,10 @@ export const userinfo = async (req, res) => {
         if (!userid || userid == user._id.toString()) {
             return res.status(200).json({
                 info: {
+                    verified:
+                        process.env.VERIFICATION === "true"
+                            ? userinfo.verified
+                            : true,
                     username: userinfo.username,
                     email: userinfo.email,
                     id: userinfo._id,

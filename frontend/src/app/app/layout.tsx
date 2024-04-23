@@ -23,6 +23,7 @@ import { themes } from "./Themes.styles";
 import Preload from "@/components/preloader/preload";
 import ChatsIndex from "@/components/app/ChatsIndex";
 import ConcordoLoading from "@/components/icons/concordoLoading/concordoLoading";
+import TopBarNotifer from "@/components/app/TopBarNotifier/TopBarNotifier";
 
 export type serverInfo = {
     connected: boolean;
@@ -271,6 +272,14 @@ const Layout = ({ children }: layout) => {
                 </main>
             ) : (
                 <div id="appMount" style={customTheme}>
+                    {profile.info.verified && (
+                        <TopBarNotifer
+                            message="A tua conta ainda não foi verificada!"
+                            color={"var(--redDark)"}
+                            closed={false}
+                        />
+                    )}
+
                     <EventSetup />
                     {showSettings &&
                         createPortal(

@@ -11,11 +11,11 @@ services:
       - internal
     volumes:
       - type: bind
-        source: ./source/backend/.avatars/default.img
+        source: ./backend/.avatars/default.img
         target: /backend/.avatars/default.img
         read_only: true
       - type: bind
-        source: ./source/backend/.thumbnails/default.png
+        source: ./backend/.thumbnails/default.png
         target: /backend/.thumbnails/default.png
         read_only: true
       - ./data/avatars:/backend/.avatars/
@@ -83,7 +83,6 @@ services:
       - SOCKET_TOKEN=<random value>
     command: pnpm start
     depends_on:
-      - backend
       - mongodb
 
   mongodb:
