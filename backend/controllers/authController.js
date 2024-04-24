@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import client from "../util/socketClient.js";
+import stats from "../util/utilstats.js";
 
 const IV = Buffer.from(process.env.IV_KEY, "hex");
 const KEY = Buffer.from(process.env.SECRET_KEY, "hex");
@@ -123,6 +124,7 @@ export const registro = async (req, res) => {
                 password: hashedPassword,
                 verified: process.env.VERIFICATION == "true" ? false : true,
             });
+            await stats.updateStats("created_users");
             return res.status(200).json({
                 message: `Conta criada!${
                     process.env.VERIFICATION == "true"

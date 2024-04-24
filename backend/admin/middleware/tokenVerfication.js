@@ -82,7 +82,7 @@ export default async function (req, res, next) {
                     status: "INVALID_TOKEN",
                 });
 
-            if (user.admin) {
+            if (!user.admin) {
                 return res.status(401).json({
                     erro: "Token de autenticação inválida",
                     status: "INVALID_TOKEN",

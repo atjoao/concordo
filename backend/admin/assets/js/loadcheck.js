@@ -21,3 +21,9 @@ window.onload = (e) => {
             window.location.href = "/admin/login";
         });
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/admin/login";
+    }
+});

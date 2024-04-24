@@ -33,6 +33,8 @@ import client from "./util/socketClient.js";
 import countUsers from "./util/countUsers.js";
 import adminRouting from "./admin/adminRouting.js";
 
+import stats from "./util/utilstats.js";
+
 const app = Express();
 export let ffmpegDetect = false;
 
@@ -111,7 +113,7 @@ mongoose
 
         if (!ffmpegDetect)
             console.log("\x1b[41m[ERRO]\x1b[0m FFMPEG não detectado \x1b[0m");
-
+        stats.start();
         client.connect();
         countUsers.start();
         app.listen(process.env.PORT ? process.env.PORT : 3000, function () {

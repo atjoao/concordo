@@ -13,6 +13,8 @@ import client from "../util/socketClient.js";
 import { apagarFicheiro } from "../util/apagarFicheiro.js";
 import sharp from "sharp";
 
+import stats from "../util/utilstats.js";
+
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz");
 
 export const criarGrupo = async (req, res) => {
@@ -289,9 +291,11 @@ export const enviarMessagem = async (req, res) => {
             content: content && content.trim().lenght === 0 ? "" : content,
             filesAnexed: files_ID ? files_ID : [],
         })
-        .then((document) => {
+        .then(async (document) => {
             const data = { socketId, chat_id: chatId, ...document._doc };
             client.emit("sendMessage", data);
+            await stats.updateStats("messages");
+
             return res.status(200).json(data);
         });
 };
@@ -653,6 +657,7 @@ export const fecharChat = async (req, res) => {
                     chat_id: chatId,
                     ...document._doc,
                 };
+
                 client.emit("sendMessage", data);
 
                 client.emit("groupUserLeft", {
