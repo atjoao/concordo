@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Página Inicial</title>
+    </head>
+    <body></body>
+
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/admin/login";
+        }
+
+        // fazer fetch para uma route admin only caso que falhe redirecionar para login
+    </script>
+</html>

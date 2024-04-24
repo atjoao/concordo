@@ -31,6 +31,7 @@ import messagesRoute from "./routes/messagesRoute.js";
 import tokenVerification from "./middleware/tokenVerification.js";
 import client from "./util/socketClient.js";
 import countUsers from "./util/countUsers.js";
+import adminRouting from "./admin/adminRouting.js";
 
 const app = Express();
 export let ffmpegDetect = false;
@@ -49,6 +50,8 @@ app.use("/auth", authRoute);
 app.use("/user", tokenVerification, userRoute);
 app.use("/chat", tokenVerification, messagesRoute);
 app.use("/", filesRoute);
+
+app.use("/admin", adminRouting);
 
 // Error handling
 app.use((err, req, res, next) => {

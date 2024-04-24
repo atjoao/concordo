@@ -33,6 +33,8 @@ const User = mongoose.Schema({
         message_id: { type: Object },
     }),
 
+    admin: { type: Boolean, default: false },
+
     friends: { type: Array, default: [] },
     friend_requests: { type: Array, default: [] },
     friend_sent_request: { type: Array, default: [] },
