@@ -274,26 +274,30 @@ export default function Settings({ toggleSettings }: SettingsProps) {
                                                 </div>
                                             )}
                                         </div>
-                                        <div>
-                                            <p>A tua conta ainda não foi verificada</p>
-                                            <button
-                                                onClick={() => {
-                                                    // fetch request and make notification
-                                                    fetch(serverIp + "/auth/novoPedidoVerificar", {
-                                                        headers: {
-                                                            Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                                        },
-                                                        method: "POST",
-                                                    })
-                                                        .then((resp) => resp.json())
-                                                        .then((data) => {
-                                                            // make notification alert popup from the corner
-                                                        });
-                                                }}
-                                            >
-                                                Reenviar Pedido
-                                            </button>
-                                        </div>
+                                        {!profile.info.verified && (
+                                            <div>
+                                                <p>A tua conta ainda não foi verificada</p>
+                                                <button
+                                                    onClick={() => {
+                                                        // fetch request and make notification
+                                                        fetch(serverIp + "/auth/novoPedidoVerificar", {
+                                                            headers: {
+                                                                Authorization: `Bearer ${localStorage.getItem(
+                                                                    "token"
+                                                                )}`,
+                                                            },
+                                                            method: "POST",
+                                                        })
+                                                            .then((resp) => resp.json())
+                                                            .then((data) => {
+                                                                // make notification alert popup from the corner
+                                                            });
+                                                    }}
+                                                >
+                                                    Reenviar Pedido
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </>

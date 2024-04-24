@@ -31,7 +31,13 @@ const TopBarNotifier: React.FC<TopBarNotifierProps> = (content) => {
                     borderBottomLeftRadius: 10,
                 }}
             >
-                <p>{content.message}</p>
+                <p
+                    style={{
+                        color: "var(--redText)",
+                    }}
+                >
+                    {content.message}
+                </p>
                 <span
                     style={{
                         transition: "all 0.3s",

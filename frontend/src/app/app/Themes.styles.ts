@@ -23,6 +23,7 @@ export type Theme = {
     greenDark: string;
 
     red: string;
+    redText?: string;
     red2: string;
     redDark: string;
     redHover: string;
@@ -62,6 +63,7 @@ export const themes: ThemeSelector = {
         greenLight: "#668a6e",
 
         red: "red",
+        redText: "#fff",
         red2: "#c12929",
         redDark: "#b84242",
         redHover: "rgb(161, 15, 15)",
@@ -94,6 +96,7 @@ export const themes: ThemeSelector = {
         greenDark: "#4a6950",
 
         red: "#ff0000",
+        redText: "#fff",
         red2: "#c12929",
 
         redDark: "#c12929",
@@ -125,6 +128,7 @@ export const themes: ThemeSelector = {
         greenLight: "#668a6e",
 
         red: "red",
+        redText: "#fff",
         red2: "#c12929",
         redDark: "#b84242",
         redHover: "rgb(161, 15, 15)",

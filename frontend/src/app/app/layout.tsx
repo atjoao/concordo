@@ -88,6 +88,7 @@ const Layout = ({ children }: layout) => {
         "--greenDark": theme?.greenDark,
         "--red": theme?.red,
         "--red2": theme?.red2,
+        "--redText": theme?.redText,
 
         "--redDark": theme?.redDark,
         "--redHover": theme?.redHover,
@@ -272,7 +273,7 @@ const Layout = ({ children }: layout) => {
                 </main>
             ) : (
                 <div id="appMount" style={customTheme}>
-                    {profile.info.verified && (
+                    {!profile.info.verified && (
                         <TopBarNotifer
                             message="A tua conta ainda não foi verificada!"
                             color={"var(--redDark)"}
