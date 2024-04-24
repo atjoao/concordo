@@ -1,4 +1,7 @@
-window.onload = (e) => {
+document.addEventListener("DOMContentLoaded", (e) => {
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/admin/login";
+    }
     fetch("admin/auth/verify", {
         method: "POST",
         headers: {
@@ -20,10 +23,4 @@ window.onload = (e) => {
             localStorage.removeItem("token");
             window.location.href = "/admin/login";
         });
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (!localStorage.getItem("token")) {
-        window.location.href = "/admin/login";
-    }
 });
