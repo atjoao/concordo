@@ -50,6 +50,14 @@
     </body>
 
     <script>
+        window.onload = () => {
+            if (localStorage.getItem("token")) {
+                window.location.href = "/admin";
+            }
+        };
+    </script>
+
+    <script>
         document.addEventListener("DOMContentLoaded", (e) => {
             document
                 .getElementById("loginForm")

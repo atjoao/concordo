@@ -121,7 +121,7 @@ export const registro = async (req, res) => {
                 username,
                 email,
                 password: hashedPassword,
-                verified: process.env.VERIFICATION == "true" ? true : false,
+                verified: process.env.VERIFICATION == "true" ? false : true,
             });
             return res.status(200).json({
                 message: `Conta criada!${
