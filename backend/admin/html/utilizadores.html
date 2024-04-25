@@ -9,9 +9,10 @@
     <style>
         body {
             margin: 0 auto;
-            max-width: 1170px;
+            max-width: 1370px;
         }
     </style>
+
     <body style="display: none">
         <nav>
             <ul>
@@ -54,6 +55,12 @@
 
         <main id="content">
             <h3>Utilizadores Registrados no Concordo</h3>
+            <input
+                type="search"
+                name="search"
+                placeholder="Procurar por utilizadores"
+                aria-label="Search"
+            />
             <table>
                 <thead>
                     <tr>
@@ -61,10 +68,11 @@
                         <th scope="col">Nome</th>
                         <th scope="col">Tag</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Conta criada</th>
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody data-loaded="false">
                     <tr>
                         <td colspan="5">
                             <span aria-busy="true">A carregar...</span>
@@ -78,10 +86,28 @@
     <script src="./assets/js/loadcheck.js"></script>
 
     <script>
+        let nextPage = null;
+        let loading = false;
+        let limit = 5;
+        let date = new Date();
+
         const tbody = document.querySelector("tbody");
 
         window.onload = async () => {
-            const data = await fetch("./getUtilizadores", {
+            await loadData();
+        };
+
+        function obtain() {
+            return tbody.dataset.loaded == "true";
+        }
+
+        async function loadData() {
+            if (loading) return;
+            loading = true;
+
+            console.log(nextPage);
+
+            const data = await fetch(nextPage || "./getUtilizadores", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -91,31 +117,143 @@
             if (!data.ok) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="4">Erro ao carregar dados</td>
+                        <td colspan="5">Erro ao carregar dados</td>
                     </tr>
                 `;
             } else {
+                if (tbody.dataset.loaded == "false") tbody.innerHTML = "";
                 const json = await data.json();
-                setTimeout(() => {
-                    tbody.innerHTML = "";
-                    if (!json.users) return;
-                    json.users.forEach((user) => {
-                        const tr = document.createElement("tr");
+                if (json.limit) limit = json.limit;
+                if (json.next) nextPage = json.next;
+                if (!json.next) nextPage = null;
 
-                        tr.innerHTML = `
-                            <td>${user._id}</td>
-                            <td>${user.username}</td>
-                            <td>${user.descrim}</td>
-                            <td>${user.email}</td>
-                            <td style="display: flex; gap: 10px">
-                                <button onclick="toggleEdit(${user._id})">Editar</button>
-                                <button onclick="toggleDelete(${user._id})">Apagar</button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }, 500);
+                if (!json.users) return;
+                json.users.forEach((user) => {
+                    date = new Date(user.criadoem).toLocaleDateString("pt-PT");
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${user._id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.descrim}</td>
+                        <td>${user.email}</td>
+                        <td>${date}</td>
+                        <td style="display: flex; gap: 10px">
+                            <button onclick=toggleEdit(\"${
+                                user._id
+                            }\")>Editar</button>
+                            ${
+                                user.admin
+                                    ? ""
+                                    : `<button style="--pico-background-color: #D93526; --pico-border-color: #AF291D; --pico-primary-focus: #72170F;" onclick=toggleDelete(\"${user._id}\")>Apagar</button>`
+                            }
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                    date = null;
+                });
+                tbody.dataset.loaded = true;
+                loading = false;
+                if (nextPage) {
+                    if (isOnScreen(tbody.lastChild)) {
+                        loadData();
+                    }
+                }
             }
-        };
+        }
+
+        const screenHeight = window.innerHeight;
+        function isOnScreen(element) {
+            let pos = element.getBoundingClientRect();
+            let posTop = pos.top;
+            return !(posTop > screenHeight || posTop < 0);
+        }
+
+        window.addEventListener("scroll", function () {
+            if (
+                window.pageYOffset + window.innerHeight >
+                document.documentElement.scrollHeight - 100
+            ) {
+                if (nextPage != null) {
+                    loadData();
+                }
+            }
+        });
+    </script>
+
+    <script>
+        const link = new URL(window.location.href);
+
+        document
+            .querySelector("input[name=search]")
+            .addEventListener("input", (e) => {
+                const search = e.target.value;
+                console.log(search.length);
+                if (search.length == 0) {
+                    tbody.dataset.loaded = false;
+                    loadData(true);
+                    return;
+                }
+
+                if (search.length < 3) return;
+
+                fetch(link.origin + "/admin/utilizadores/search", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                    body: JSON.stringify({ search }),
+                })
+                    .then((req) => {
+                        if (req.status === 200) {
+                            return req.json();
+                        } else {
+                            tbody.dataset.loaded = false;
+                            throw new Error("Nenhum utilizador");
+                        }
+                    })
+                    .then((json) => {
+                        if (json.users) {
+                            tbody.innerHTML = "";
+                            json.users.forEach((user) => {
+                                date = new Date(
+                                    user.criadoem
+                                ).toLocaleDateString("pt-PT");
+
+                                const tr = document.createElement("tr");
+                                tr.innerHTML = `
+                                    <td>${user._id}</td>
+                                    <td>${user.username}</td>
+                                    <td>${user.descrim}</td>
+                                    <td>${user.email}</td>
+                                    <td>${date}</td>
+                                    <td style="display: flex; gap: 10px">
+                                        <button onclick=toggleEdit(\"${
+                                            user._id
+                                        }\")>Editar</button>
+                                        ${
+                                            user.admin
+                                                ? ""
+                                                : `<button style="--pico-background-color: #D93526; --pico-border-color: #AF291D; --pico-primary-focus: #72170F;" onclick=toggleDelete(\"${user._id}\")>Apagar</button>`
+                                        }
+                                    </td>
+                                `;
+                                tbody.appendChild(tr);
+                                date = null;
+                            });
+                            tbody.dataset.loaded = true;
+                        }
+                    })
+                    .catch((err) => {
+                        tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5">Nenhum utilizador encontrado</td>
+                        </tr>
+                    `;
+                    });
+            });
     </script>
 </html>

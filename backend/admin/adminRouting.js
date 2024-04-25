@@ -9,6 +9,7 @@ import getStatsController from "./controller/getStatsController.js";
 import {
     obeterUtilizadores,
     utilizadoresController,
+    procurarUtilizador,
 } from "./controller/utilizadoresController.js";
 
 const router = Express.Router();
@@ -22,6 +23,8 @@ router.get("/", mainController);
 router.get("/utilizadores", utilizadoresController);
 
 // api
+router.post("/utilizadores/search", tokenVerfication, procurarUtilizador);
+
 router.get("/getUtilizadores", tokenVerfication, obeterUtilizadores);
 router.post("/auth/verify", tokenVerfication, (req, res) => {
     res.status(200).json({ status: "OK" });
