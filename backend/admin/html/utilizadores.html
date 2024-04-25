@@ -97,15 +97,9 @@
             await loadData();
         };
 
-        function obtain() {
-            return tbody.dataset.loaded == "true";
-        }
-
         async function loadData() {
             if (loading) return;
             loading = true;
-
-            console.log(nextPage);
 
             const data = await fetch(nextPage || "./getUtilizadores", {
                 method: "GET",
