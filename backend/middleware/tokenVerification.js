@@ -82,6 +82,13 @@ export default async function (req, res, next) {
                     status: "INVALID_TOKEN",
                 });
 
+            if (user.suspender && !user.admin) {
+                return res.status(401).json({
+                    erro: "Token de autenticação inválida",
+                    status: "INVALID_TOKEN",
+                });
+            }
+
             req.userdata = user;
             next();
         } catch (error) {

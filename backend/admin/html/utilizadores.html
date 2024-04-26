@@ -156,6 +156,10 @@
             }
         }
 
+        function toggleEdit(id) {
+            window.location.href = `/admin/utilizadores/editar/${id}`;
+        }
+
         const screenHeight = window.innerHeight;
         function isOnScreen(element) {
             let pos = element.getBoundingClientRect();

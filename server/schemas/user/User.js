@@ -1,8 +1,21 @@
 import mongoose from "mongoose";
-
 const User = mongoose.Schema({
     username: { type: String, required: true, unique: false, min: 4, max: 20 },
-    descrim: { type: Number, default: Math.floor(1000 + Math.random() * 9000) },
+    descrim: {
+        type: String,
+        default: function () {
+            const currentTime = new Date();
+            const seed = currentTime.getTime();
+            const random = Math.floor(Math.random() * 10000);
+            let seededRandomNumber = (seed + random) % 10000;
+
+            if (seededRandomNumber < 1000) {
+                seededRandomNumber += 1000;
+            }
+
+            return String(seededRandomNumber);
+        },
+    },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     criadoem: { type: Date, default: Date.now },
@@ -14,10 +27,14 @@ const User = mongoose.Schema({
 
     chats: { type: Array, default: [] },
 
+    // nao fiz isto
     last_read_messages: new mongoose.Schema({
         chat_id: { type: Object },
         message_id: { type: Object },
     }),
+
+    admin: { type: Boolean, default: false },
+    suspender: { type: Boolean, default: false },
 
     friends: { type: Array, default: [] },
     friend_requests: { type: Array, default: [] },

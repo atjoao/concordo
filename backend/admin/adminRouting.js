@@ -9,7 +9,9 @@ import getStatsController from "./controller/getStatsController.js";
 import {
     obeterUtilizadores,
     utilizadoresController,
-    procurarUtilizador,
+    procurarUtilizadores,
+    obeterUtilizador,
+    editarUtilizadorController,
 } from "./controller/utilizadoresController.js";
 
 const router = Express.Router();
@@ -21,9 +23,13 @@ router.use("/assets", Express.static(path.join(__dirname, "assets")));
 //html
 router.get("/", mainController);
 router.get("/utilizadores", utilizadoresController);
+router.get("/utilizadores/editar/:id", editarUtilizadorController);
 
 // api
-router.post("/utilizadores/search", tokenVerfication, procurarUtilizador);
+router.post("/utilizadores/search", tokenVerfication, procurarUtilizadores);
+router.get("/utilizador/:id", tokenVerfication, obeterUtilizador);
+
+//router.post("/utilizadores/:id/change", tokenVerfication,);
 
 router.get("/getUtilizadores", tokenVerfication, obeterUtilizadores);
 router.post("/auth/verify", tokenVerfication, (req, res) => {

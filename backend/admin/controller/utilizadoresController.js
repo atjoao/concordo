@@ -2,6 +2,8 @@ import url from "url";
 
 import Express from "express";
 import User from "../../schema/user/User.js";
+import mongoose from "mongoose";
+import { error } from "console";
 
 const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
 
@@ -12,6 +14,10 @@ const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
  */
 export function utilizadoresController(req, res) {
     res.sendFile("utilizadores.html", { root: "admin/html" });
+}
+
+export function editarUtilizadorController(req, res) {
+    res.sendFile("editarUtilizador.html", { root: "admin/html" });
 }
 
 /**
@@ -53,7 +59,7 @@ export async function obeterUtilizadores(req, res) {
  * @param {Express.Request} req
  * @param {Express.Response} res
  */
-export async function procurarUtilizador(req, res) {
+export async function procurarUtilizadores(req, res) {
     const { search } = req.body;
     let user = null;
     try {
@@ -71,5 +77,73 @@ export async function procurarUtilizador(req, res) {
         }
     } catch (err) {
         res.status(500).json({ error: "Erro ao procurar utilizador" });
+    }
+}
+
+/**
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ */
+export async function obeterUtilizador(req, res) {
+    let user = null;
+    const id = req.params.id;
+    if (!id)
+        return res.status(500).json({ error: "Nenhum parametro de id dado" });
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(500).json({
+            error: "Id inválido",
+        });
+    }
+
+    try {
+        user = await User.findById(id);
+        if (user) {
+            res.status(200).json({ user: user });
+        } else {
+            res.status(404).json({ error: "Utilizador não encontrado" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Erro ao procurar utilizador" });
+    }
+}
+
+/**
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ */
+export async function editarUtilizador(req, res) {
+    const { id } = req.params;
+    const { username, email, tag, admin, suspender } = req.body;
+
+    if (!id)
+        return res.status(500).json({ error: "Nenhum parametro de id dado" });
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(500).json({
+            error: "Id inválido",
+        });
+    }
+
+    if (!username || !email || !password || !role) {
+        return res.status(500).json({ error: "Faltam parametros" });
+    }
+
+    if (!email.match(RE_EMAIL)) {
+        return res.status(500).json({ error: "Email inválido" });
+    }
+
+    try {
+        const user = await User.findById(id);
+        if (user) {
+            user.username = username;
+            user.email = email;
+            await user.save();
+            res.status(200).json({ user: user });
+        } else {
+            res.status(404).json({ error: "Utilizador não encontrado" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Erro ao editar utilizador" });
     }
 }

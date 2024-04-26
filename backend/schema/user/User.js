@@ -34,6 +34,7 @@ const User = mongoose.Schema({
     }),
 
     admin: { type: Boolean, default: false },
+    suspender: { type: Boolean, default: false },
 
     friends: { type: Array, default: [] },
     friend_requests: { type: Array, default: [] },

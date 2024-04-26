@@ -48,6 +48,8 @@ export default async function (socket, next) {
 
         if (!compararPassword) throw new Error("INVALID_TOKEN");
 
+        if (user.suspender && !user.admin) throw new Error("INVALID_TOKEN");
+
         socket.data.userId = user._id.toString();
         next();
     } catch (error) {
