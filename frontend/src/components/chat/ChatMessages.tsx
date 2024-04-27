@@ -10,20 +10,13 @@ import InitialMessage from "./ChatMessageComponents/InitialMessage";
 import Message from "./ChatMessageComponents/Message";
 import { LayoutCached } from "@/app/app/layout";
 import SystemMessage from "./ChatMessageComponents/SystemMessage";
+import is from "date-fns/locale/is/index.js";
 
 export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     const { profile }: any = useContext(LayoutCached);
 
-    const {
-        messages,
-        setMessages,
-        messageCount,
-        setMessageCount,
-        lastMessage,
-        setLastMessage,
-        setEditMessage,
-        editMessage,
-    }: any = useContext(ChatMessagesContext);
+    const { messages, setMessages, messageCount, setMessageCount, setEditMessage, editMessage }: any =
+        useContext(ChatMessagesContext);
 
     const [currentToolbox, setCurrentToolbox] = useState(null);
 
@@ -32,8 +25,10 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
 
     const bottomRef = useRef<any>(null);
     const messageContainer = useRef<HTMLDivElement | null>(null);
+    const [lastMessage, setLastMessage] = useState<any>();
+    //const [lastScrollTop, setLastScrollTop] = useState<number | null>(null);
 
-    const [lastScrollTop, setLastScrollTop] = useState<number | null>(null);
+    const [prevMessages, setPrevMessages] = useState<string>("");
 
     function sendEditMessage(message: any) {
         // @ts-ignore
@@ -140,14 +135,9 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
         return String(formatTime);
     }
 
-    function loadBeforeMessages(messageId: string) {
+    function loadBeforeMessages(prevMessages: string) {
         return new Promise((resolve, reject) => {
-            if (!messageId) {
-                reject("no message id found");
-                return;
-            }
-
-            fetch(`${serverIp}/chat/getMessages/${chatId}?beforeId=${messageId}`, {
+            fetch(`${prevMessages}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                     "Content-Type": "application/json",
@@ -162,7 +152,9 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
                     const messagesToInsert = ToInsert.slice().reverse();
                     setMessages([...messagesToInsert, ...messages]);
                     setMessageCount(data.count);
-                    resolve(true);
+                    setPrevMessages(data.prev);
+
+                    resolve(data.messagens[data.messagens.length - 1]._id);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -184,12 +176,16 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
                 const data = await response.json();
                 setMessages(data.messagens.reverse());
                 setMessageCount(data.count);
+                setPrevMessages(data.prev);
             } catch (error) {
                 console.log(error);
             }
         };
         if (messages.length === 0) {
-            fetchMessages();
+            fetchMessages().then(() => {
+                const container = messageContainer.current;
+                container?.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+            });
         }
     }, []);
 
@@ -230,18 +226,16 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
 
         const getMessageBeforeLoad = document.querySelectorAll(`[data-messageid="${lastMessage}"]`)[0];
         getMessageBeforeLoad?.scrollIntoView();
-        //setLastMessage(null);
     }, [userNames, lastMessage]);
 
     useEffect(() => {
-        const evento = (e: Event) => {
+        const evento = async (e: Event) => {
             if (container?.scrollTop === 0) {
                 const loaderElement = document.querySelector("#loader");
                 if (loaderElement?.nextElementSibling) {
                     const messageId = loaderElement.nextElementSibling.children[0].getAttribute("data-messageid");
-                    loadBeforeMessages(String(messageId)).then(() => {
-                        setLastMessage(messageId);
-                    });
+                    const a = await loadBeforeMessages(prevMessages);
+                    if (a) setLastMessage(messageId);
                 }
             }
         };
@@ -252,10 +246,10 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
             const loaderElement = document.querySelector("#loader");
             if (loaderElement?.nextElementSibling) {
                 const messageId = loaderElement.nextElementSibling.children[0]?.getAttribute("data-messageid");
-                if (messageId) loadBeforeMessages(String(messageId));
+                if (messageId) loadBeforeMessages(prevMessages);
                 if (!messageId) {
                     if (messages[0] !== undefined) {
-                        loadBeforeMessages(String(messages[0]._id));
+                        loadBeforeMessages(prevMessages);
                     }
                 }
             }
@@ -282,8 +276,8 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
             {(!messages.length || messages.length === messageCount) && (
                 <ChatStart serverIp={serverIp} headerInfo={headerInfo} />
             )}
-            {(!messages || !userNames) && <p id="loader">carregar mensagens</p>}
-            {messages.length < messageCount && <p id="loader">carregar messagens</p>}
+            {(!messages || !userNames) && <p id="loader_nomsg">A carregar mensagens</p>}
+            {messages.length < messageCount && <p id="loader">A carregar messagens</p>}
             {messages.map((message: any, index: any) => {
                 const prevMessageAuthor = messages[index - 1]?.user_id === message.user_id;
 

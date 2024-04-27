@@ -48,9 +48,9 @@
                         >Utilizadores</a
                     >
                 </li>
-                <li>
+                <!-- <li>
                     <a href="/admin/avisos" class="contrast">Avisos</a>
-                </li>
+                </li> -->
             </ul>
         </nav>
 
@@ -62,7 +62,7 @@
                         <th scope="col">Dia</th>
                         <th scope="col">Contas criadas</th>
                         <th scope="col">Mensagens Enviadas</th>
-                        <th scope="col">Avisos recebidos</th>
+                        <!-- <th scope="col">Avisos recebidos</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -108,7 +108,6 @@
                         <td>${date}</td>
                         <td>${item.created_users}</td>
                         <td>${item.messages}</td>
-                        <td>${item.warns}</td>
                     `;
                         tbody.appendChild(tr);
                     });

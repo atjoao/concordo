@@ -38,8 +38,6 @@ export interface IchatMessages {
     setMessages: React.Dispatch<React.SetStateAction<any>>;
     messageCount: number;
     setMessageCount: React.Dispatch<React.SetStateAction<any>>;
-    lastMessage: any;
-    setLastMessage: React.Dispatch<React.SetStateAction<any>>;
     editMessage: any;
     setEditMessage: React.Dispatch<React.SetStateAction<any>>;
     editingInput: boolean;

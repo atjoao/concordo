@@ -12,6 +12,7 @@ import {
     procurarUtilizadores,
     obeterUtilizador,
     editarUtilizadorController,
+    editarUtilizador,
 } from "./controller/utilizadoresController.js";
 
 const router = Express.Router();
@@ -28,8 +29,7 @@ router.get("/utilizadores/editar/:id", editarUtilizadorController);
 // api
 router.post("/utilizadores/search", tokenVerfication, procurarUtilizadores);
 router.get("/utilizador/:id", tokenVerfication, obeterUtilizador);
-
-//router.post("/utilizadores/:id/change", tokenVerfication,);
+router.post("/utilizador/:id/change", tokenVerfication, editarUtilizador);
 
 router.get("/getUtilizadores", tokenVerfication, obeterUtilizadores);
 router.post("/auth/verify", tokenVerfication, (req, res) => {

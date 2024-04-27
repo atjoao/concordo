@@ -162,6 +162,7 @@
 .initialMessage .options svg {
     cursor: pointer;
     pointer-events: none;
+    fill: var(--textColor);
 }
 
 .initialMessage .options.toolBoxActive {
@@ -196,7 +197,7 @@
     background-color: red;
     color: white;
 }
-
+/* 
 @media (prefers-color-scheme: light) {
     .initialMessage .options {
         background-color: rgb(190, 190, 190);
@@ -219,3 +220,4 @@
         color: rgb(47, 144, 223);
     }
 }
+ */

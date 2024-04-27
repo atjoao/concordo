@@ -3,7 +3,7 @@ import url from "url";
 import Express from "express";
 import User from "../../schema/user/User.js";
 import mongoose from "mongoose";
-import { error } from "console";
+import client from "../../util/socketClient.js";
 
 const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
 
@@ -13,11 +13,11 @@ const RE_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,63}$/;
  * @param {Express.Response} res
  */
 export function utilizadoresController(req, res) {
-    res.sendFile("utilizadores.html", { root: "admin/html" });
+    return res.sendFile("utilizadores.html", { root: "admin/html" });
 }
 
 export function editarUtilizadorController(req, res) {
-    res.sendFile("editarUtilizador.html", { root: "admin/html" });
+    return res.sendFile("editarUtilizador.html", { root: "admin/html" });
 }
 
 /**
@@ -48,10 +48,10 @@ export async function obeterUtilizadores(req, res) {
 
         results.users = await User.find({}).limit(limit).skip(startIndex);
 
-        res.json(results);
+        return res.json(results);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Erro ao obter utilizadores" });
+        return res.status(500).json({ error: "Erro ao obter utilizadores" });
     }
 }
 
@@ -71,12 +71,12 @@ export async function procurarUtilizadores(req, res) {
             });
         }
         if (user) {
-            res.status(200).json({ users: user });
+            return res.status(200).json({ users: user });
         } else {
-            res.status(404).json({ error: "Utilizador não encontrado" });
+            return res.status(404).json({ error: "Utilizador não encontrado" });
         }
     } catch (err) {
-        res.status(500).json({ error: "Erro ao procurar utilizador" });
+        return res.status(500).json({ error: "Erro ao procurar utilizador" });
     }
 }
 
@@ -99,12 +99,12 @@ export async function obeterUtilizador(req, res) {
     try {
         user = await User.findById(id);
         if (user) {
-            res.status(200).json({ user: user });
+            return res.status(200).json({ user: user });
         } else {
-            res.status(404).json({ error: "Utilizador não encontrado" });
+            return res.status(404).json({ error: "Utilizador não encontrado" });
         }
     } catch (err) {
-        res.status(500).json({ error: "Erro ao procurar utilizador" });
+        return res.status(500).json({ error: "Erro ao procurar utilizador" });
     }
 }
 
@@ -114,7 +114,7 @@ export async function obeterUtilizador(req, res) {
  */
 export async function editarUtilizador(req, res) {
     const { id } = req.params;
-    const { username, email, tag, admin, suspender } = req.body;
+    const { username, email, descrim, admin, suspender } = req.body;
 
     if (!id)
         return res.status(500).json({ error: "Nenhum parametro de id dado" });
@@ -125,7 +125,13 @@ export async function editarUtilizador(req, res) {
         });
     }
 
-    if (!username || !email || !password || !role) {
+    if (
+        !username ||
+        !email ||
+        !descrim ||
+        admin.toString() == "" ||
+        suspender.toString() == ""
+    ) {
         return res.status(500).json({ error: "Faltam parametros" });
     }
 
@@ -137,13 +143,20 @@ export async function editarUtilizador(req, res) {
         const user = await User.findById(id);
         if (user) {
             user.username = username;
+            user.descrim = descrim;
             user.email = email;
+            user.admin = admin;
+            user.suspender = suspender;
             await user.save();
-            res.status(200).json({ user: user });
+
+            client.emit("userChangedDetails", { userid: user._id });
+
+            return res.status(200).json({ user: user });
         } else {
-            res.status(404).json({ error: "Utilizador não encontrado" });
+            return res.status(404).json({ error: "Utilizador não encontrado" });
         }
     } catch (err) {
-        res.status(500).json({ error: "Erro ao editar utilizador" });
+        console.log(err);
+        return res.status(500).json({ error: "Erro ao editar utilizador" });
     }
 }

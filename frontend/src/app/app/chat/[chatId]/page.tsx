@@ -34,7 +34,6 @@ export default function Page({ params }: { params: { chatId: string } }) {
 
     const [messages, setMessages] = useState<any>([]);
     const [messageCount, setMessageCount] = useState<number>(0);
-    const [lastMessage, setLastMessage] = useState<any>();
 
     const [editMessage, setEditMessage] = useState<any>(null);
 
@@ -95,8 +94,6 @@ export default function Page({ params }: { params: { chatId: string } }) {
                         setMessages,
                         messageCount,
                         setMessageCount,
-                        lastMessage,
-                        setLastMessage,
                         editMessage,
                         setEditMessage,
                         headerInfo,

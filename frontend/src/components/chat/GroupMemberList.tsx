@@ -76,13 +76,21 @@ export default function GroupMemberList({ headerInfo, chatId }: { headerInfo: IC
                         style={{ opacity: isFriend(userinfo.id) ? 1 : 0.5 }}
                         onContextMenu={(e) => {
                             e.preventDefault();
-                            if (profile.info.id == userinfo.id) return;
+                            if (profile.info.id == userinfo.id) {
+                                setMenu(false);
+                                setMenuInfo({ x: 0, y: 0, user: null });
+                                return;
+                            };
                             setMenu(true);
                             setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
                         }}
                         onClick={(e) => {
                             e.preventDefault();
-                            if (profile.info.id == userinfo.id) return;
+                            if (profile.info.id == userinfo.id) {
+                                setMenu(false);
+                                setMenuInfo({ x: 0, y: 0, user: null });
+                                return;
+                            }
                             setMenu(true);
                             setMenuInfo({ x: e.pageX, y: e.pageY, user: userinfo });
                         }}

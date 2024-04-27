@@ -47,9 +47,9 @@
                 <li>
                     <a href="/admin/utilizadores">Utilizadores</a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="/admin/avisos" class="contrast">Avisos</a>
-                </li>
+                </li> -->
             </ul>
         </nav>
 
@@ -69,7 +69,7 @@
                         <th scope="col">Tag</th>
                         <th scope="col">Email</th>
                         <th scope="col">Conta criada</th>
-                        <th scope="col">Ações</th>
+                        <th scope="col">Ação</th>
                     </tr>
                 </thead>
                 <tbody data-loaded="false">
@@ -133,14 +133,7 @@
                         <td>${user.email}</td>
                         <td>${date}</td>
                         <td style="display: flex; gap: 10px">
-                            <button onclick=toggleEdit(\"${
-                                user._id
-                            }\")>Editar</button>
-                            ${
-                                user.admin
-                                    ? ""
-                                    : `<button style="--pico-background-color: #D93526; --pico-border-color: #AF291D; --pico-primary-focus: #72170F;" onclick=toggleDelete(\"${user._id}\")>Apagar</button>`
-                            }
+                            <button onclick=toggleEdit(\"${user._id}\")>Editar</button>
                         </td>
                     `;
                     tbody.appendChild(tr);

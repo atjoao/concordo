@@ -6,5 +6,5 @@ import Express from "express";
  * @param {Express.Response} res
  */
 export default function mainController(req, res) {
-    res.sendFile("login.html", { root: "admin/html" });
+    return res.sendFile("login.html", { root: "admin/html" });
 }

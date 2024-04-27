@@ -15,8 +15,6 @@ if (
     process.exit(0);
 }
 
-import { rm } from "node:fs";
-
 import Express from "express";
 import "express-async-errors";
 //import slowDown from "express-slow-down";
@@ -34,6 +32,7 @@ import countUsers from "./util/countUsers.js";
 import adminRouting from "./admin/adminRouting.js";
 
 import stats from "./util/utilstats.js";
+import setAdminUser from "./util/setAdminUser.js";
 
 const app = Express();
 export let ffmpegDetect = false;
@@ -95,10 +94,6 @@ mongoose
     .connect(`${process.env.MONGO_URI}`)
     .then(() => {
         console.log(`\x1b[42m[INFO]\x1b[0m Ligado a database`);
-        rm(".converted", { recursive: true, force: true }, () => {
-            console.log("\x1b[42m[INFO]\x1b[0m Apagado pasta .converted");
-        });
-
         if (process.env.FFPROBE_PATH && process.env.FFMPEG_PATH) {
             ffmpegDetect = true;
             console.log("\x1b[42m[INFO]\x1b[0m FFMPEG detetado");
@@ -116,6 +111,7 @@ mongoose
         stats.start();
         client.connect();
         countUsers.start();
+        setAdminUser();
         app.listen(process.env.PORT ? process.env.PORT : 3000, function () {
             console.log(
                 `\x1b[42m[INFO]\x1b[0m Server inciado na porta ${

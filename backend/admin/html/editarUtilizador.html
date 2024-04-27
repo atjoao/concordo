@@ -46,9 +46,9 @@
                 <li>
                     <a href="/admin/utilizadores">Utilizadores</a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="/admin/avisos" class="contrast">Avisos</a>
-                </li>
+                </li> -->
             </ul>
         </nav>
 
@@ -63,7 +63,7 @@
                 <span id="date-placeholder">placeholder</span>
             </p>
 
-            <form action="">
+            <form action="" method="post">
                 <div>
                     <label for="username">Nome de utilizador: </label>
                     <input
@@ -107,10 +107,52 @@
                     </label>
                 </div>
                 <hr />
-                <button>Guardar</button>
+                <button
+                    data-tooltip="Ao clicar no guardar este vai causar a imediata desconexão do utilizador"
+                    data-placement="right"
+                >
+                    Guardar
+                </button>
             </form>
         </main>
     </body>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const data = {
+                username: document.querySelector("input[name=username]").value,
+                email: document.querySelector("input[name=email]").value,
+                descrim: document.querySelector("input[name=tag]").value,
+                admin: document.querySelector("input[name=admin]").checked,
+                suspender: document.querySelector("input[name=suspender]")
+                    .checked,
+            };
+            console.log(data);
+            const url = new URL(window.location.href);
+            const id = url.pathname.split("/").pop();
+            fetch(url.origin + "/admin/utilizador/" + id + "/change", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(data),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert("Utilizador editado com sucesso");
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => {
+                    alert("Erro ao editar utilizador");
+                });
+        });
+    </script>
 
     <script src="../../assets/js/loadcheck.js"></script>
 
