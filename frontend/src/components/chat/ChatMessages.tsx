@@ -10,7 +10,6 @@ import InitialMessage from "./ChatMessageComponents/InitialMessage";
 import Message from "./ChatMessageComponents/Message";
 import { LayoutCached } from "@/app/app/layout";
 import SystemMessage from "./ChatMessageComponents/SystemMessage";
-import is from "date-fns/locale/is/index.js";
 
 export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     const { profile }: any = useContext(LayoutCached);
@@ -136,8 +135,10 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     }
 
     function loadBeforeMessages(prevMessages: string) {
+        const uri = new URL(prevMessages);
+        const newUrl = window.location.protocol + "//" + uri.host + uri.pathname + uri.search;
         return new Promise((resolve, reject) => {
-            fetch(`${prevMessages}`, {
+            fetch(newUrl, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                     "Content-Type": "application/json",
