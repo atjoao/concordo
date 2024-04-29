@@ -70,10 +70,12 @@ export async function procurarUtilizadores(req, res) {
                 username: { $regex: new RegExp(search, "i") },
             });
         }
-        if (user) {
+        if (user.length > 0) {
             return res.status(200).json({ users: user });
         } else {
-            return res.status(404).json({ error: "Utilizador não encontrado" });
+            return res
+                .status(404)
+                .json({ error: "Nenhum utilizador encontrado!" });
         }
     } catch (err) {
         return res.status(500).json({ error: "Erro ao procurar utilizador" });

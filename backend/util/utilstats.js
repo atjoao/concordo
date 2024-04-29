@@ -3,6 +3,7 @@
 import stats from "../schema/stats/stats.js";
 
 let stats_doc_created = false;
+let interval = null;
 
 async function getStats() {
     const today = new Date();
@@ -11,6 +12,13 @@ async function getStats() {
     if (!statsDoc) {
         await stats.create({ date: today });
         stats_doc_created = true;
+        if (interval != null) {
+            clearInterval(interval);
+        }
+    }
+    stats_doc_created = true;
+    if (interval != null) {
+        clearInterval(interval);
     }
     return statsDoc;
 }
@@ -30,7 +38,7 @@ async function updateStats(type) {
 }
 
 function start() {
-    setInterval(() => {
+    interval = setInterval(() => {
         if (!stats_doc_created) {
             getStats();
         }

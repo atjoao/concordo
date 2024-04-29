@@ -86,6 +86,34 @@
     <script src="./assets/js/loadcheck.js"></script>
 
     <script>
+        const createCell = (user, date) => {
+            const pUserId = document.createElement("td");
+            pUserId.innerText = user._id;
+
+            const pUsername = document.createElement("td");
+            pUsername.innerText = user.username;
+
+            const pDescrim = document.createElement("td");
+            pDescrim.innerText = user.descrim;
+
+            const pEmail = document.createElement("td");
+            pEmail.innerText = user.email;
+
+            const pDate = document.createElement("td");
+            pDate.innerText = date;
+
+            const button = document.createElement("td");
+            button.style.display = "flex";
+            button.style.gap = "10px";
+
+            const buttonEl = document.createElement("button");
+            buttonEl.innerText = "Editar";
+            buttonEl.onclick = () => toggleEdit(user._id);
+            button.appendChild(buttonEl);
+
+            return { pUserId, pUsername, pDescrim, pEmail, pDate, button };
+        };
+
         let nextPage = null;
         let loading = false;
         let limit = 5;
@@ -126,17 +154,15 @@
                     date = new Date(user.criadoem).toLocaleDateString("pt-PT");
 
                     const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${user._id}</td>
-                        <td>${user.username}</td>
-                        <td>${user.descrim}</td>
-                        <td>${user.email}</td>
-                        <td>${date}</td>
-                        <td style="display: flex; gap: 10px">
-                            <button onclick=toggleEdit(\"${user._id}\")>Editar</button>
-                        </td>
-                    `;
+                    const cells = createCell(user, date);
+                    tr.appendChild(cells.pUserId);
+                    tr.appendChild(cells.pUsername);
+                    tr.appendChild(cells.pDescrim);
+                    tr.appendChild(cells.pEmail);
+                    tr.appendChild(cells.pDate);
+                    tr.appendChild(cells.button);
                     tbody.appendChild(tr);
+
                     date = null;
                 });
                 tbody.dataset.loaded = true;
@@ -215,24 +241,15 @@
                                 ).toLocaleDateString("pt-PT");
 
                                 const tr = document.createElement("tr");
-                                tr.innerHTML = `
-                                    <td>${user._id}</td>
-                                    <td>${user.username}</td>
-                                    <td>${user.descrim}</td>
-                                    <td>${user.email}</td>
-                                    <td>${date}</td>
-                                    <td style="display: flex; gap: 10px">
-                                        <button onclick=toggleEdit(\"${
-                                            user._id
-                                        }\")>Editar</button>
-                                        ${
-                                            user.admin
-                                                ? ""
-                                                : `<button style="--pico-background-color: #D93526; --pico-border-color: #AF291D; --pico-primary-focus: #72170F;" onclick=toggleDelete(\"${user._id}\")>Apagar</button>`
-                                        }
-                                    </td>
-                                `;
+                                const cells = createCell(user, date);
+                                tr.appendChild(cells.pUserId);
+                                tr.appendChild(cells.pUsername);
+                                tr.appendChild(cells.pDescrim);
+                                tr.appendChild(cells.pEmail);
+                                tr.appendChild(cells.pDate);
+                                tr.appendChild(cells.button);
                                 tbody.appendChild(tr);
+
                                 date = null;
                             });
                             tbody.dataset.loaded = true;

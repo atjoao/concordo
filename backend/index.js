@@ -29,7 +29,13 @@ import messagesRoute from "./routes/messagesRoute.js";
 import tokenVerification from "./middleware/tokenVerification.js";
 import client from "./util/socketClient.js";
 import countUsers from "./util/countUsers.js";
-import adminRouting from "./admin/adminRouting.js";
+
+let adminRouting = null;
+if (process.env.ADMIN_PANEL === "true") {
+    await import("./admin/adminRouting.js").then(
+        (adm) => (adminRouting = adm.default)
+    );
+}
 
 import stats from "./util/utilstats.js";
 import setAdminUser from "./util/setAdminUser.js";
@@ -52,7 +58,7 @@ app.use("/user", tokenVerification, userRoute);
 app.use("/chat", tokenVerification, messagesRoute);
 app.use("/", filesRoute);
 
-app.use("/admin", adminRouting);
+if (process.env.ADMIN_PANEL === "true") app.use("/admin", adminRouting);
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -111,7 +117,7 @@ mongoose
         stats.start();
         client.connect();
         countUsers.start();
-        setAdminUser();
+        if (process.env.ADMIN_PANEL === "true") setAdminUser();
         app.listen(process.env.PORT ? process.env.PORT : 3000, function () {
             console.log(
                 `\x1b[42m[INFO]\x1b[0m Server inciado na porta ${
