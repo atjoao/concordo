@@ -39,6 +39,8 @@ export default function Page({ params }: { params: { chatId: string } }) {
 
     const [editingInput, setEditingInput] = useState<boolean>(false);
 
+    const [lastMessage, setLastMessage] = useState<any>();
+
     const [linkClicked, setLinkClicked] = useState<{ href: string }>({ href: "" });
 
     useEffect(() => {
@@ -101,6 +103,8 @@ export default function Page({ params }: { params: { chatId: string } }) {
                         editingInput,
                         setEditingInput,
                         linkClicked,
+                        lastMessage,
+                        setLastMessage,
                     }}
                 >
                     <NewMessageEvent chatId={params.chatId} />

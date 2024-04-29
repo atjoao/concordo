@@ -14,8 +14,16 @@ import SystemMessage from "./ChatMessageComponents/SystemMessage";
 export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     const { profile }: any = useContext(LayoutCached);
 
-    const { messages, setMessages, messageCount, setMessageCount, setEditMessage, editMessage }: any =
-        useContext(ChatMessagesContext);
+    const {
+        messages,
+        setMessages,
+        messageCount,
+        setMessageCount,
+        setEditMessage,
+        editMessage,
+        lastMessage,
+        setLastMessage,
+    }: any = useContext(ChatMessagesContext);
 
     const [currentToolbox, setCurrentToolbox] = useState(null);
 
@@ -24,7 +32,6 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
 
     const bottomRef = useRef<any>(null);
     const messageContainer = useRef<HTMLDivElement | null>(null);
-    const [lastMessage, setLastMessage] = useState<any>();
     //const [lastScrollTop, setLastScrollTop] = useState<number | null>(null);
 
     const [prevMessages, setPrevMessages] = useState<string>("");

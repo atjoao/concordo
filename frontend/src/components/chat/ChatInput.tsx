@@ -92,7 +92,6 @@ export default function ChatInput({ chatId, headerInfo }: any) {
         setMessages((prevMessages: any[]) => {
             if (!prevMessages.includes(message)) {
                 const newMessages = [...prevMessages, message];
-                setMessages(newMessages);
                 setMessageCount((prevCount: number) => prevCount + 1);
                 setLastMessage(null);
                 return newMessages;
@@ -146,7 +145,6 @@ export default function ChatInput({ chatId, headerInfo }: any) {
 
                 if (!prevMessages.includes(data)) {
                     const newMessages = [...prevMessages, data];
-                    setMessages(newMessages);
                     setMessageCount((prevCount: number) => prevCount + 1);
                     setLastMessage(null);
                     return newMessages;
@@ -175,7 +173,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
     }
 
     async function sendMessage() {
-        message(
+        await message(
             String(socket?.id),
             setMessages,
             setMessageCount,

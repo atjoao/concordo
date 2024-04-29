@@ -41,6 +41,8 @@ export interface IchatMessages {
     editMessage: any;
     setEditMessage: React.Dispatch<React.SetStateAction<any>>;
     editingInput: boolean;
+    lastMessage: any;
+    setLastMessage: React.Dispatch<React.SetStateAction<any>>;
     setEditingInput: React.Dispatch<React.SetStateAction<boolean>>;
     [x: string]: any;
 }
