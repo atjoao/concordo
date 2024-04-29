@@ -8,6 +8,14 @@ export default async function () {
                 email: process.env.ADMIN_PANEL_DEFAULT_USER,
             });
             if (user) {
+                if (!user.verified) {
+                    console.log(
+                        "\x1b[41m[AVISO]\x1b[0m\x1b[37m Utilizador com o email " +
+                            process.env.ADMIN_PANEL_DEFAULT_USER +
+                            " não verificado \x1b[0m"
+                    );
+                    return;
+                }
                 console.log(
                     "\x1b[42m[INFO]\x1b[0m A definir utilizador com o email " +
                         process.env.ADMIN_PANEL_DEFAULT_USER +

@@ -88,7 +88,14 @@
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     />
                 </div>
+                <div>
+                    <label>
+                        Conta verificada:
+                        <input type="checkbox" role="switch" name="verified" />
+                    </label>
+                </div>
                 <hr />
+                <h3>Perigoso</h3>
                 <div
                     style="
                         display: flex;
@@ -101,6 +108,7 @@
                         Permitir acesso administrativo:
                         <input name="admin" type="checkbox" role="switch" />
                     </label>
+
                     <label>
                         Suspender conta:
                         <input name="suspender" type="checkbox" role="switch" />
@@ -126,6 +134,8 @@
                 descrim: document.querySelector("input[name=tag]").value,
                 admin: document.querySelector("input[name=admin]").checked,
                 suspender: document.querySelector("input[name=suspender]")
+                    .checked,
+                verified: document.querySelector("input[name=verified]")
                     .checked,
             };
             console.log(data);
@@ -177,6 +187,8 @@
                     data.user.admin;
                 document.querySelector("input[name=suspender]").checked =
                     data.user.suspender;
+                document.querySelector("input[name=verified]").checked =
+                    data.user.verified;
                 document.querySelector("span#date-placeholder").textContent =
                     new Date(data.user.criadoem).toLocaleDateString("pt-PT");
                 document.querySelector("#loading").remove();

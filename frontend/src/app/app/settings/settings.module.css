@@ -219,3 +219,11 @@
     background: var(--greenDark);
     transition: 0.2s all ease-in-out;
 }
+
+.verificationSent svg {
+    stroke: var(--textColor);
+}
+
+.verificationError svg {
+    fill: var(--textColor);
+}

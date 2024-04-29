@@ -300,7 +300,7 @@ export const novoPedidoVerificar = async (req, res) => {
         return res.status(302).json({
             message:
                 "Já existe um pedido de verificação, aguarde uma hora para pedir outro.",
-            status: "ALTERADY_SENT",
+            status: "ALREADY_SENT",
         });
     }
 };

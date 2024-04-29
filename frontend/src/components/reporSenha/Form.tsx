@@ -14,7 +14,7 @@ type Tdata = {
 const Form = ({ dialogSetState, dialogSetError, serverIp }: formProps) => {
     const searchParams = useSearchParams();
 
-    const email = searchParams.get("email");
+    const email = searchParams.get("email") || "";
 
     const router = useRouter();
     const [enviarForm, setEnviarForm] = useState<boolean>(false);

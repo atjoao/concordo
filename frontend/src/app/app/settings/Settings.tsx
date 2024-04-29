@@ -16,6 +16,8 @@ import InfoIcon from "@/components/icons/InfoIcon";
 import BrushIcon from "@/components/icons/BrushIcon";
 import { useTheme } from "../ThemeProvider";
 import { themes } from "../Themes.styles";
+import CheckmarkIcon from "@/components/icons/CheckmarkIcon";
+import { set } from "date-fns";
 
 interface SettingsProps {
     toggleSettings: () => void;
@@ -29,7 +31,7 @@ function formatEmail(email: string) {
 export default function Settings({ toggleSettings }: SettingsProps) {
     const { theme, setTheme } = useTheme();
 
-    const [tab, setTab] = useState("main");
+    const [tab, setTab] = useState<"main" | "temas">("main");
     const { serverIp, profile, setProfile, setPhoto, photo, serverInfo }: any = useContext(LayoutCached);
 
     const [username, setUsername] = useState<any>(profile.info.username);
@@ -53,6 +55,9 @@ export default function Settings({ toggleSettings }: SettingsProps) {
     const [changePswError, setChangePswError] = useState<string | null>(null);
     const inputOldPswd: RefObject<HTMLInputElement> | null = useRef(null);
     const inputNewPswd: RefObject<HTMLInputElement> | null = useRef(null);
+
+    const [verificationStatus, setVerificationStatus] = useState<"ALREADY_SENT" | "SENT" | "SERVER_ERROR" | "">("");
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     function addFileClick(e: any) {
         let input: HTMLInputElement = document.createElement("input");
@@ -276,26 +281,72 @@ export default function Settings({ toggleSettings }: SettingsProps) {
                                         </div>
                                         {!profile.info.verified && (
                                             <div>
-                                                <p>A tua conta ainda não foi verificada</p>
-                                                <button
-                                                    onClick={() => {
-                                                        // fetch request and make notification
-                                                        fetch(serverIp + "/auth/novoPedidoVerificar", {
-                                                            headers: {
-                                                                Authorization: `Bearer ${localStorage.getItem(
-                                                                    "token"
-                                                                )}`,
-                                                            },
-                                                            method: "POST",
-                                                        })
-                                                            .then((resp) => resp.json())
-                                                            .then((data) => {
-                                                                // make notification alert popup from the corner
-                                                            });
-                                                    }}
-                                                >
-                                                    Reenviar Pedido
-                                                </button>
+                                                {verificationStatus === "" ? (
+                                                    <>
+                                                        <p>A tua conta ainda não foi verificada</p>
+                                                        <button
+                                                            disabled={isButtonDisabled}
+                                                            onClick={(e) => {
+                                                                setIsButtonDisabled(true);
+
+                                                                fetch(serverIp + "/auth/novoPedidoVerificar", {
+                                                                    headers: {
+                                                                        Authorization: `Bearer ${localStorage.getItem(
+                                                                            "token"
+                                                                        )}`,
+                                                                    },
+                                                                    method: "POST",
+                                                                })
+                                                                    .then((resp) => resp.json())
+                                                                    .then((data) => {
+                                                                        setVerificationStatus(data.status);
+                                                                    });
+                                                            }}
+                                                        >
+                                                            {isButtonDisabled ? (
+                                                                <>A enviar pedido ...</>
+                                                            ) : (
+                                                                <>Enviar pedido</>
+                                                            )}
+                                                        </button>
+                                                    </>
+                                                ) : verificationStatus === "SENT" ? (
+                                                    <p
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            gap: 10,
+                                                            paddingTop: 5,
+                                                        }}
+                                                        className={styles.verificationSent}
+                                                    >
+                                                        <CheckmarkIcon /> Pedido de verificação enviado
+                                                    </p>
+                                                ) : verificationStatus === "ALREADY_SENT" ? (
+                                                    <p
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            gap: 10,
+                                                            paddingTop: 5,
+                                                        }}
+                                                        className={styles.verificationError}
+                                                    >
+                                                        <ErrorIcon /> Já foi enviado um pedido de verificação
+                                                    </p>
+                                                ) : verificationStatus === "SERVER_ERROR" ? (
+                                                    <p
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            gap: 10,
+                                                            paddingTop: 5,
+                                                        }}
+                                                        className={styles.verificationError}
+                                                    >
+                                                        <ErrorIcon /> Ocorreu um erro ao processar o seu pedido
+                                                    </p>
+                                                ) : null}
                                             </div>
                                         )}
                                     </div>

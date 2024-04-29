@@ -114,7 +114,7 @@ export async function obeterUtilizador(req, res) {
  */
 export async function editarUtilizador(req, res) {
     const { id } = req.params;
-    const { username, email, descrim, admin, suspender } = req.body;
+    const { username, email, descrim, admin, suspender, verified } = req.body;
 
     if (!id)
         return res.status(500).json({ error: "Nenhum parametro de id dado" });
@@ -130,7 +130,8 @@ export async function editarUtilizador(req, res) {
         !email ||
         !descrim ||
         admin.toString() == "" ||
-        suspender.toString() == ""
+        suspender.toString() == "" ||
+        verified.toString() == ""
     ) {
         return res.status(500).json({ error: "Faltam parametros" });
     }
@@ -147,6 +148,7 @@ export async function editarUtilizador(req, res) {
             user.email = email;
             user.admin = admin;
             user.suspender = suspender;
+            user.verified = verified;
             await user.save();
 
             client.emit("userChangedDetails", { userid: user._id });
