@@ -96,6 +96,7 @@ export default function InitialMessage({
             onMouseLeave={() => setCurrentToolbox(null)}
             style={{
                 opacity: message._id.startsWith("temp_") ? 0.5 : 1,
+                pointerEvents: message._id.startsWith("temp_") ? "none" : undefined,
             }}
         >
             <div className={styles.messageUserinfo}>

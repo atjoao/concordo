@@ -61,6 +61,7 @@ export default function Message({
             key={message._id}
             style={{
                 opacity: message._id.startsWith("temp_") ? 0.5 : 1,
+                pointerEvents: message._id.startsWith("temp_") ? "none" : undefined,
             }}
             onMouseLeave={() => setCurrentToolbox(null)}
         >
