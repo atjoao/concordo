@@ -36,7 +36,7 @@ services:
       - KEY_ALGORITHM=aes-256-cbc
       - SECRET_KEY=<random value>
       - IV_KEY=<random value>
-      - MONGO_URI=mongodb://mongodb:27017/concordo?retryWrites=true&w=majority
+      - MONGO_URI=mongodb://
       - VERIFICATION=<bool>
       - EMAIL_SMTP_SERVER=
       - EMAIL_SMTP_PORT=
@@ -47,6 +47,9 @@ services:
       - SOCKET_TOKEN=<random value>
       - SOCKET_LOCAL=server
       - MESSAGENS_LIMITE=50
+      - ADMIN_PANEL=false
+      - ADMIN_PANEL_DEFAULT_USER=
+      - NODE_ENV=production
     command: pnpm start
     depends_on:
       - server
@@ -79,7 +82,7 @@ services:
       - KEY_ALGORITHM=aes-256-cbc
       - SECRET_KEY=<random value>
       - IV_KEY=<random value>
-      - MONGO_URI=mongodb://mongodb:27017/concordo?retryWrites=true&w=majority
+      - MONGO_URI=mongodb://
       - SOCKET_TOKEN=<random value>
     command: pnpm start
     depends_on:
@@ -94,9 +97,9 @@ services:
     volumes:
       - ./data/mongodb:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=
-    command: mongod --noauth
+    command: mongod --auth
 
 networks:
   nginx_default:
