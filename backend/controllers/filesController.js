@@ -78,7 +78,7 @@ export const getAvatar = async (req, res) => {
 export const downloadFile = async (req, res) => {
     try {
         let checkForFile;
-        const { optimize, blur } = req.query;
+        const { optimize, blur, download } = req.query;
         const { chatId, fileId } = req.params;
 
         if (!mongoose.isValidObjectId(fileId))
@@ -156,8 +156,15 @@ export const downloadFile = async (req, res) => {
                 }
             }
         }
-
-        return res.status(200).sendFile(fileLocation);
+        if (!download) {
+            return res.status(200).sendFile(fileLocation);
+        } else {
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename=${checkForFile.fileName}`
+            );
+            return res.status(200).sendFile(fileLocation);
+        }
     } catch (error) {
         console.log(error);
     }

@@ -12,14 +12,12 @@ import { isImage } from "./checkImage.js";
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz");
 
-// todo if an image file or video upload,
-// create optmized/blurred/thumbnail version
-
 async function processVideo(filePath, fileName) {
     return new Promise((resolve, reject) => {
         ffmpeg(".uploadsTemp/" + filePath + "/" + fileName)
             .audioCodec("aac")
             .videoCodec("libx264")
+            .outputOptions(["-crf 28", "-preset faster"])
             .on("error", function (err, stdout, stderr) {
                 console.log(
                     "[Video - Encode] Não consegui processar: %s %s %s",
@@ -254,6 +252,7 @@ export const move = async (user, file, chat_id, verificarChat) => {
 
             resolve(files_ID);
         } catch (error) {
+            console.log(error);
             reject(error.message);
         }
     });

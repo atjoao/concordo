@@ -40,27 +40,7 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
     };
 
     useEffect(() => {
-        console.log(typeof file_blob);
-
-        if (file_blob && !file_name) {
-            setFile(file_blob);
-            if (typeof file_blob.type === "undefined") {
-                setImgError(true);
-                setLoading(false);
-            }
-            if (file_blob.type.startsWith("image/")) {
-                setContentType("image");
-                setLoading(false);
-            } else if (file_blob.type.startsWith("video/")) {
-                setContentType("video");
-                setLoading(false);
-            } else {
-                setImgError(true);
-                setLoading(false);
-            }
-            return;
-        }
-
+        //console.log(typeof file_blob);
         const vidRegex = /\.(mp4|webm|mkv)$/;
         if (vidRegex.test(file_name)) {
             url = file_url;
@@ -76,8 +56,7 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
                 const contentType = resp.headers.get("content-type");
                 setMimeType(String(contentType));
 
-                const blob = await resp.blob();
-
+                const blob: Blob = await resp.blob();
                 setFile(blob);
 
                 if (!contentType) {
@@ -119,10 +98,12 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
                                 <div className={styles.fileDownload}>
                                     <TypeIcon file={file} />
                                     <div>
-                                        <a href={file_url}>{file_name}</a>
+                                        <a href={file_url + "?download=true"} target="_blank">
+                                            {file_name}
+                                        </a>
                                         <p>Tamanho: {calculateSize(file?.size)}</p>
                                         <div className={styles.download}>
-                                            <a href={file_url}>
+                                            <a href={file_url + "?download=true"}>
                                                 <DownloadIcon />
                                             </a>
                                         </div>
