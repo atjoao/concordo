@@ -214,6 +214,7 @@ export const verificar = async (req, res) => {
         return res
             .status(404)
             .json({ message: "Algo em falta.", status: "MISSING_PARAMS" });
+
     if (!email.match(RE_EMAIL))
         return res
             .status(400)
@@ -232,6 +233,7 @@ export const verificar = async (req, res) => {
     const user = await User.findOne({ email: { $eq: email } });
 
     await User.updateOne({ _id: user._id }, { $set: { verified: true } });
+    client.emit("userVerificationCompleted", { userId: user._id });
 
     await Verification.deleteOne({ _id: verificationCheck._id });
 

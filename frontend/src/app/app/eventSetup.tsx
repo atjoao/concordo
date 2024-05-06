@@ -79,6 +79,8 @@ const eventSetup = () => {
 
         socket?.on("groupChange", handleGroupChange);
 
+        socket?.on("verificationCompleted", handleVerificationCompleted);
+
         return () => {
             console.log("[page] de-redendering");
 
@@ -101,12 +103,18 @@ const eventSetup = () => {
             socket?.off("userLeft", handleUserLeft);
             socket?.off("newUserJoined", handleUserJoined);
             socket?.off("groupChange", handleGroupChange);
+            socket?.off("verificationCompleted", handleVerificationCompleted);
+
             socket?.off("ping", handlePing);
         };
     }, []);
 
     const handlePing = () => {
         socket?.emit("pong");
+    };
+
+    const handleVerificationCompleted = () => {
+        setProfile((profile: any) => ({ info: { ...profile.info, verified: true } }));
     };
 
     const handleFriendAdded = (data: { id: string; type: string }) => {

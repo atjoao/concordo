@@ -12,6 +12,7 @@ import emitNewUserJoin from "../../functions/events/emitNewUserJoin.js";
 import emitRequestRemoved from "../../functions/events/emitRequestRemoved.js";
 import emitRequestSent from "../../functions/events/emitRequestSent.js";
 import emitUserUpdate from "../../functions/events/emitUserUpdate.js";
+import emitVerificationCompleted from "../../functions/events/emitVerificationCompleted.js";
 
 const adminSocketHandler = (io) => {
     const adminNamespace = io.of("/admin");
@@ -37,6 +38,10 @@ const adminSocketHandler = (io) => {
 
         socket.on("userChangedUsername", (data) => {
             emitUserUpdate(io, data);
+        });
+
+        socket.on("userVerificationCompleted", (data) => {
+            emitVerificationCompleted(io, data);
         });
 
         socket.on("userChangedDetails", (data) => {
