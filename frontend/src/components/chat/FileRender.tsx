@@ -5,6 +5,7 @@ import DownloadIcon from "../icons/DownloadIcon";
 import { createPortal } from "react-dom";
 import ImageOverlay from "./ImageOverlay";
 import LoadingIcon from "../icons/loading/LoadingIcon";
+import weLoad from "@/assets/images/main/weload.png";
 
 function calculateSize(size: number | undefined) {
     if (!size) return "Não consegui calcular";
@@ -26,10 +27,14 @@ export default function FileRender({ uploading, file_blob, file_url, file_name, 
     const [loading, setLoading] = useState<boolean>(true);
 
     const [file, setFile] = useState<Blob | any>(undefined);
+
     const [fileError, setFileError] = useState<boolean>(false);
 
     const [overlayVisible, setOverlayVisible] = useState(false);
     const [mimeType, setMimeType] = useState<string | undefined>(undefined);
+
+    let fileType = "";
+    if (file_blob && file_blob.type) fileType = file_blob.type.split("/")[0];
 
     const openOverlay = () => {
         setOverlayVisible(true);
@@ -163,15 +168,44 @@ export default function FileRender({ uploading, file_blob, file_url, file_name, 
                         <LoadingIcon />
                     </div>
                     {uploading ? (
-                        <img
-                            src={URL.createObjectURL(file_blob)}
-                            style={{
-                                objectFit: "cover",
-                                height: "250px",
-                                maxWidth: "512px",
-                                borderRadius: "5px",
-                            }}
-                        />
+                        <>
+                            {fileType === "image" ? (
+                                <img
+                                    src={URL.createObjectURL(file_blob)}
+                                    style={{
+                                        objectFit: "cover",
+                                        height: "250px",
+                                        maxWidth: "512px",
+                                        borderRadius: "5px",
+                                    }}
+                                />
+                            ) : fileType === "video" ? (
+                                <video
+                                    controls
+                                    style={{
+                                        objectFit: "cover",
+                                        height: "250px",
+                                        maxWidth: "512px",
+                                        borderRadius: "5px",
+                                    }}
+                                >
+                                    <source src={URL.createObjectURL(file_blob)} type={file_blob.type} />
+                                </video>
+                            ) : (
+                                <div className={styles.fileDownload}>
+                                    <TypeIcon file={file} />
+                                    <div>
+                                        <a href="#">{file_blob.name}</a>
+                                        <p>Tamanho: {calculateSize(file_blob.size)}</p>
+                                        <div className={styles.download}>
+                                            <a href="#">
+                                                <DownloadIcon />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <img
                             src={file_url + "?blur=true"}
