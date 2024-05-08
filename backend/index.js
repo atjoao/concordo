@@ -49,7 +49,14 @@ app.use(cors({ origin: "*" }));
 
 app.use(
     fileUpload({
-        limits: { fileSize: Number(10 * 1000) ** 2 },
+        limits: { fileSize: 20 * 1024 * 1024 },
+        abortOnLimit: true,
+        limitHandler: (req, res) => {
+            return res.status(500).json({
+                message: "Os teus ficheiros são demasiado grandes",
+                status: "BIG_FILE",
+            });
+        },
     })
 );
 

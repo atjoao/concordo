@@ -125,7 +125,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
             const r = await resp.json();
             const content =
                 r?.status === "BIG_FILE"
-                    ? "Esta messagem possui ficheiros demasiado grandes"
+                    ? "Esta mensagem possui ficheiros demasiado grandes"
                     : r?.message + " Erro: " + r?.status;
             const data = {
                 _id: "error_" + date.valueOf(),

@@ -240,6 +240,7 @@ export default function InitialMessage({
                         return (
                             <div className={styles.files} key={index}>
                                 <FileRender
+                                    uploading={message._id.startsWith("temp_") ? true : false}
                                     file_blob={file}
                                     file_url={serverIp + "/download/" + chatId + "/" + file.file_id}
                                     file_name={file.file_name}

@@ -19,7 +19,7 @@ function calculateSize(size: number | undefined) {
     }
 }
 
-export default function FileRender({ file_blob, file_url, file_name, bottomRef }: any) {
+export default function FileRender({ uploading, file_blob, file_url, file_name, bottomRef }: any) {
     let url: any = "";
     const [contentType, setContentType] = useState<"video" | "image" | null>(null);
     const [ImgError, setImgError] = useState<boolean>(false);
@@ -48,40 +48,42 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
             url = file_url + "?optimize=true";
         }
 
-        fetch(url)
-            .then(async (resp: any) => {
-                if (!resp.ok) {
-                    throw new Error("Este ficheiro nao foi encontrado.");
-                }
-                const contentType = resp.headers.get("content-type");
-                setMimeType(String(contentType));
+        if (!uploading) {
+            fetch(url)
+                .then(async (resp: any) => {
+                    if (!resp.ok) {
+                        throw new Error("Este ficheiro nao foi encontrado.");
+                    }
+                    const contentType = resp.headers.get("content-type");
+                    setMimeType(String(contentType));
 
-                const blob: Blob = await resp.blob();
-                setFile(blob);
+                    const blob: Blob = await resp.blob();
+                    setFile(blob);
 
-                if (!contentType) {
-                    setImgError(true);
-                    setLoading(false);
-                    return;
-                }
+                    if (!contentType) {
+                        setImgError(true);
+                        setLoading(false);
+                        return;
+                    }
 
-                if (contentType.startsWith("image/")) {
-                    setContentType("image");
+                    if (contentType.startsWith("image/")) {
+                        setContentType("image");
+                        setLoading(false);
+                    } else if (contentType.startsWith("video/")) {
+                        setContentType("video");
+                        setLoading(false);
+                    } else {
+                        setImgError(true);
+                        setLoading(false);
+                    }
+                })
+                .catch((erro) => {
+                    console.log(erro);
+                    setFileError(true);
                     setLoading(false);
-                } else if (contentType.startsWith("video/")) {
-                    setContentType("video");
-                    setLoading(false);
-                } else {
-                    setImgError(true);
-                    setLoading(false);
-                }
-            })
-            .catch((erro) => {
-                console.log(erro);
-                setFileError(true);
-                setLoading(false);
-                setFile(undefined);
-            });
+                    setFile(undefined);
+                });
+        }
     }, []);
 
     return (
@@ -160,16 +162,27 @@ export default function FileRender({ file_blob, file_url, file_name, bottomRef }
                     <div className={styles.fileLoaderOverlay}>
                         <LoadingIcon />
                     </div>
-
-                    <img
-                        src={file_url + "?blur=true"}
-                        style={{
-                            objectFit: "cover",
-                            height: "250px",
-                            maxWidth: "512px",
-                            borderRadius: "5px",
-                        }}
-                    />
+                    {uploading ? (
+                        <img
+                            src={URL.createObjectURL(file_blob)}
+                            style={{
+                                objectFit: "cover",
+                                height: "250px",
+                                maxWidth: "512px",
+                                borderRadius: "5px",
+                            }}
+                        />
+                    ) : (
+                        <img
+                            src={file_url + "?blur=true"}
+                            style={{
+                                objectFit: "cover",
+                                height: "250px",
+                                maxWidth: "512px",
+                                borderRadius: "5px",
+                            }}
+                        />
+                    )}
                 </div>
             )}
         </>
