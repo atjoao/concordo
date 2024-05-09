@@ -101,7 +101,13 @@ export async function obeterUtilizador(req, res) {
     try {
         user = await User.findById(id);
         if (user) {
-            return res.status(200).json({ user: user });
+            return res.status(200).json({
+                user: user,
+                serverAdmin:
+                    process.env.ADMIN_PANEL_DEFAULT_USER === user.email
+                        ? true
+                        : false,
+            });
         } else {
             return res.status(404).json({ error: "Utilizador não encontrado" });
         }
@@ -116,6 +122,7 @@ export async function obeterUtilizador(req, res) {
  */
 export async function editarUtilizador(req, res) {
     const { id } = req.params;
+    const userdata = req.userdata;
     const { username, email, descrim, admin, suspender, verified } = req.body;
 
     if (!id)
@@ -145,10 +152,22 @@ export async function editarUtilizador(req, res) {
     try {
         const user = await User.findById(id);
         if (user) {
+            if (
+                process.env.ADMIN_PANEL_DEFAULT_USER == user.email &&
+                userdata.email != process.env.ADMIN_PANEL_DEFAULT_USER
+            ) {
+                return res.status(500).json({
+                    error: "Não podes editar o utilizador default",
+                });
+            }
             user.username = username;
             user.descrim = descrim;
             user.email = email;
-            user.admin = admin;
+            if (userdata.email == process.env.ADMIN_PANEL_DEFAULT_USER) {
+                user.admin = true;
+            } else {
+                user.admin = admin;
+            }
             user.suspender = suspender;
             user.verified = verified;
             await user.save();

@@ -195,17 +195,18 @@ function ChatsIndex({ profile, preload }: any) {
                                                 if (chatInfos[index].chatType === "PM") {
                                                     const isChatClosed = closeChat(serverIp, chat.id);
                                                     if (isChatClosed || !isChatClosed) {
-                                                        let filter = chatInfos.filter(
-                                                            (chatItem: any) => chatItem.id !== chat.id
-                                                        );
+                                                        setChatInfos((chatinfos: any[]) => {
+                                                            return chatinfos.filter(
+                                                                (chatItem: any) => chatItem.id !== chat.id
+                                                            );
+                                                        });
 
-                                                        setChatInfos(filter);
+                                                        setUserChats((userChats: any[]) => {
+                                                            return userChats.filter(
+                                                                (chatItem: any) => chatItem !== chat.id
+                                                            );
+                                                        });
 
-                                                        filter = userChats.filter(
-                                                            (chatItem: any) => chatItem !== chat.id
-                                                        );
-
-                                                        setUserChats(filter);
                                                         if (pathname == "/app/chat/" + chat.id) {
                                                             router.push("/app");
                                                             return;

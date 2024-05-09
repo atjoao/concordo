@@ -185,6 +185,8 @@
                     data.user.descrim;
                 document.querySelector("input[name=admin]").checked =
                     data.user.admin;
+                document.querySelector("input[name=admin]").disabled =
+                    data.serverAdmin;
                 document.querySelector("input[name=suspender]").checked =
                     data.user.suspender;
                 document.querySelector("input[name=verified]").checked =

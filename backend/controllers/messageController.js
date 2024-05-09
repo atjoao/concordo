@@ -377,7 +377,11 @@ export const obeterMessagens = async (req, res) => {
             );
         }
 
-        if (MESSAGENS.length > 0 && totalMessagesBeforeLastMessage > 0) {
+        if (
+            MESSAGENS.lenght == limite &&
+            MESSAGENS.length > 0 &&
+            totalMessagesBeforeLastMessage > 0
+        ) {
             prevLink =
                 req.protocol +
                 "://" +
