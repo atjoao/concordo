@@ -299,9 +299,11 @@ function ChatsIndex({ profile, preload }: any) {
                                 }
                                 const chatId = await createChat(selectedUsers, userChats, setUserChats);
                                 if (chatId) {
-                                    router.push("/app/chat/" + chatId, undefined);
-                                    setSelectedUsers([]);
-                                    setOpenBox(!openBox);
+                                    setTimeout(() => {
+                                        router.push("/app/chat/" + chatId, undefined);
+                                        setSelectedUsers([]);
+                                        setOpenBox(!openBox);
+                                    }, 500);
                                 }
                             }}
                         >
