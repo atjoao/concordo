@@ -67,7 +67,6 @@ function ChatsIndex({ profile, preload }: any) {
             if (userChats) {
                 const chatPromises = userChats.map((id) => {
                     return getChatInfo(serverIp, id, profile);
-                    //return getChatInfo(serverIp, id);
                 });
 
                 const chatInfosResult = await Promise.all(chatPromises);
@@ -257,15 +256,13 @@ function ChatsIndex({ profile, preload }: any) {
                                         submitAction={() => {
                                             const isChatClosed = closeChat(serverIp, chat.id);
                                             if (isChatClosed || !isChatClosed) {
-                                                let filter = chatInfos.filter(
-                                                    (chatItem: any) => chatItem.id !== chat.id
-                                                );
+                                                setChatInfos((chatinfos: any[]) => {
+                                                    return chatinfos.filter((chatItem: any) => chatItem.id !== chat.id);
+                                                });
 
-                                                setChatInfos(filter);
-
-                                                filter = userChats.filter((chatItem: any) => chatItem !== chat.id);
-
-                                                setUserChats(filter);
+                                                setUserChats((userChats: any[]) => {
+                                                    return userChats.filter((chatItem: any) => chatItem !== chat.id);
+                                                });
                                                 setLeaveBox("");
 
                                                 if (pathname == "/app/chat/" + chat.id) {
