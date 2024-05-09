@@ -142,6 +142,7 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     }
 
     function loadBeforeMessages(prevMessages: string) {
+        if (prevMessages == "" || prevMessages == null) return;
         const uri = new URL(prevMessages);
         const newUrl = window.location.protocol + "//" + uri.host + uri.pathname + uri.search;
         return new Promise((resolve, reject) => {

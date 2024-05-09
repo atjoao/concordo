@@ -56,6 +56,7 @@ export default function ChatHeaderGroup({ headerInfo, chatId }: { headerInfo: an
                             contentEditable={headerInfo.chatOwnerId === profile.info.id}
                             suppressContentEditableWarning={true}
                             onFocus={() => setEditingInput(true)}
+                            spellCheck={false}
                             onBlur={(e) => {
                                 setEditingInput(false);
                                 const target: HTMLInputElement = e.target as HTMLInputElement;
