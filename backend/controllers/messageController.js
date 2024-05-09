@@ -364,24 +364,16 @@ export const obeterMessagens = async (req, res) => {
         if (MESSAGENS.length > 0) {
             totalMessagesBeforeLastMessage = await Message(
                 chatId
-            ).countDocuments(
-                beforeId
-                    ? {
-                          _id: {
-                              $lt: new Types.ObjectId(
-                                  MESSAGENS[MESSAGENS.length - 1]._id
-                              ),
-                          },
-                      }
-                    : {}
-            );
+            ).countDocuments({
+                _id: {
+                    $lt: new Types.ObjectId(
+                        MESSAGENS[MESSAGENS.length - 1]._id
+                    ),
+                },
+            });
         }
 
-        if (
-            MESSAGENS.length > 0 &&
-            totalMessagesBeforeLastMessage > 0 &&
-            beforeId
-        ) {
+        if (MESSAGENS.length > 0 && totalMessagesBeforeLastMessage > 0) {
             prevLink =
                 req.protocol +
                 "://" +
