@@ -422,7 +422,7 @@ export const updateProfile = async (req, res) => {
         try {
             const buffer = Buffer.from(avatar.data);
             const salvarAvatar = await sharp(buffer)
-                .resize({ height: 128, width: 182, fit: "cover" })
+                .resize({ height: 128, width: 128, fit: "cover" })
                 .toFormat("png")
                 .toBuffer();
 
