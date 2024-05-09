@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", (e) => {
-    if (!localStorage.getItem("token")) {
-        window.location.href = "/admin/login";
-    }
-
     if (document.cookie.includes("login=true")) {
         document.querySelector("body").style.display = "block";
     }

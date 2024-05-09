@@ -47,6 +47,9 @@
                 <li>
                     <a href="/admin/utilizadores">Utilizadores</a>
                 </li>
+                <li>
+                    <a href="/admin/sair" class="contrast">Sair</a>
+                </li>
                 <!-- <li>
                     <a href="/admin/avisos" class="contrast">Avisos</a>
                 </li> -->
@@ -83,7 +86,14 @@
         </main>
     </body>
 
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/admin/login";
+        }
+    </script>
+
     <script src="./assets/js/loadcheck.js"></script>
+    <script src="./assets/js/historyReplace.js"></script>
 
     <script>
         const createCell = (user, date) => {

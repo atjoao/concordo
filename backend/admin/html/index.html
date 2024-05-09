@@ -48,6 +48,9 @@
                         >Utilizadores</a
                     >
                 </li>
+                <li>
+                    <a href="/admin/sair" class="contrast">Sair</a>
+                </li>
                 <!-- <li>
                     <a href="/admin/avisos" class="contrast">Avisos</a>
                 </li> -->
@@ -76,7 +79,14 @@
         </main>
     </body>
 
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/admin/login";
+        }
+    </script>
+
     <script src="./admin/assets/js/loadcheck.js"></script>
+    <script src="./admin/assets/js/historyReplace.js"></script>
 
     <script>
         const tbody = document.querySelector("tbody");

@@ -25,6 +25,9 @@ router.use("/assets", Express.static(path.join(__dirname, "assets")));
 router.get("/", mainController);
 router.get("/utilizadores", utilizadoresController);
 router.get("/utilizadores/editar/:id", editarUtilizadorController);
+router.get("/sair", (req, res) => {
+    return res.sendFile("sair.html", { root: "admin/html" });
+});
 
 // api
 router.post("/utilizadores/search", tokenVerfication, procurarUtilizadores);
