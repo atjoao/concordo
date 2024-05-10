@@ -163,7 +163,7 @@ export async function editarUtilizador(req, res) {
             user.username = username;
             user.descrim = descrim;
             user.email = email;
-            if (userdata.email == process.env.ADMIN_PANEL_DEFAULT_USER) {
+            if (user.email == process.env.ADMIN_PANEL_DEFAULT_USER) {
                 user.admin = true;
             } else {
                 user.admin = admin;
