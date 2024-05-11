@@ -37,7 +37,7 @@ ports:
 | frontend | 6969          |
 
 > [!WARNING]
-> Não é preciso de adicionar ao serviço mongodb
+> Não é preciso de adicionar ao serviço mongodb \
 > Não é preciso de adicionar frontend a rede interna criada pelo container
 
 10. Configurar os valores de acordo com o nome para serviços que podem ser ligados internamente recomendo usar o nome deles exemplo `mongodb://mongodb:27010` o mesmo se aplica para outros serviços dentro deste ficheiro
