@@ -38,6 +38,8 @@ async function updateStats(type) {
 }
 
 function start() {
+    getStats();
+
     interval = setInterval(() => {
         if (!stats_doc_created) {
             getStats();
