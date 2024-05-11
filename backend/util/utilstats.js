@@ -29,15 +29,17 @@ async function updateStats(type) {
     }
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
-    const statsDoc = await stats.findOne({ date: today });
+    let statsDoc = await stats.findOne({ date: today });
     if (!statsDoc) {
-        await stats.create({ date: today });
+        statsDoc = stats.create({ date: today });
     }
     statsDoc[`${type}`] += 1;
     await statsDoc.save();
 }
 
 function start() {
+    getStats();
+
     interval = setInterval(() => {
         if (!stats_doc_created) {
             getStats();
