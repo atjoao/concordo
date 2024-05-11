@@ -4,7 +4,7 @@
 
 # O que é o Concordo
 
-Concordo é um projeto de chat, este serviu para experimentar desenvolvimento, com js/ts/mongodb/react e expressjs
+Concordo é um projeto de chat, este serviu para experimentar desenvolvimento, com js/ts/mongodb/react/expressjs/socketio
 
 # Como proceder com a instalação - Docker
 
@@ -88,6 +88,8 @@ Estas podem ser configuradas a partir de variaveis de ambiente
 | nº  | linguagem | tipo      |
 | --- | --------- | --------- |
 | 1   | TS e JS   | fullstack |
+
+###### tlvz venha a usar isto mais tarde
 
 ---
 
