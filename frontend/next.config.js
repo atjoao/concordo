@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        serverIp: "http://localhost:3000",
+        serverIp: process.env.serverIp,
+        NEXT_TELEMETRY_DISABLED: 1,
     },
 
     eslint: {
