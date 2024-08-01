@@ -1,15 +1,14 @@
-FROM node:20-alpine
+FROM oven/bun:alpine
 
 RUN apk update && \
     apk add --no-cache ffmpeg
 
 WORKDIR /backend
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
-RUN npm install -g pnpm \
-    && pnpm install
+RUN bun install --frozen-lockfile
 
 COPY . .
 
-CMD ["pnpm", "start"]
+CMD ["bun", "start"]

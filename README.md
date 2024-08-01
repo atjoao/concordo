@@ -47,21 +47,21 @@ ports:
 
 # Como proceder com a instalação - Sem Docker
 
-1. Ter [`node`](https://nodejs.org/en) instalado ou alguma javascript runtime idk
-2. Ter [`pnpm`](https://pnpm.io/installation) instalado
-3. Ter [`git`](https://git-scm.com/) instaldo
-4. Copiar isto para um ficheiro `install.cmd`
+1. Ter [`bun`](https://bun.sh/) instalado ou alguma javascript runtime idk
+2. Ter [`git`](https://git-scm.com/) instaldo
+3. Copiar isto para um ficheiro `install.cmd`
    ```batch
-   start cmd.exe /c "cd server && pnpm install"
-   start cmd.exe /c "cd backend && pnpm install"
-   start cmd.exe /c "cd frontend && pnpm install"
+   start cmd.exe /c "cd server && bun install"
+   start cmd.exe /c "cd backend && bun install"
+   start cmd.exe /c "cd frontend && bun install"
    ```
-5. Configurar todos os `.env` dentro da sua respectiva pasta
-6. Após instalar copiar isto para `start.cmd`
+4. Configurar todos os `.env` dentro da sua respectiva pasta
+5. Após instalar copiar isto para `start.cmd`
+   (para o frontend precisa de fazer o comando `bun run build` antes de executar estes)
    ```batch
-   start cmd.exe /c "cd server && pnpm start"
-   start cmd.exe /c "cd backend && pnpm start"
-   start cmd.exe /c "cd frontend && pnpm start"
+   start cmd.exe /c "cd server && bun run start"
+   start cmd.exe /c "cd backend && bun run start"
+   start cmd.exe /c "cd frontend && bun run start"
    ```
 
 # Funcionalidades configuraveis do concordo

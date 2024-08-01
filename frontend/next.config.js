@@ -2,7 +2,7 @@
 const nextConfig = {
     env: {
         serverIp: process.env.serverIp,
-        NEXT_TELEMETRY_DISABLED: 1,
+        NEXT_TELEMETRY_DISABLED: "1",
     },
 
     eslint: {

@@ -14,13 +14,11 @@
         "mongoose": "^7.6.11",
         "nanoid": "^4.0.2",
         "nodemailer": "^6.9.13",
-        "nodemon": "^2.0.22",
         "sharp": "^0.32.6",
         "socket.io-client": "^4.7.5"
     },
     "scripts": {
-        "preinstall": "npx only-allow pnpm",
-        "dev": "nodemon -r dotenv/config index.js",
-        "start": "node -r dotenv/config index.js"
+        "dev": "bun --watch index.js",
+        "start": "bun run index.js"
     }
 }
