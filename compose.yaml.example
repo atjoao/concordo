@@ -50,7 +50,7 @@ services:
       - ADMIN_PANEL=false
       - ADMIN_PANEL_DEFAULT_USER=
       - NODE_ENV=production
-    command: pnpm start
+    command: bun start
     depends_on:
       - server
       - mongodb
@@ -84,7 +84,7 @@ services:
       - IV_KEY=<random value>
       - MONGO_URI=mongodb://
       - SOCKET_TOKEN=<random value>
-    command: pnpm start
+    command: bun start
     depends_on:
       - mongodb
 
