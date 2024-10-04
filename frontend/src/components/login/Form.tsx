@@ -167,27 +167,6 @@ const Form = ({ dialogSetState, dialogSetError, serverIp, changeServerDialog, se
 
                         <button type="submit">Proceder</button>
                     </form>
-
-                    {/* <div className={styles.status} onMouseEnter={onMouseHoverEvent} onMouseLeave={onMouseLeaveEvent}>
-                        {!mouseHover ? (
-                            status == null ? (
-                                <p>A obeter dados...</p>
-                            ) : (
-                                <p>
-                                    Servidor:
-                                    {status ? (
-                                        <span style={greenColor}> Online</span>
-                                    ) : (
-                                        <span style={redColor}> Offline</span>
-                                    )}
-                                </p>
-                            )
-                        ) : (
-                            <p className={styles.hoveredText} onClick={changeServerDialog}>
-                                Trocar de servidor?
-                            </p>
-                        )}
-                    </div> */}
                 </div>
             </div>
         </>

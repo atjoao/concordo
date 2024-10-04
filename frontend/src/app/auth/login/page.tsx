@@ -35,28 +35,6 @@ export default function Login() {
         window.location.reload();
     }
 
-    /* function closeDialog() {
-        setDialogError(null);
-        setShowDiaglog(false);
-
-        setChangeServerDialog(false);
-    }
-
-    function handleServerChangeInput(event: any) {
-        setServerIp(event.target.innerText);
-    }
-
-    function handleServerChange() {
-        if (typeof window !== "undefined" && window.localStorage) {
-            const serverInput: HTMLInputElement | null = document.querySelector("input[name='serverIp']");
-
-            localStorage.setItem("serverIp", String(serverInput ? serverInput.value : process.env.serverIp));
-
-            window.location.reload();
-            return;
-        }
-    } */
-
     return (
         <>
             <div>
@@ -75,27 +53,6 @@ export default function Login() {
                         </div>
                     </div>
                 )}
-
-                {/* {changeServerDialog && (
-                    <div className={styles.dialog}>
-                        <div className={styles.dialogInside}>
-                            <div className={styles.dialogTitle}>
-                                <h1>Trocar de servidor?</h1>
-                            </div>
-                            <div className={styles.dialogContent}>
-                                <input
-                                    type="text"
-                                    name="serverIp"
-                                    defaultValue={String(serverIp ? serverIp : process.env.serverIp)}
-                                />
-                            </div>
-                            <div className={styles.left}>
-                                <p onClick={closeDialog}>Cancelar</p>
-                                <button onClick={handleServerChange}>Aplicar alterações</button>
-                            </div>
-                        </div>
-                    </div>
-                )} */}
             </div>
 
             <main className={styles.main}>

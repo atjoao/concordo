@@ -5,6 +5,7 @@ import styles from "./form.module.css";
 import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import LoadingIcon from "../icons/loading/LoadingIcon";
 
 const Form = ({ dialogSetState, dialogSetError, serverIp, router }: formProps) => {
     /* const redColor = {
@@ -74,14 +75,15 @@ const Form = ({ dialogSetState, dialogSetError, serverIp, router }: formProps) =
                 (email && !email.match(RE_EMAIL))
             ) {
                 formulario?.classList.add(styles.shake);
+
+                button.disabled = false;
+                setEnviarForm(false);
+
+                setTimeout(() => {
+                    formulario?.classList.remove(styles.shake);
+                }, 2000);
             }
-
-            button.disabled = false;
-            setEnviarForm(false);
-
-            setTimeout(() => {
-                formulario?.classList.remove(styles.shake);
-            }, 2000);
+            
         }
 
         if (!enviarForm) {
@@ -250,13 +252,23 @@ const Form = ({ dialogSetState, dialogSetError, serverIp, router }: formProps) =
                             {status && status.account_verification === "true" && (
                                 <Link href="/auth/reporSenha">Recuperar Senha</Link>
                             )}
-                        </div>
-                        {/*
-						fazer uma coisa para trocar o botão de proceder para
-						animação de loading...  
-						*/}
+                        </div>  
 
-                        <button type="submit">Proceder</button>
+                        {enviarForm ? (
+                            <div style={
+                                {
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    height: "10%"
+                                }
+                            }>
+                                <LoadingIcon/>
+                            </div>
+                        ): (
+                            <button type="submit">Proceder</button>
+                        )} 
                     </form>
 
                     {/* <div className={styles.status} onMouseEnter={onMouseHoverEvent} onMouseLeave={onMouseLeaveEvent}>

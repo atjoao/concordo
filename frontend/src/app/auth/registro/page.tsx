@@ -25,25 +25,6 @@ export default function Page() {
         }
     }
 
-    /* function closeDialog() {
-        setDialogError(null);
-        setShowDiaglog(false);
-
-        setChangeServerDialog(false);
-    }
-
-    function handleServerChangeInput(event: any) {
-        setServerIp(event.target.value);
-    }
-
-    function handleServerChange() {
-        if (typeof window !== "undefined" && window.localStorage) {
-            localStorage.setItem("serverIp", String(serverIp ? serverIp : process.env.serverIp));
-            window.location.reload();
-            return;
-        }
-    } */
-
     return (
         <>
             <div>
