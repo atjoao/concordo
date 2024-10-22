@@ -73,7 +73,7 @@ export default function ChatInput({ chatId, headerInfo }: any) {
         type: string
     ) {
         const date = new Date();
-
+    
         const message = {
             socketId,
             chat_id,
@@ -85,34 +85,30 @@ export default function ChatInput({ chatId, headerInfo }: any) {
             createdAt: date.toISOString(),
             updatedAt: date.toISOString(),
         };
-
-        // hold fake message until server returns the real one
+    
         const messageId = message._id;
-
+    
         setMessages((prevMessages: any[]) => {
-            if (!prevMessages.includes(message)) {
+            if (!prevMessages.some((msg) => msg._id === messageId)) {
                 const newMessages = [...prevMessages, message];
-                setMessageCount((prevCount: number) => prevCount + 1);
+                setMessageCount((prevCount) => prevCount + 1);
                 setLastMessage(null);
                 return newMessages;
             }
             return prevMessages;
         });
-
+    
         const formData = new FormData();
-
         formData.append("socketId", socketId);
-
         if (content.length > 0) {
             formData.append("content", content);
         }
-
         if (filesAnexed.length > 0) {
             filesAnexed.forEach((file) => {
                 formData.append("files", file, file.name);
             });
         }
-
+    
         const resp = await fetch(serverIp + "/chat/sendMessage/" + chat_id, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -120,46 +116,39 @@ export default function ChatInput({ chatId, headerInfo }: any) {
             body: formData,
             method: "POST",
         });
-
+    
         if (!resp.ok) {
             const r = await resp.json();
-            const content =
+            const errorMessage =
                 r?.status === "BIG_FILE"
                     ? "Esta mensagem possui ficheiros demasiado grandes"
                     : r?.message + " Erro: " + r?.status;
-            const data = {
+    
+            const errorData = {
                 _id: "error_" + date.valueOf(),
-                content: content,
+                content: errorMessage,
                 createdAt: date.toISOString(),
                 updatedAt: date.toISOString(),
                 type: "Message",
                 user_id: "erro_sistema",
             };
-
+    
+            // Remove the temp message and add the error message
             setMessages((prevMessages: any[]) => {
-                if (prevMessages.includes(message)) {
-                    prevMessages.splice(prevMessages.indexOf(message), 1);
-                    setMessageCount((prevCount: number) => prevCount - 1);
-                    setLastMessage(null);
-                }
-
-                if (!prevMessages.includes(data)) {
-                    const newMessages = [...prevMessages, data];
-                    setMessageCount((prevCount: number) => prevCount + 1);
-                    setLastMessage(null);
-                    return newMessages;
-                }
-
-                return prevMessages;
+                const newMessages = prevMessages.filter((msg) => msg._id !== messageId);
+                setMessageCount((prevCount) => prevCount - 1);
+                setLastMessage(null);
+                return [...newMessages, errorData];
             });
-
+    
             throw new Error(r?.message);
         }
-
+    
         const response = await resp.json();
-
-        if (chat_id != chatId) return;
-
+    
+        if (chat_id !== chatId) return;
+    
+        // Replace temp message with the server response
         setMessages((prevMessages: any[]) => {
             return prevMessages.map((msg) => {
                 if (msg._id === messageId) {
@@ -168,9 +157,9 @@ export default function ChatInput({ chatId, headerInfo }: any) {
                 return msg;
             });
         });
-
+    
         return message;
-    }
+    }    
 
     async function sendMessage() {
         await message(
