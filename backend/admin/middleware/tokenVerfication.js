@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import User from "../../schema/user/User.js";
@@ -71,7 +70,7 @@ export default async function (req, res, next) {
                 });
             }
 
-            const compararPassword = bcrypt.compareSync(
+            const compararPassword = await Bun.password.verify(
                 decoded.password,
                 user.password
             );

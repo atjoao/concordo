@@ -8,4 +8,4 @@ RUN bun install --frozen-lockfile
 
 COPY . .
 
-CMD ["bun", "start"]
+CMD ["bun", "run", "start"]
