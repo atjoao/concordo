@@ -238,6 +238,7 @@ export default function ChatMessages({ chatId, serverIp, headerInfo }: any) {
     }, [userNames, lastMessage]);
 
     useEffect(() => {
+        // bug here in dev mode
         const evento = async (e: Event) => {
             if (container?.scrollTop === 0) {
                 const loaderElement = document.querySelector("#loader");
