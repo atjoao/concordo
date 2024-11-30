@@ -4,6 +4,7 @@ import Passwordreset from "../schema/user/Passwordreset.js";
 import Emailchange from "../schema/user/Emailchange.js";
 
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import client from "../util/socketClient.js";
@@ -76,11 +77,8 @@ export const registro = async (req, res) => {
         });
     }
 
-    const hashedPassword = await Bun.password.hash(password, {
-        algorithm: "bcrypt",
-        cost: 10,
-    });
-
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
     if (!user) {
         const verificationDb = await Verification.findOne({
             email: { $eq: email },
@@ -174,7 +172,7 @@ export const entrar = async (req, res) => {
             .status(404)
             .json({ message: "Não existes. Registra", status: "NOT_FOUND" });
 
-    const compararPassword = Bun.password.verify(password, user.password);
+    const compararPassword = bcrypt.compareSync(password, user.password);
     if (!compararPassword)
         return res.status(400).json({
             message: "Password invalida. Caso não se lembre reponha-la",
@@ -466,10 +464,8 @@ export const fazerReposicao = async (req, res) => {
         } else {
             await Passwordreset.deleteOne({ _id: checkForReset._id });
 
-            const hashedPassword = await Bun.password.hash(newPassword, {
-                algorithm: "bcrypt",
-                cost: 10,
-            });
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(newPassword, salt);
             await User.updateOne(
                 { _id: user._id },
                 { $set: { password: hashedPassword } }
@@ -536,17 +532,15 @@ export const trocarSenha = async (req, res) => {
             status: "NEW_PASSWORD_LENGHT",
         });
 
-    const compararPassword = await Bun.password.verify(oldpassword, user.password);
+    const compararPassword = bcrypt.compareSync(oldpassword, user.password);
     if (!compararPassword)
         return res.status(400).json({
             message: "Palavra-passe antiga inválida.",
             status: "OLD_PASSWORD_INVALID",
         });
 
-    const hashedPassword = await Bun.password.hash(newpassword, {
-        algorithm: "bcrypt",
-        cost: 10,
-    });
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newpassword, salt);
 
     await User.updateOne(
         { _id: user._id },
@@ -593,7 +587,7 @@ export const trocarEmail = async (req, res) => {
 
     const user = req.userdata;
 
-    const compararPassword = await Bun.password.verify(password, user.password);
+    const compararPassword = bcrypt.compareSync(password, user.password);
     if (!compararPassword)
         return res.status(400).json({
             message: "Palavra-passe inválida.",

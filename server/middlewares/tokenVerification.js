@@ -1,15 +1,18 @@
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import User from "../schemas/user/User.js";
 
 // eu ns pq isto ta a ser lido primeiro mas ok
+// pq raios eu fiz isto?
+
 let IV, KEY;
 try {
     IV = Buffer.from(process.env.IV_KEY, "hex");
     KEY = Buffer.from(process.env.SECRET_KEY, "hex");
 } catch (error) {
-    console.log();
+    console.log(error);
 }
 
 /**
@@ -43,7 +46,7 @@ export default async function (socket, next) {
         if (!user) throw new Error("INVALID_TOKEN");
         if (user.email != decoded.email) throw new Error("INVALID_TOKEN");
 
-        const compararPassword = await Bun.password.verify(decoded.password, user.password);
+        const compararPassword = bcrypt.compareSync(decoded.password, user.password);
 
         if (!compararPassword) throw new Error("INVALID_TOKEN");
 

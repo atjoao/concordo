@@ -1,10 +1,11 @@
-FROM oven/bun:alpine
+FROM node:20-alpine
 
 WORKDIR /server
 
-COPY package.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN bun install --frozen-lockfile
+RUN npm install -g bun \
+    && bun install
 
 COPY . .
 

@@ -1,13 +1,14 @@
-FROM oven/bun:alpine
+FROM node:20-alpine
 
 RUN apk update && \
-    apk add --no-cache ffmpeg nodejs npm
+    apk add --no-cache ffmpeg
 
 WORKDIR /backend
 
-COPY package.json ./
+COPY package.json bun.lockb ./
 
-RUN bun install --frozen-lockfile
+RUN npm install -g bun \
+    && bun install
 
 COPY . .
 

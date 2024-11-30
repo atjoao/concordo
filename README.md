@@ -37,8 +37,8 @@ ports:
 | frontend | 6969          |
 
 > [!WARNING]
-> Não é preciso de adicionar ao serviço mongodb \
-> Não é preciso de adicionar frontend a rede interna criada pelo container
+> Não é recomendado adicionar portas ao serviço mongodb \
+> Não é recomendado adicionar frontend a rede interna criada pelo container
 
 10. Configurar os valores de acordo com o nome para serviços que podem ser ligados internamente recomendo usar o nome deles exemplo `mongodb://mongodb:27010` o mesmo se aplica para outros serviços dentro deste ficheiro
 11. Trocar o serverIp no .env do frontned
@@ -47,21 +47,21 @@ ports:
 
 # Como proceder com a instalação - Sem Docker
 
-1. Ter [`bun`](https://bun.sh/) instalado ou alguma javascript runtime idk
+1. Ter [`node`](https://nodejs.org/en) instalado ou alguma javascript runtime idk
 2. Ter [`git`](https://git-scm.com/) instaldo
 3. Copiar isto para um ficheiro `install.cmd`
    ```batch
-   start cmd.exe /c "cd server && bun install"
-   start cmd.exe /c "cd backend && bun install"
-   start cmd.exe /c "cd frontend && bun install"
+   start cmd.exe /c "cd server && npm install"
+   start cmd.exe /c "cd backend && npm install"
+   start cmd.exe /c "cd frontend && npm install"
    ```
 4. Configurar todos os `.env` dentro da sua respectiva pasta
 5. Após instalar copiar isto para `start.cmd`
-   (para o frontend precisa de fazer o comando `bun run build` antes de executar estes)
+   (para o frontend precisa de fazer o comando `npm run build` antes de executar estes)
    ```batch
-   start cmd.exe /c "cd server && bun run start"
-   start cmd.exe /c "cd backend && bun run start"
-   start cmd.exe /c "cd frontend && bun run start"
+   start cmd.exe /c "cd server && npm run start"
+   start cmd.exe /c "cd backend && npm run start"
+   start cmd.exe /c "cd frontend && npm run start"
    ```
 
 # Funcionalidades configuraveis do concordo
@@ -82,17 +82,3 @@ Estas podem ser configuradas a partir de variaveis de ambiente
 
 > [!NOTE]
 > Recomendado gerar chaves secretas com `openssl enc -aes-256-cbc -k secret -P -md sha1` e preencher de acordo com os campos devidos
-
-# Informação do projeto
-
-| nº  | linguagem | tipo      |
-| --- | --------- | --------- |
-| 1   | TS e JS   | fullstack |
-
-###### tlvz venha a usar isto mais tarde
-
----
-
-###### > este projeto fez me aperceber que tenho uma relação de amor e ódio com javascript
-
-ps: eu não sei o que escrever aqui honestamente

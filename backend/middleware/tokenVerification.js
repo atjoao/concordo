@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import User from "../schema/user/User.js";
@@ -70,7 +71,7 @@ export default async function (req, res, next) {
                 });
             }
 
-            const compararPassword = await Bun.password.verify(
+            const compararPassword = bcrypt.compareSync(
                 decoded.password,
                 user.password
             );
@@ -91,7 +92,6 @@ export default async function (req, res, next) {
             req.userdata = user;
             next();
         } catch (error) {
-            console.log(error);
             return res.status(400).json({
                 erro: "Token de autenticação inválida",
                 status: "INVALID_TOKEN",
