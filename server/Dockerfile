@@ -4,9 +4,8 @@ WORKDIR /server
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN npm install -g bun \
-    && bun install
+RUN npm install
 
 COPY . .
 
-CMD ["bun", "run", "start"]
+CMD ["npm", "run", "start"]
