@@ -1,0 +1,58 @@
+.container {
+    display: flex;
+    position: relative;
+    align-items: center;
+
+    outline: 1px solid #807979;
+    border-radius: 10px;
+
+    padding: 10px;
+    gap: 10px;
+    flex-grow: 1;
+
+    flex-wrap: wrap;
+}
+
+.container img {
+    width: 48px;
+    border-radius: 10px;
+    height: 48px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+.buttons {
+    display: flex;
+    flex-grow: 0.99;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.buttons svg {
+    background-color: #7c7c7c;
+    height: 2em;
+    padding: 2px;
+    border-radius: 0.5em;
+}
+
+.buttons svg:hover {
+    background-color: #c5c0c0;
+}
+
+.buttons svg:active {
+    background-color: #a09d9d;
+}
+
+.buttons .hoverGreen svg:hover {
+    stroke: rgb(66, 168, 66);
+}
+
+.buttons .hoverRed svg:hover path {
+    fill: rgb(134, 35, 35);
+}
+
+@media (prefers-color-scheme: light) {
+    .buttons svg {
+        background-color: rgba(217, 217, 217);
+    }
+}

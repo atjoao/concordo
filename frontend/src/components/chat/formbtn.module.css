@@ -1,0 +1,91 @@
+.friendsList {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 200px;
+    width: 100%;
+    padding: 0px 10px;
+}
+
+.friendsListLabel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 0px;
+    gap: 10px;
+}
+
+.friendsListLabel {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.friendsListLabel input[type="checkbox"] {
+    display: flex;
+    accent-color: var(--selectBoxColor);
+}
+
+.friendsListLabel input[type="checkbox"] {
+    appearance: none;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+    font-size: 2rem;
+    border: 2px solid var(--selectBoxColor);
+    border-radius: 5px;
+}
+
+.friendsListLabel input[type="checkbox"]::before {
+    justify-content: center;
+    content: "";
+    width: 28px;
+    height: 28px;
+    transform: scale(0);
+    background-color: white;
+    border-radius: 2px;
+    clip-path: polygon(17% 54%, 28% 43%, 38% 54%, 70% 22%, 81% 33%, 38% 75%, 17% 54%);
+}
+/*background-color: rgb(0, 77, 128);*/
+
+.friendsListLabel input[type="checkbox"]:checked {
+    background-color: var(--selectBoxColor);
+}
+
+.friendsListLabel input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+.friendsListLabel input[type="checkbox"]:hover {
+    color: var(--textColor);
+}
+
+.friendsListLabel img {
+    width: 48px;
+    height: 48px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.selectedUsers button {
+    cursor: pointer;
+    padding: 10px;
+    color: var(--textColor);
+
+    border: 1px solid var(--bg2);
+    background-color: var(--bg1);
+    border-radius: 5px;
+}
+.selectedUsers button:hover {
+    background-color: var(--bg2);
+}
+
+.selectedUsers button:active {
+    background-color: var(--bg3);
+}
+
+.selectedUsers div {
+    display: flex;
+    gap: 10px;
+}

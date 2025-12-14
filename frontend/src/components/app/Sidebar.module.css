@@ -1,0 +1,45 @@
+.sidebar {
+    display: flex;
+    height: 100%;
+    background-color: var(--bg1);
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--bgActive);
+}
+
+.sidebar .bottombar {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--bg3);
+    padding: 10px;
+}
+
+.sidebar .bottombar .config {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+}
+
+.sidebar .bottombar .config:hover {
+    background-color: rgba(169, 169, 169, 0.2);
+}
+
+.sidebar .bottombar .bottombarProfile {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .bottombar .bottombarProfile img {
+    width: 42px;
+    border-radius: 10px;
+    height: 42px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}

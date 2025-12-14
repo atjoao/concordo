@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Utilizadores | Admin</title>
+        <link rel="stylesheet" href="./assets/css/pico.min.css" />
+    </head>
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 1370px;
+        }
+    </style>
+
+    <body style="display: none">
+        <nav>
+            <ul>
+                <li
+                    style="
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 10px;
+                    "
+                >
+                    <img
+                        src="./assets/images/logoConcordo.png"
+                        alt=""
+                        width="64"
+                        height="64"
+                    />
+                    <span
+                        style="
+                            font-family: ComicNeue-Regular;
+                            font-size: 24px;
+                            padding-bottom: 10px;
+                        "
+                    >
+                        Concordo
+                    </span>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="/admin" class="contrast">Inicio</a>
+                </li>
+                <li>
+                    <a href="/admin/utilizadores">Utilizadores</a>
+                </li>
+                <li>
+                    <a href="/admin/sair" class="contrast">Sair</a>
+                </li>
+                <!-- <li>
+                    <a href="/admin/avisos" class="contrast">Avisos</a>
+                </li> -->
+            </ul>
+        </nav>
+
+        <main id="content">
+            <h3>Utilizadores Registrados no Concordo</h3>
+            <input
+                type="search"
+                name="search"
+                placeholder="Procurar por utilizadores"
+                aria-label="Search"
+            />
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Tag</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Conta criada</th>
+                        <th scope="col">Ação</th>
+                    </tr>
+                </thead>
+                <tbody data-loaded="false">
+                    <tr>
+                        <td colspan="5">
+                            <span aria-busy="true">A carregar...</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </body>
+
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/admin/login";
+        }
+    </script>
+
+    <script src="./assets/js/loadcheck.js"></script>
+    <script src="./assets/js/historyReplace.js"></script>
+
+    <script>
+        const createCell = (user, date) => {
+            const pUserId = document.createElement("td");
+            pUserId.innerText = user._id;
+
+            const pUsername = document.createElement("td");
+            pUsername.innerText = user.username;
+
+            const pDescrim = document.createElement("td");
+            pDescrim.innerText = user.descrim;
+
+            const pEmail = document.createElement("td");
+            pEmail.innerText = user.email;
+
+            const pDate = document.createElement("td");
+            pDate.innerText = date;
+
+            const button = document.createElement("td");
+            button.style.display = "flex";
+            button.style.gap = "10px";
+
+            const buttonEl = document.createElement("button");
+            buttonEl.innerText = "Editar";
+            buttonEl.onclick = () => toggleEdit(user._id);
+            button.appendChild(buttonEl);
+
+            return { pUserId, pUsername, pDescrim, pEmail, pDate, button };
+        };
+
+        let nextPage = null;
+        let loading = false;
+        let limit = 5;
+        let date = new Date();
+
+        const tbody = document.querySelector("tbody");
+
+        window.onload = async () => {
+            await loadData();
+        };
+
+        async function loadData() {
+            if (loading) return;
+            loading = true;
+
+            const data = await fetch(nextPage || "./getUtilizadores", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+            if (!data.ok) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">Erro ao carregar dados</td>
+                    </tr>
+                `;
+            } else {
+                if (tbody.dataset.loaded == "false") tbody.innerHTML = "";
+                const json = await data.json();
+                if (json.limit) limit = json.limit;
+                if (json.next) nextPage = json.next;
+                if (!json.next) nextPage = null;
+
+                if (!json.users) return;
+                json.users.forEach((user) => {
+                    date = new Date(user.criadoem).toLocaleDateString("pt-PT");
+
+                    const tr = document.createElement("tr");
+                    const cells = createCell(user, date);
+                    tr.appendChild(cells.pUserId);
+                    tr.appendChild(cells.pUsername);
+                    tr.appendChild(cells.pDescrim);
+                    tr.appendChild(cells.pEmail);
+                    tr.appendChild(cells.pDate);
+                    tr.appendChild(cells.button);
+                    tbody.appendChild(tr);
+
+                    date = null;
+                });
+                tbody.dataset.loaded = true;
+                loading = false;
+                if (nextPage) {
+                    if (isOnScreen(tbody.lastChild)) {
+                        loadData();
+                    }
+                }
+            }
+        }
+
+        function toggleEdit(id) {
+            window.location.href = `/admin/utilizadores/editar/${id}`;
+        }
+
+        const screenHeight = window.innerHeight;
+        function isOnScreen(element) {
+            let pos = element.getBoundingClientRect();
+            let posTop = pos.top;
+            return !(posTop > screenHeight || posTop < 0);
+        }
+
+        window.addEventListener("scroll", function () {
+            if (
+                window.pageYOffset + window.innerHeight >
+                document.documentElement.scrollHeight - 100
+            ) {
+                if (nextPage != null) {
+                    loadData();
+                }
+            }
+        });
+    </script>
+
+    <script>
+        const link = new URL(window.location.href);
+
+        document
+            .querySelector("input[name=search]")
+            .addEventListener("input", (e) => {
+                const search = e.target.value;
+                console.log(search.length);
+                if (search.length == 0) {
+                    tbody.dataset.loaded = false;
+                    loadData(true);
+                    return;
+                }
+
+                if (search.length < 3) return;
+
+                fetch(link.origin + "/admin/utilizadores/search", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                    body: JSON.stringify({ search }),
+                })
+                    .then((req) => {
+                        if (req.status === 200) {
+                            return req.json();
+                        } else {
+                            tbody.dataset.loaded = false;
+                            throw new Error("Nenhum utilizador");
+                        }
+                    })
+                    .then((json) => {
+                        if (json.users) {
+                            tbody.innerHTML = "";
+                            json.users.forEach((user) => {
+                                date = new Date(
+                                    user.criadoem
+                                ).toLocaleDateString("pt-PT");
+
+                                const tr = document.createElement("tr");
+                                const cells = createCell(user, date);
+                                tr.appendChild(cells.pUserId);
+                                tr.appendChild(cells.pUsername);
+                                tr.appendChild(cells.pDescrim);
+                                tr.appendChild(cells.pEmail);
+                                tr.appendChild(cells.pDate);
+                                tr.appendChild(cells.button);
+                                tbody.appendChild(tr);
+
+                                date = null;
+                            });
+                            tbody.dataset.loaded = true;
+                        }
+                    })
+                    .catch((err) => {
+                        tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5">Nenhum utilizador encontrado</td>
+                        </tr>
+                    `;
+                    });
+            });
+    </script>
+</html>

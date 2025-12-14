@@ -1,0 +1,14 @@
+.uploads/
+.uploadsTemp/
+.thumbnails/*
+!.thumbnails/default.png
+.converted/
+.avatars/*
+!.avatars/default.img
+.groupimages/*
+!.groupimages/default.img
+
+
+node_modules/
+.env
+*.txt

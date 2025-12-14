@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Página Inicial</title>
+        <link rel="stylesheet" href="./admin/assets/css/pico.min.css" />
+    </head>
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 1370px;
+        }
+    </style>
+    <body style="display: none">
+        <nav>
+            <ul>
+                <li
+                    style="
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 10px;
+                    "
+                >
+                    <img
+                        src="./admin/assets/images/logoConcordo.png"
+                        alt=""
+                        width="64"
+                        height="64"
+                    />
+                    <span
+                        style="
+                            font-family: ComicNeue-Regular;
+                            font-size: 24px;
+                            padding-bottom: 10px;
+                        "
+                    >
+                        Concordo
+                    </span>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="/admin">Inicio</a>
+                </li>
+                <li>
+                    <a href="/admin/utilizadores" class="contrast"
+                        >Utilizadores</a
+                    >
+                </li>
+                <li>
+                    <a href="/admin/sair" class="contrast">Sair</a>
+                </li>
+                <!-- <li>
+                    <a href="/admin/avisos" class="contrast">Avisos</a>
+                </li> -->
+            </ul>
+        </nav>
+
+        <main id="content">
+            <h3>Resumo</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Dia</th>
+                        <th scope="col">Contas criadas</th>
+                        <th scope="col">Mensagens Enviadas</th>
+                        <!-- <th scope="col">Avisos recebidos</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4">
+                            <span aria-busy="true">A carregar...</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </body>
+
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.href = "/admin/login";
+        }
+    </script>
+
+    <script src="./admin/assets/js/loadcheck.js"></script>
+    <script src="./admin/assets/js/historyReplace.js"></script>
+
+    <script>
+        const tbody = document.querySelector("tbody");
+        let date = new Date();
+
+        window.onload = async () => {
+            const data = await fetch("admin/getStats", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            if (!data.ok) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4">Erro ao carregar dados</td>
+                    </tr>
+                `;
+            } else {
+                const json = await data.json();
+                setTimeout(() => {
+                    tbody.innerHTML = "";
+                    json.forEach((item) => {
+                        const tr = document.createElement("tr");
+                        date = new Date(item.date).toLocaleDateString("pt-PT");
+                        tr.innerHTML = `
+                        <td>${date}</td>
+                        <td>${item.created_users}</td>
+                        <td>${item.messages}</td>
+                    `;
+                        tbody.appendChild(tr);
+                    });
+                    date = null;
+                }, 500);
+            }
+        };
+    </script>
+</html>

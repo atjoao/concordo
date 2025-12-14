@@ -1,0 +1,108 @@
+version: "3"
+services:
+  backend:
+    restart: unless-stopped
+    container_name: concordo-back
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    networks:
+      - nginx_default
+      - internal
+    volumes:
+      - type: bind
+        source: ./backend/.avatars/default.img
+        target: /backend/.avatars/default.img
+        read_only: true
+      - type: bind
+        source: ./backend/.thumbnails/default.png
+        target: /backend/.thumbnails/default.png
+        read_only: true
+      - ./data/avatars:/backend/.avatars/
+      - type: bind
+        source: ./source/backend/.groupimages/default.img
+        target: /backend/.groupimages/default.img
+        read_only: true
+      - ./data/groupimages:/backend/.groupimages/
+      - ./data/thumbnails:/backend/.thumbnails/
+      - ./data/uploads:/backend/.uploads/
+      - ./data/converted:/backend/.converted/
+    environment:
+      - FFPROBE_PATH=/usr/bin/ffprobe
+      - FFMPEG_PATH=/usr/bin/ffmpeg
+      - PORT=3000
+      - APP_DOMAIN=
+      - APP_NAME=Concordo
+      - KEY_ALGORITHM=aes-256-cbc
+      - SECRET_KEY=<random value>
+      - IV_KEY=<random value>
+      - MONGO_URI=mongodb://
+      - VERIFICATION=<bool>
+      - EMAIL_SMTP_SERVER=
+      - EMAIL_SMTP_PORT=
+      - EMAIL_NAME=
+      - EMAIL_USER=
+      - EMAIL_PASSWORD=
+      - SOCKET_URL=ws.domain.tld
+      - SOCKET_TOKEN=<random value>
+      - SOCKET_LOCAL=server
+      - MESSAGENS_LIMITE=50
+      - ADMIN_PANEL=false
+      - ADMIN_PANEL_DEFAULT_USER=
+      - NODE_ENV=production
+    command: bun run start
+    depends_on:
+      - server
+      - mongodb
+
+  frontend:
+    restart: unless-stopped
+    container_name: concordo-front
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - nginx_default
+    command: bun run start
+    depends_on:
+      - backend
+      - server
+
+  server:
+    restart: unless-stopped
+    container_name: concordo-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    networks:
+      - nginx_default
+      - internal
+    environment:
+      - PORT=3001
+      - KEY_ALGORITHM=aes-256-cbc
+      - SECRET_KEY=<random value>
+      - IV_KEY=<random value>
+      - MONGO_URI=mongodb://
+      - SOCKET_TOKEN=<random value>
+    command: bun run start
+    depends_on:
+      - mongodb
+
+  mongodb:
+    restart: unless-stopped
+    container_name: concordo-db
+    image: mongo:4.4
+    networks:
+      - internal
+    volumes:
+      - ./data/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=
+    command: mongod --auth
+
+networks:
+  nginx_default:
+    external: true
+  internal:
+    external: false

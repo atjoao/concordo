@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login | Admin</title>
+        <link rel="stylesheet" href="./assets/css/pico.min.css" />
+    </head>
+    <style>
+        body {
+            display: flex;
+            margin: 0 auto;
+            max-width: 1170px;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+    </style>
+
+    <body>
+        <main class="container-fluid">
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px 0px;
+                "
+            >
+                <img src="./assets/images/logoConcordo.png" alt="Concordo" />
+                <p style="font-family: ComicNeue-Regular; font-size: 64px">
+                    Concordo
+                </p>
+            </div>
+
+            <div>
+                <p id="loginStatus" style="display: none"></p>
+            </div>
+            <form id="loginForm">
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Email"
+                    required
+                />
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Palavra-passe"
+                    required
+                />
+                <button type="submit">Entrar</button>
+            </form>
+        </main>
+    </body>
+
+    <script>
+        window.onload = () => {
+            if (localStorage.getItem("token")) {
+                window.location.href = "/admin";
+            }
+        };
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", (e) => {
+            document
+                .getElementById("loginForm")
+                .addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    fetch("/auth/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: document.getElementById("email").value,
+                            password: document.getElementById("password").value,
+                        }),
+                    })
+                        .then((req) => {
+                            if (req.status === 200) {
+                                return req.json();
+                            } else {
+                                throw new Error("Erro ao fazer login");
+                            }
+                        })
+                        .catch((err) => {
+                            document.getElementById("loginStatus").innerText =
+                                err.message;
+                            document.getElementById(
+                                "loginStatus"
+                            ).style.display = "block";
+
+                            setTimeout(() => {
+                                document.getElementById(
+                                    "loginStatus"
+                                ).style.display = "none";
+
+                                document.getElementById(
+                                    "loginStatus"
+                                ).innerText = null;
+                            }, 3000);
+                        })
+                        .then((data) => {
+                            localStorage.setItem("token", data.token);
+                            window.location.href = "/admin";
+                        });
+                });
+        });
+    </script>
+</html>

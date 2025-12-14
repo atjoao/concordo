@@ -1,0 +1,177 @@
+.hidden {
+    display: none !important;
+}
+
+.message {
+    position: relative;
+    display: flex;
+    gap: 5px;
+    align-content: center;
+    flex-direction: column;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.message .msgContent {
+    display: grid;
+    gap: 5px;
+    /* align-items: center; */
+    grid-template-areas: "hora message";
+    grid-template-columns: 40px 99.1%;
+}
+
+.message span {
+    width: fit-content;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-inline-size: 94%;
+    grid-area: message;
+    text-align: justify;
+}
+
+.message span a {
+    color: var(--blueText);
+}
+
+.message span a:hover {
+    text-decoration: underline;
+}
+
+.message .timeCreated {
+    width: 40px;
+    font-size: 10px;
+    visibility: hidden;
+    grid-area: hora;
+}
+
+.message .msgContent .msgEdited {
+    font-size: 10px;
+    color: rgb(158, 158, 158);
+}
+
+.message .msgContent .editingContainer {
+    display: flex;
+    width: 99%;
+    flex-direction: column;
+    gap: 5px;
+}
+.message .msgContent .editingContainer .buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    font-size: 10px;
+}
+
+.message .msgContent .editingContainer .buttons p {
+    cursor: pointer;
+}
+
+.message .msgContent .editingContainer .buttons p span {
+    color: var(--blueText);
+}
+
+.message .msgContent .editingMessage {
+    width: 100%;
+    color: var(--textColor);
+    background: var(--bg2);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    outline: 1px solid var(--bg2);
+    white-space: pre-wrap;
+}
+
+.message:hover .timeCreated {
+    visibility: visible;
+}
+
+.message .files {
+    width: fit-content;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-inline-size: 94%;
+    margin-left: 45px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.message .options {
+    position: absolute;
+    width: 25px;
+    right: 1rem;
+    background-color: var(--bg2);
+    padding: 2px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    z-index: 1;
+    margin: 5px 0px;
+    top: -10px;
+}
+
+.message:hover .options {
+    display: block;
+}
+
+.message .options svg {
+    cursor: pointer;
+    pointer-events: none;
+    fill: var(--textColor);
+}
+
+.message .options.toolBoxActive {
+    display: block;
+}
+
+.message .options .toolbox {
+    position: absolute;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    bottom: 0px;
+    width: max-content;
+    background-color: var(--bg2);
+    padding: 10px;
+    gap: 5px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.message .options .toolbox span {
+    padding: 5px;
+    border-radius: 5px;
+    max-inline-size: none;
+    width: 100%;
+}
+
+.message .options .toolbox span:hover {
+    background-color: var(--bg4);
+    color: var(--textColor);
+}
+
+.message .options .toolbox span.delete:hover {
+    background-color: var(--red);
+    color: white;
+}
+
+/* @media (prefers-color-scheme: light) {
+    .message .options {
+        background-color: rgb(190, 190, 190);
+    }
+
+    .message .options svg {
+        fill: black;
+    }
+
+    .message .options .toolbox {
+        background-color: rgb(190, 190, 190);
+    }
+
+    .message .msgContent .editingMessage {
+        outline: 1px solid white;
+        background: rgb(190, 190, 190);
+    }
+}
+ */

@@ -1,0 +1,74 @@
+.tabSwitcher {
+    display: flex;
+    height: max-content;
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: var(--bg2);
+    flex-direction: column;
+}
+
+.tabSwitcher ul {
+    /*display: grid; */
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    gap: 10px;
+    /*grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));*/
+}
+
+.tabSwitcher ul li {
+    padding: 10px;
+    border-radius: 0.3em;
+
+    min-width: fit-content;
+    max-width: 1fr;
+
+    cursor: pointer;
+
+    color: var(--textColor);
+}
+
+.tabSwitcher ul li:hover:not(.greenTab, .greenTabActive) {
+    background-color: var(--bgActive);
+}
+
+.tabContent {
+    height: 100%;
+    padding: 20px 5px;
+    overflow: auto;
+}
+
+.active {
+    background-color: var(--bgActive);
+}
+
+.greenTab {
+    background-color: var(--green);
+}
+
+.greenTab:hover {
+    background-color: var(--greenDark);
+}
+
+.greenTabActive {
+    background-color: var(--greenDark);
+}
+
+@media (prefers-color-scheme: light) {
+    .tabSwitcher {
+        background-color: var(--bg2);
+    }
+
+    .greenTab {
+        background-color: var(--green);
+    }
+
+    .greenTab:hover {
+        background-color: var(--greenDark);
+    }
+
+    .greenTabActive {
+        background-color: var(--greenDark);
+    }
+}
