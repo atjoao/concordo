@@ -20,7 +20,7 @@ A configuração do concordo pode ser feita com docker, apenas por clonar este r
    |-> compose.yml
    |--> source
    ```
-6. Como este ficheiro é apenas de um exemplo de como configurei no meu servidor remover linhas que se relacionam a nginx ou configurar nginx de acordo com [`how2host.it`](https://how2host.it)
+6. Como este ficheiro (`compose.yaml`) é apenas de um exemplo de como configurei no meu servidor remover linhas que se relacionam a nginx ou configurar nginx de acordo com [`NPM`](https://nginxproxymanager.com/guide/#quick-setup)
 7. Se não quer configurar nginx é só remover todas as linhas relacionadas com `nginx_default` e dar as portas corretas (este é adicionado por meter da seguinte maneira)
 
 ```yml
